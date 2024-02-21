@@ -91,8 +91,8 @@ public class RobotContainer {
 
   public void configureTestCommands() {
     SmartDashboard.putData("Arm up", new ToAngle(() -> Units.degreesToRadians(90), arm));
-    SmartDashboard.putData("Arm down", new ToAngle(() -> Units.degreesToRadians(15), arm));
-    SmartDashboard.putData("Shooter test command", new ToRPM(() -> 2000, shooter));
+    SmartDashboard.putData("Arm down", new ToAngle(() -> Units.degreesToRadians(37), arm));
+    SmartDashboard.putData("Shooter test command", new ToRPM(() -> -4500, shooter));
 
     SmartDashboard.putData("Feed IN", new FeedIn(feeder));
     SmartDashboard.putData("Feed OUT", new FeedOut(feeder));
