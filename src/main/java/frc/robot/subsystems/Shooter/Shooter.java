@@ -42,12 +42,12 @@ public class Shooter extends SubsystemBase {
 
   public void setupMotor() {
     leader.restoreFactoryDefaults();
-    leader.setInverted(false);
+    leader.setInverted(true);
     leader.enableVoltageCompensation(12.0);
     leader.setSmartCurrentLimit(40);
 
     follower.restoreFactoryDefaults();
-    follower.setInverted(false);
+    follower.setInverted(true);
     follower.enableVoltageCompensation(12.0);
     follower.setSmartCurrentLimit(40);
 
@@ -58,6 +58,12 @@ public class Shooter extends SubsystemBase {
     pid.setP(Constants.ShooterConstants.shooterPID[0]);
     pid.setI(Constants.ShooterConstants.shooterPID[1]);
     pid.setD(Constants.ShooterConstants.shooterPID[2]);
+
+    pid.setIMaxAccum(0.02, 0);
+  }
+
+  public void resetI() {
+    pid.setIAccum(0);
   }
 
   public void checkTunableValues() {
