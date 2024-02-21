@@ -9,7 +9,7 @@ import frc.robot.Constants.ShooterConstants.FeedMode;
 
 public class Feeder extends SubsystemBase {
   private final CANSparkMax feeder = new CANSparkMax(Constants.ShooterConstants.feeder, MotorType.kBrushless);
-  private final double feedPower = 0.1;
+  private final double feedPower = 0.7;
   private FeedMode feedMode = FeedMode.OFF;
 
   public Feeder() {

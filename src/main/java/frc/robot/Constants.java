@@ -167,7 +167,7 @@ public final class Constants {
     public static final int follower = 32;
     public static final int feeder = 33;
     public static final double[] shooterPID = { 0.0, 0, 0 };
-    public static final double[] shooterFeedforward = { 0, 0 };
+    public static final double[] shooterFeedforward = { 0.25, 0.00205 };
     public static final int toleranceRPM = 10;
     public static final double maxVelocityPerSecond = 2000; // RPM/s
     public static final double maxAcceleration = 700; // RPM/s^2

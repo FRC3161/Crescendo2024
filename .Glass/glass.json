@@ -1,0 +1,98 @@
+{
+  "NetworkTables": {
+    "transitory": {
+      "SmartDashboard": {
+        "TunableNumbers": {
+          "open": true
+        },
+        "open": true
+      }
+    },
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Arm down": "Command",
+      "/SmartDashboard/Arm up": "Command",
+      "/SmartDashboard/Feed IN": "Command",
+      "/SmartDashboard/Feed OUT": "Command",
+      "/SmartDashboard/Reset Pose": "Command",
+      "/SmartDashboard/Shooter test command": "Command",
+      "/SmartDashboard/Vision field": "Field2d",
+      "/SmartDashboard/autos": "String Chooser"
+    },
+    "windows": {
+      "/SmartDashboard/Arm down": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Arm up": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Feed IN": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Shooter test command": {
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables Info": {
+    "Connections": {
+      "open": true
+    },
+    "NT3@10.31.61.150:49589": {
+      "open": true
+    },
+    "Server": {
+      "Subscribers": {
+        "open": true
+      }
+    },
+    "visible": true
+  },
+  "NetworkTables Settings": {
+    "mode": "Client (NT4)",
+    "serverTeam": "3161"
+  },
+  "Plots": {
+    "Plot <0>": {
+      "plots": [
+        {
+          "backgroundColor": [
+            0.05999999865889549,
+            0.05999999865889549,
+            0.05999999865889549,
+            0.9399999976158142
+          ],
+          "height": 477,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Shooter Actual RPM"
+            },
+            {
+              "color": [
+                0.8666667342185974,
+                0.5176470875740051,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Shooter Desired RPM"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
