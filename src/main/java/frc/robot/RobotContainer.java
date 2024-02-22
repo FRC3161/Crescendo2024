@@ -79,28 +79,24 @@ public class RobotContainer {
     driver.povUp().whileTrue(new SnapTo(s_Swerve, SnapMode.FORWARD));
     driver.povDown().whileTrue(new SnapTo(s_Swerve, SnapMode.BACKWARD));
     driver.back().onTrue(new InstantCommand(s_Swerve::zeroGyro));
-
-    driver.start().onTrue(
-        new InstantCommand(
-            () -> s_Swerve.homeHeading()));
-
     driver.b().whileTrue(
         new ProxyCommand(() -> Tags.DriveToClosestTag(new Transform2d(1, 0, new Rotation2d()), s_Swerve)));
     /* Operator Controller */
     operator.y().onTrue(new ToAngle(() -> Units.degreesToRadians(30), arm));
-    // operator.button(3).onTrue(new ToAngle(() -> Units.degreesToRadians(10), arm));
-    // operator.leftBumper().whileTrue(new ParallelCommandGroup(new ToRPM(() -> 4500, shooter), new FeedIn(feeder)));
+    // operator.button(3).onTrue(new ToAngle(() -> Units.degreesToRadians(10),
+    // arm));
+    // operator.leftBumper().whileTrue(new ParallelCommandGroup(new ToRPM(() ->
+    // 4500, shooter), new FeedIn(feeder)));
     operator.rightBumper().whileTrue(new IntakeIn(intake));
     operator.leftBumper().whileTrue(new Outake(intake));
     operator.rightTrigger().whileTrue(new ToRPM(() -> 4500, shooter));
-    operator.rightTrigger().whileFalse(new ToRPM(() -> 0, shooter));
     operator.leftTrigger().whileTrue(new FeedIn(feeder));
 
     // operator.a().whileTrue(new FeedIn(feeder));
     operator.b().whileTrue(new FeedOut(feeder));
-    // operator.b().whileTrue(new SolidColor(null, 0, lights, null)); Ignore this please :)
+    // operator.b().whileTrue(new SolidColor(null, 0, lights, null)); Ignore this
+    // please :)
 
-    
   }
 
   public void configureAutoCommands() {
