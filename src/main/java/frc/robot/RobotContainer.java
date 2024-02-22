@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.LightsConstants.LightsType;
 import frc.robot.Constants.SwerveConstants.DriveMode;
+import frc.robot.commands.Arm.ManualArm;
 import frc.robot.commands.Arm.ToAngle;
 import frc.robot.commands.Drive.Tags;
 import frc.robot.commands.Drive.SnapTo;
@@ -68,7 +69,7 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-    /* Driver Controller */
+      /* Driver Controller */
     s_Swerve.setDefaultCommand(new TeleopSwerve(
         s_Swerve,
         () -> -driver.getLeftY(),
@@ -81,7 +82,8 @@ public class RobotContainer {
     driver.back().onTrue(new InstantCommand(s_Swerve::zeroGyro));
     driver.b().whileTrue(
         new ProxyCommand(() -> Tags.DriveToClosestTag(new Transform2d(1, 0, new Rotation2d()), s_Swerve)));
-    /* Operator Controller */
+    
+        /* Operator Controller */
     operator.y().onTrue(new ToAngle(() -> Units.degreesToRadians(30), arm));
     // operator.button(3).onTrue(new ToAngle(() -> Units.degreesToRadians(10),
     // arm));
@@ -89,11 +91,16 @@ public class RobotContainer {
     // 4500, shooter), new FeedIn(feeder)));
     operator.rightBumper().whileTrue(new IntakeIn(intake));
     operator.leftBumper().whileTrue(new Outake(intake));
-    operator.rightTrigger().whileTrue(new ToRPM(() -> 4500, shooter));
-    operator.leftTrigger().whileTrue(new FeedIn(feeder));
 
-    // operator.a().whileTrue(new FeedIn(feeder));
-    operator.b().whileTrue(new FeedOut(feeder));
+    operator.rightTrigger().whileTrue(new ToRPM(() -> 4500, shooter));
+    shooter.setDefaultCommand(new ToRPM(() -> 0, shooter));
+
+    // operator.rightTrigger().and(operator.leftTrigger()).whileTrue(new FeedOut(feeder));
+    operator.b().whileTrue(new FeedIn(feeder));
+    operator.a().whileTrue(new FeedOut(feeder));
+    arm.setDefaultCommand(new ManualArm(() -> operator.getLeftY(), arm));
+
+    // arm.setDefaultCommand(new ToAngle(() -> operator.getLeftY(), arm));
     // operator.b().whileTrue(new SolidColor(null, 0, lights, null)); Ignore this
     // please :)
 
@@ -111,6 +118,8 @@ public class RobotContainer {
 
     SmartDashboard.putData("Feed IN", new FeedIn(feeder));
     SmartDashboard.putData("Feed OUT", new FeedOut(feeder));
+    SmartDashboard.putNumber("joystick", operator.getLeftX());
+    SmartDashboard.putNumber("Arm Angle", arm.getSetpoint().getDegrees());
 
     SmartDashboard.putData("Reset Pose", new InstantCommand(() -> {
       s_Swerve.setPose(new Pose2d());
