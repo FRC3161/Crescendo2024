@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.LightsConstants.LightsType;
@@ -38,6 +39,7 @@ public class RobotContainer {
 
   /* Controllers */
   private final CommandXboxController driver = new CommandXboxController(Constants.Operators.driver);
+  private final CommandXboxController operator = new CommandXboxController(Constants.Operators.operator);
   private SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   /* Subsystems */
@@ -66,6 +68,7 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
+    /* Driver Controller */
     s_Swerve.setDefaultCommand(new TeleopSwerve(
         s_Swerve,
         () -> -driver.getLeftY(),
@@ -76,15 +79,24 @@ public class RobotContainer {
     driver.povUp().whileTrue(new SnapTo(s_Swerve, SnapMode.FORWARD));
     driver.povDown().whileTrue(new SnapTo(s_Swerve, SnapMode.BACKWARD));
     driver.back().onTrue(new InstantCommand(s_Swerve::zeroGyro));
-
-    driver.start().onTrue(
-        new InstantCommand(
-            () -> s_Swerve.homeHeading()));
-
-    driver.leftBumper().whileTrue(new IntakeIn(intake));
-    driver.rightBumper().whileTrue(new Outake(intake));
     driver.b().whileTrue(
         new ProxyCommand(() -> Tags.DriveToClosestTag(new Transform2d(1, 0, new Rotation2d()), s_Swerve)));
+    /* Operator Controller */
+    operator.y().onTrue(new ToAngle(() -> Units.degreesToRadians(30), arm));
+    // operator.button(3).onTrue(new ToAngle(() -> Units.degreesToRadians(10),
+    // arm));
+    // operator.leftBumper().whileTrue(new ParallelCommandGroup(new ToRPM(() ->
+    // 4500, shooter), new FeedIn(feeder)));
+    operator.rightBumper().whileTrue(new IntakeIn(intake));
+    operator.leftBumper().whileTrue(new Outake(intake));
+    operator.rightTrigger().whileTrue(new ToRPM(() -> 4500, shooter));
+    operator.leftTrigger().whileTrue(new FeedIn(feeder));
+
+    // operator.a().whileTrue(new FeedIn(feeder));
+    operator.b().whileTrue(new FeedOut(feeder));
+    // operator.b().whileTrue(new SolidColor(null, 0, lights, null)); Ignore this
+    // please :)
+
   }
 
   public void configureAutoCommands() {
@@ -92,6 +104,7 @@ public class RobotContainer {
   }
 
   public void configureTestCommands() {
+    /* Glass and SmartDashboard stuff */
     SmartDashboard.putData("Arm up", new ToAngle(() -> Units.degreesToRadians(90), arm));
     SmartDashboard.putData("Arm down", new ToAngle(() -> Units.degreesToRadians(37), arm));
     SmartDashboard.putData("Shooter test command", new ToRPM(() -> 4500, shooter));
