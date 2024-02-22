@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import frc.lib.util.Interpolation1D;
 import frc.lib.util.SwerveModuleConstants;
@@ -208,5 +209,21 @@ public final class Constants {
     public static final Interpolation1D armAngleInterpolation = new Interpolation1D(
         new double[] { 1f, Units.degreesToRadians(10f) },
         new double[] { 10f, Units.degreesToRadians(30f) });
+  }
+
+
+  public static final class ClimberConstants{
+
+    public static final int leftMotorID = 51;
+    public static final int rightMotorID = 52;
+
+    public static final double[] pid = {0,0,0};
+
+   public static final double maxVelocity = 2000; // RPM/s
+    public static final double maxAcceleration = 700; // RPM/s^2
+    public static final double retractSpeed = 0.3;
+
+    public static final TrapezoidProfile.Constraints climberConstraints = new TrapezoidProfile.Constraints(
+        maxVelocity, maxAcceleration);
   }
 }
