@@ -95,13 +95,13 @@ public class Arm extends SubsystemBase {
     }
   }
 
-  public void runVelocity(Rotation2d setpoint) {
-    this.setpoint = setpoint;
+  public void runVelocity(Rotation2d velocity) {
+    this.velocity = velocity;
   }
 
   public void runState(TrapezoidProfile.State state) {
-    this.setpoint = Rotation2d.fromRadians(state.position);
-    this.velocity = Rotation2d.fromRadians(state.velocity);
+    runSetpoint(Rotation2d.fromRadians(state.position));
+    runVelocity(Rotation2d.fromRadians(state.velocity));
   }
 
   public TrapezoidProfile.State getCurrenState() {
