@@ -19,6 +19,8 @@ import frc.robot.Constants.LightsConstants.LightsType;
 import frc.robot.Constants.SwerveConstants.DriveMode;
 import frc.robot.commands.Arm.ManualArm;
 import frc.robot.commands.Arm.ToAngle;
+import frc.robot.commands.Climber.ClimbExtend;
+import frc.robot.commands.Climber.ClimbRetract;
 import frc.robot.commands.Drive.Tags;
 import frc.robot.commands.Drive.SnapTo;
 import frc.robot.commands.Drive.TeleopSwerve;
@@ -30,6 +32,7 @@ import frc.robot.commands.Shooter.FeedIn;
 import frc.robot.commands.Shooter.FeedOut;
 import frc.robot.commands.Shooter.ToRPM;
 import frc.robot.subsystems.Arm.Arm;
+import frc.robot.subsystems.Climber.Climber;
 import frc.robot.subsystems.Drive.Swerve;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Lights.Lights;
@@ -50,6 +53,7 @@ public class RobotContainer {
   final Shooter shooter = new Shooter();
   final Feeder feeder = new Feeder();
   final Arm arm = new Arm();
+  final Climber climber = new Climber();
 
   public RobotContainer() {
     configureButtonBindings();
@@ -100,9 +104,16 @@ public class RobotContainer {
     operator.a().whileTrue(new FeedOut(feeder));
     arm.setDefaultCommand(new ManualArm(() -> operator.getLeftY(), arm));
 
+    operator.x().whileTrue(new ClimbExtend(climber));
+    operator.a().whileTrue(new ClimbRetract(climber));
+
+    // operator.a().whileTrue(new FeedIn(feeder));
+    operator.b().whileTrue(new FeedOut(feeder));
     // arm.setDefaultCommand(new ToAngle(() -> operator.getLeftY(), arm));
     // operator.b().whileTrue(new SolidColor(null, 0, lights, null)); Ignore this
     // please :)
+    
+    
 
   }
 
