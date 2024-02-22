@@ -21,7 +21,7 @@ public class SnapTo extends Command {
           Units.degreesToRadians(500)));
 
   public static enum SnapMode {
-    AMP,
+    SPEAKER,
     LEFT,
     RIGHT,
     FORWARD,
@@ -46,8 +46,8 @@ public class SnapTo extends Command {
   public void execute() {
     double setpoint = 0;
     switch (m_snapeMode) {
-      case AMP:
-        setpoint = m_drive.getRotationRelativeToAmp().getRadians();
+      case SPEAKER:
+        setpoint = m_drive.getRotationRelativeToSpeaker().getRadians();
         break;
       case LEFT:
         setpoint = Units.degreesToRadians(90);

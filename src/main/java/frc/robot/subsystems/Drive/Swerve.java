@@ -289,7 +289,7 @@ public class Swerve extends SubsystemBase {
     });
   }
 
-  private Optional<Pose3d> getAmpPose() {
+  private Optional<Pose3d> getSpeakerPose() {
     var alliance = DriverStation.getAlliance();
     Optional<Pose3d> ampPose = null;
 
@@ -316,11 +316,12 @@ public class Swerve extends SubsystemBase {
   }
 
   public double getDistanceFromAmp() {
-    return getEstimatedPose().getTranslation().getDistance(getAmpPose().get().getTranslation().toTranslation2d());
+    return getEstimatedPose().getTranslation().getDistance(getSpeakerPose().get().getTranslation().toTranslation2d());
   }
 
-  public Rotation2d getRotationRelativeToAmp() {
-    return getEstimatedPose().getTranslation().minus(getAmpPose().get().getTranslation().toTranslation2d()).unaryMinus()
+  public Rotation2d getRotationRelativeToSpeaker() {
+    return getEstimatedPose().getTranslation().minus(getSpeakerPose().get().getTranslation().toTranslation2d())
+        .unaryMinus()
         .getAngle();
   }
 
@@ -344,14 +345,9 @@ public class Swerve extends SubsystemBase {
     return result;
   }
 
-  public void homeHeading() {
-    gyro.homeYaw();
-
-  }
-
   public void logValues() {
     SmartDashboard.putNumber("Distance From Amp", getDistanceFromAmp());
-    SmartDashboard.putNumber("Rotation to Amp", getRotationRelativeToAmp().getDegrees());
+    SmartDashboard.putNumber("Rotation to Amp", getRotationRelativeToSpeaker().getDegrees());
 
     debugField2d.setRobotPose(getEstimatedPose());
     if (vision.latestVision.isPresent()) {
