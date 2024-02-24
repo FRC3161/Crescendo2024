@@ -41,6 +41,7 @@ public class ToRPM extends Command {
 
   @Override
   public boolean isFinished() {
+    // return false;
     return m_profiler.isFinished(m_timer.get()) && m_shooter.atSetpoint();
   }
 

@@ -14,7 +14,7 @@ public class FeedIn extends Command {
 
   @Override
   public void initialize() {
-    m_feeder.setFeedMode(FeedMode.IN);
+    m_feeder.setFeedMode(FeedMode.FIRSTIN);
   }
 
   @Override

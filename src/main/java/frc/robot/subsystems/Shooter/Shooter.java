@@ -59,7 +59,8 @@ public class Shooter extends SubsystemBase {
     pid.setI(Constants.ShooterConstants.shooterPID[1]);
     pid.setD(Constants.ShooterConstants.shooterPID[2]);
 
-    pid.setIMaxAccum(0.02, 0);
+    pid.setIMaxAccum(0.04, 0);
+    pid.setOutputRange(0, 9999);
   }
 
   public void resetI() {
@@ -109,6 +110,7 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Shooter Actual RPM", getActualRPM());
     SmartDashboard.putNumber("Shooter Desired RPM", getDesiredRPM());
     SmartDashboard.putNumber("Shooter Desired RPM/s", velocityRateOfChange);
+
   }
 
   @Override
