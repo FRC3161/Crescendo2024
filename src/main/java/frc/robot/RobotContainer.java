@@ -29,7 +29,7 @@ import frc.robot.commands.Drive.SnapTo.SnapMode;
 import frc.robot.commands.Intake.IntakeIn;
 import frc.robot.commands.Intake.Outake;
 import frc.robot.commands.Lights.SolidColor;
-import frc.robot.commands.Shooter.ExpFeed;
+import frc.robot.commands.Shooter.ShootFeed;
 import frc.robot.commands.Shooter.FeedIn;
 import frc.robot.commands.Shooter.FeedOut;
 import frc.robot.commands.Shooter.ToRPM;
@@ -95,13 +95,11 @@ public class RobotContainer {
 
     operator.y().whileTrue(new SequentialCommandGroup(
       new ToRPM(() -> -4000, shooter)));
-    // arm));
-    // operator.leftBumper().whileTrue(new ParallelCommandGroup(new ToRPM(() ->
-    // 4500, shooter), new FeedIn(feeder)));
+
     operator.rightBumper().whileTrue(new IntakeIn(intake));
     // operator.leftBumper().whileTrue(new Outake(intake));
     operator.leftBumper().whileTrue(new SequentialCommandGroup(
-      new ToAngle(() -> Units.degreesToRadians(10), arm),
+      new ToAngle(() -> Units.degreesToRadians(15), arm),
       new ParallelCommandGroup(
         new FeedIn(feeder),
         new IntakeIn(intake)
@@ -110,19 +108,18 @@ public class RobotContainer {
 
     operator.rightTrigger().whileTrue(new SequentialCommandGroup(
       new ToRPM(() -> 4900, shooter),
-      new ExpFeed(feeder).withTimeout(1),
+      new ShootFeed(feeder).withTimeout(1),
       new ToRPM(() -> 400, shooter)));
     // shooter.setDefaultCommand(new ToRPM(() -> 0, shooter));
 
     operator.leftTrigger().whileTrue(new FeedIn(feeder));
-
-    operator.a().whileTrue(new FeedOut(feeder));
+    operator.b().whileTrue(new FeedOut(feeder));
+    
     arm.setDefaultCommand(new ManualArm(() -> operator.getLeftY(), arm));
 
     operator.x().whileTrue(new ClimbExtend(climber));
-    // operator.a().whileTrue(new ClimbRetract(climber));
+    operator.a().whileTrue(new ClimbRetract(climber));
 
-    operator.b().whileTrue(new FeedOut(feeder));
     
     // operator.b().whileTrue(new SolidColor(null, 0, lights, null)); Ignore this
     // please :)
@@ -141,7 +138,7 @@ public class RobotContainer {
     SmartDashboard.putData("Arm down", new ToAngle(() -> Units.degreesToRadians(37), arm));
     SmartDashboard.putData("Shooter test command", new SequentialCommandGroup(
       new ToRPM(() -> 4700, shooter),
-      new ExpFeed(feeder).withTimeout(3),
+      new ShootFeed(feeder).withTimeout(3),
       new ToRPM(() -> 1000, shooter)));
 
     SmartDashboard.putData("Feed IN", new FeedIn(feeder));

@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.LoggedTunableNumber;
 import frc.robot.Constants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.ShooterConstants.FeedMode;
 
 public class Feeder extends SubsystemBase {
@@ -14,7 +15,7 @@ public class Feeder extends SubsystemBase {
   private double feedPower = 0.5;
   private final LoggedTunableNumber feedTunableNumber = new LoggedTunableNumber("Feed Power", feedPower);
   private FeedMode feedMode = FeedMode.OFF;
-  private DigitalInput beam;
+  private DigitalInput beam = new DigitalInput(ShooterConstants.beamDIO);
   public Feeder() {
     setupMotor();
   }
@@ -40,17 +41,21 @@ public class Feeder extends SubsystemBase {
   public void periodic() {
     checkTunableValues();
     switch (feedMode) {
-      case FIRSTIN:
-      // if (!beam.get()) 
+      case INFEED:
+      if (!beam.get()) {
         feeder.set(feedPower);
-      // }
-      // else{
-        // feeder.set(0);
-      // }
-        break;
-      case SHOOT:
+      }
+      else{
+        feeder.set(0);
+      }
+      break;
+      case SHOOTFEED:
+      if (beam.get()) {
         feeder.set(feedPower);
-        break;
+      } else{
+        feeder.set(0);
+      }  
+      break;
       case OUT:
         feeder.set(-feedPower);
         break;

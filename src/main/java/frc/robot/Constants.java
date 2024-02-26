@@ -167,6 +167,7 @@ public final class Constants {
     public static final int leader = 31;
     public static final int follower = 32;
     public static final int feeder = 33;
+    public static final int beamDIO = 1;
     public static final double[] shooterPID = { 0.0, 0.0000008, 0 };
     public static final double[] shooterFeedforward = { 0.25, 0.002 };
     public static final int toleranceRPM = 100;
@@ -177,8 +178,8 @@ public final class Constants {
       // IN,
       OUT,
       OFF,
-      FIRSTIN,
-      SHOOT
+      INFEED,
+      SHOOTFEED
     }
 
     // Interpolation
