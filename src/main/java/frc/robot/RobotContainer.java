@@ -81,46 +81,52 @@ public class RobotContainer {
         () -> -driver.getLeftY(),
         () -> -driver.getLeftX(),
         () -> -driver.getRightX()));
-    driver.povLeft().whileTrue(new SnapTo(s_Swerve, SnapMode.LEFT));
-    driver.povRight().whileTrue(new SnapTo(s_Swerve, SnapMode.RIGHT));
-    driver.povUp().whileTrue(new SnapTo(s_Swerve, SnapMode.FORWARD));
-    driver.povDown().whileTrue(new SnapTo(s_Swerve, SnapMode.BACKWARD));
+    driver.x().onTrue(new SnapTo(s_Swerve, SnapMode.LEFT));
+    driver.b().onTrue(new SnapTo(s_Swerve, SnapMode.RIGHT));
+    driver.y().onTrue(new SnapTo(s_Swerve, SnapMode.FORWARD));
+    driver.a().onTrue(new SnapTo(s_Swerve, SnapMode.BACKWARD));
     driver.back().onTrue(new InstantCommand(s_Swerve::zeroGyro));
-    driver.b().whileTrue(
-        new ProxyCommand(() -> Tags.DriveToClosestTag(new Transform2d(3, 0, new Rotation2d()), s_Swerve)));
-    
-        /* Operator Controller */
-    // operator.y().onTrue(new ToAngle(() -> Units.degreesToRadians(30), arm));
-    //Important ^ 
-
-    operator.y().whileTrue(new SequentialCommandGroup(
-      new ToRPM(() -> -4000, shooter)));
-
-    operator.rightBumper().whileTrue(new IntakeIn(intake));
-    // operator.leftBumper().whileTrue(new Outake(intake));
-    operator.leftBumper().whileTrue(new SequentialCommandGroup(
+    driver.povDown().whileTrue(
+        new ProxyCommand(() -> Tags.DriveToClosestTag(new Transform2d(5, 0, new Rotation2d()), s_Swerve)));
+    driver.leftBumper().whileTrue(new SequentialCommandGroup(
       new ToAngle(() -> Units.degreesToRadians(15), arm),
       new ParallelCommandGroup(
         new FeedIn(feeder),
         new IntakeIn(intake)
       )
       ));
+        /* Operator Controller */
 
-    operator.rightTrigger().whileTrue(new SequentialCommandGroup(
-      new ToRPM(() -> 4900, shooter),
+    operator.y().whileTrue(new SequentialCommandGroup(
+      new ToRPM(() -> -4000, shooter)));
+
+    operator.rightBumper().whileTrue(new IntakeIn(intake));
+    
+
+    operator.rightTrigger().onTrue(new SequentialCommandGroup(
+      new ToRPM(() -> 4700, shooter),
       new ShootFeed(feeder).withTimeout(1),
       new ToRPM(() -> 400, shooter)));
     // shooter.setDefaultCommand(new ToRPM(() -> 0, shooter));
 
     operator.leftTrigger().whileTrue(new FeedIn(feeder));
-    operator.b().whileTrue(new FeedOut(feeder));
+    operator.b().whileTrue(new ShootFeed(feeder));
     
     arm.setDefaultCommand(new ManualArm(() -> operator.getLeftY(), arm));
 
-    operator.x().whileTrue(new ClimbExtend(climber));
+    // operator.x().whileTrue(new ClimbExtend(climber));
+    operator.x().onTrue(new ToAngle(() -> Units.degreesToRadians(80), arm));
     operator.a().whileTrue(new ClimbRetract(climber));
-
-    
+    /* Subwoofer shot */
+    operator.leftBumper().onTrue(new SequentialCommandGroup(
+      new ParallelCommandGroup(
+        new ToAngle(() -> Units.degreesToRadians(48.5), arm),
+        new ToRPM(()-> 4500, shooter)),
+      new ShootFeed(feeder).withTimeout(1),
+      new ParallelCommandGroup(
+        new ToRPM(() -> 400, shooter),
+        new ToAngle(() -> Units.degreesToRadians(10), arm)
+          )));
     // operator.b().whileTrue(new SolidColor(null, 0, lights, null)); Ignore this
     // please :)
     

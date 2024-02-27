@@ -20,7 +20,43 @@
       "/SmartDashboard/autos": "String Chooser"
     },
     "windows": {
+      "/SmartDashboard/Reset Pose": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Shooter test command": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Vision field": {
+        "Robot": {
+          "length": 0.6858000159263611
+        },
+        "Vision Intrusive Thoughts": {
+          "color": [
+            0.012658238410949707,
+            1.0,
+            0.7375419735908508,
+            255.0
+          ]
+        },
+        "bottom": 544,
+        "builtin": "2024 Crescendo",
+        "height": 8.013679504394531,
+        "left": 46,
+        "pathplanner target pose": {
+          "color": [
+            0.0,
+            0.27848124504089355,
+            1.0,
+            255.0
+          ]
+        },
+        "right": 1088,
+        "top": 36,
+        "width": 16.541748046875,
         "window": {
           "visible": true
         }

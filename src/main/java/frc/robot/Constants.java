@@ -17,8 +17,10 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.lib.util.Interpolation1D;
 import frc.lib.util.SwerveModuleConstants;
+import frc.robot.subsystems.Drive.Swerve;
 
 public final class Constants {
 
@@ -42,10 +44,10 @@ public final class Constants {
     public static String cameraName = "orangepi";
     // The layout of the AprilTags on the field
     public static final Transform3d kRobotToCam = new Transform3d(
-        new Translation3d(-Units.inchesToMeters(11.55), 0.0, Units.inchesToMeters(8.17)),
+        new Translation3d(-(Units.inchesToMeters(51) - Units.inchesToMeters(27 / 2)), 0.0, Units.inchesToMeters(8.17)),
         new Rotation3d(0, Units.degreesToRadians(-30), Math.PI));
     public static final Vector<N3> stateStdDevs = VecBuilder.fill(0.2, 0.2, 0.4);
-    public static final Vector<N3> kSingleTagStdDevs = VecBuilder.fill(2, 2, 4);
+    public static final Vector<N3> kSingleTagStdDevs = VecBuilder.fill(2, 4, 4);
     public static final Vector<N3> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
   }
 
@@ -149,8 +151,11 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 4;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 2;
+    // public static final double kMaxSpeedMetersPerSecond = 4;
+        public static final double kMaxSpeedMetersPerSecond = 2;
+
+    // public static final double kMaxAccelerationMetersPerSecondSquared = 2;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 0.5;
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI * 5;
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI * 4;
 
@@ -167,7 +172,8 @@ public final class Constants {
     public static final int leader = 31;
     public static final int follower = 32;
     public static final int feeder = 33;
-    public static final int beamDIO = 1;
+    // public static final int beamDIO = 9;
+    public static final DigitalInput beam = new DigitalInput(9);
     public static final double[] shooterPID = { 0.0, 0.0000008, 0 };
     public static final double[] shooterFeedforward = { 0.25, 0.002 };
     public static final int toleranceRPM = 100;
@@ -201,8 +207,10 @@ public final class Constants {
     public static final Rotation2d min = Rotation2d.fromDegrees(10);
     public static final Rotation2d tolernace = Rotation2d.fromDegrees(1);
 
-    public static final Rotation2d maxVelocityPerSecond = Rotation2d.fromDegrees(100);
+    public static double speed = 120; // something to help me change things :)
+    public static final Rotation2d maxVelocityPerSecond = Rotation2d.fromDegrees(speed);
     public static final Rotation2d maxAcceleration = Rotation2d.fromDegrees(120);
+
 
     public static double[] armSGV = new double[] { 0.01, 0.0425, 0.0 };
     public static double[] armPID = new double[] { 2, 1, 0f };
@@ -210,7 +218,7 @@ public final class Constants {
     // Interpolation
     // {meters, angle from horizontal}
     public static final Interpolation1D armAngleInterpolation = new Interpolation1D(
-        new double[] { 1f, Units.degreesToRadians(10f) },
+        new double[] { 1f, Units.degreesToRadians(10f) }, // f means make a float
         new double[] { 10f, Units.degreesToRadians(30f) });
   }
 
