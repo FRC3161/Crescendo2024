@@ -20,17 +20,7 @@
       "/SmartDashboard/autos": "String Chooser"
     },
     "windows": {
-      "/SmartDashboard/Arm down": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Arm up": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Feed IN": {
+      "/SmartDashboard/Reset Pose": {
         "window": {
           "visible": true
         }
@@ -39,20 +29,43 @@
         "window": {
           "visible": true
         }
+      },
+      "/SmartDashboard/Vision field": {
+        "Robot": {
+          "length": 0.6858000159263611
+        },
+        "Vision Intrusive Thoughts": {
+          "color": [
+            0.012658238410949707,
+            1.0,
+            0.7375419735908508,
+            255.0
+          ]
+        },
+        "bottom": 544,
+        "builtin": "2024 Crescendo",
+        "height": 8.013679504394531,
+        "left": 46,
+        "pathplanner target pose": {
+          "color": [
+            0.0,
+            0.27848124504089355,
+            1.0,
+            255.0
+          ]
+        },
+        "right": 1088,
+        "top": 36,
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
       }
     }
   },
   "NetworkTables Info": {
-    "Connections": {
-      "open": true
-    },
-    "NT3@10.31.61.150:49589": {
-      "open": true
-    },
     "Server": {
-      "Subscribers": {
-        "open": true
-      }
+      "open": true
     },
     "visible": true
   },
@@ -65,12 +78,12 @@
       "plots": [
         {
           "backgroundColor": [
-            0.05999999865889549,
-            0.05999999865889549,
-            0.05999999865889549,
-            0.9399999976158142
+            0.0,
+            0.0,
+            0.0,
+            0.8500000238418579
           ],
-          "height": 477,
+          "height": 617,
           "series": [
             {
               "color": [
@@ -79,7 +92,7 @@
                 0.6901960968971252,
                 1.0
               ],
-              "id": "NT:/SmartDashboard/Shooter Actual RPM"
+              "id": "NT:/SmartDashboard/Shooter Desired RPM"
             },
             {
               "color": [
@@ -88,11 +101,47 @@
                 0.32156863808631897,
                 1.0
               ],
-              "id": "NT:/SmartDashboard/Shooter Desired RPM"
+              "id": "NT:/SmartDashboard/Shooter Actual RPM"
             }
           ]
         }
       ]
+    },
+    "Plot <1>": {
+      "plots": [
+        {
+          "backgroundColor": [
+            0.0,
+            0.0,
+            0.0,
+            0.8500000238418579
+          ],
+          "height": 332,
+          "series": [
+            {
+              "color": [
+                0.2980392277240753,
+                0.44705885648727417,
+                0.6901960968971252,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Shooter FF output"
+            },
+            {
+              "color": [
+                0.8666667342185974,
+                0.5176470875740051,
+                0.32156863808631897,
+                1.0
+              ],
+              "id": "NT:/SmartDashboard/Shooter pid output"
+            }
+          ]
+        }
+      ],
+      "window": {
+        "visible": false
+      }
     }
   }
 }

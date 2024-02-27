@@ -17,7 +17,7 @@ public class ToRPM extends Command {
           Constants.ShooterConstants.maxVelocityPerSecond,
           Constants.ShooterConstants.maxAcceleration));
 
-  public ToRPM(DoubleSupplier targetRPM, Shooter shooter) {
+  public ToRPM(DoubleSupplier targetRPM, Shooter shooter) { //add  RtargetRPM
     m_RPMSupplier = targetRPM;
     m_shooter = shooter;
 
@@ -33,7 +33,7 @@ public class ToRPM extends Command {
   @Override
   public void execute() {
     var nextState = m_profiler.calculate(m_timer.get(),
-        new TrapezoidProfile.State(m_shooter.getActualRPM(), 0),
+        new TrapezoidProfile.State(m_shooter.getActualRPMleader(), 0), //integrate getActualRPMfollower smhw
         new TrapezoidProfile.State(m_RPMSupplier.getAsDouble(), 0));
 
     m_shooter.runVelocity(nextState.position, nextState.velocity);
@@ -41,6 +41,7 @@ public class ToRPM extends Command {
 
   @Override
   public boolean isFinished() {
+    // return false;
     return m_profiler.isFinished(m_timer.get()) && m_shooter.atSetpoint();
   }
 

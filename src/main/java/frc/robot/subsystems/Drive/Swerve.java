@@ -368,6 +368,8 @@ public class Swerve extends SubsystemBase {
     }
     gyro.logValues();
 
+
     poseEstimator.update(getYaw(), getPositions());
+  logValues();
   }
 }

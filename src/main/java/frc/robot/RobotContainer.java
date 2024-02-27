@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.LightsConstants.LightsType;
 import frc.robot.Constants.SwerveConstants.DriveMode;
@@ -28,6 +29,7 @@ import frc.robot.commands.Drive.SnapTo.SnapMode;
 import frc.robot.commands.Intake.IntakeIn;
 import frc.robot.commands.Intake.Outake;
 import frc.robot.commands.Lights.SolidColor;
+import frc.robot.commands.Shooter.ShootFeed;
 import frc.robot.commands.Shooter.FeedIn;
 import frc.robot.commands.Shooter.FeedOut;
 import frc.robot.commands.Shooter.ToRPM;
@@ -79,39 +81,59 @@ public class RobotContainer {
         () -> -driver.getLeftY(),
         () -> -driver.getLeftX(),
         () -> -driver.getRightX()));
-    driver.povLeft().whileTrue(new SnapTo(s_Swerve, SnapMode.LEFT));
-    driver.povRight().whileTrue(new SnapTo(s_Swerve, SnapMode.RIGHT));
-    driver.povUp().whileTrue(new SnapTo(s_Swerve, SnapMode.FORWARD));
-    driver.povDown().whileTrue(new SnapTo(s_Swerve, SnapMode.BACKWARD));
+    driver.x().whileTrue(new SnapTo(s_Swerve, SnapMode.LEFT));
+    driver.b().whileTrue(new SnapTo(s_Swerve, SnapMode.RIGHT));
+    driver.y().whileTrue(new SnapTo(s_Swerve, SnapMode.FORWARD));
+    driver.a().whileTrue(new SnapTo(s_Swerve, SnapMode.BACKWARD));
     driver.back().onTrue(new InstantCommand(s_Swerve::zeroGyro));
-    driver.b().whileTrue(
-        new ProxyCommand(() -> Tags.DriveToClosestTag(new Transform2d(1, 0, new Rotation2d()), s_Swerve)));
+
+    driver.povDown().whileTrue(
+        new ProxyCommand(() -> Tags.DriveToClosestTag(new Transform2d(5, 0, new Rotation2d()), s_Swerve)));
     
+    driver.leftBumper().whileTrue(new SequentialCommandGroup(
+      new ToAngle(() -> Units.degreesToRadians(15), arm),
+      new ParallelCommandGroup(
+        new SolidColor(LightsType.INTAKE, 0, lights, new int[] {200, 10, 10}),
+        new FeedIn(feeder),
+        new SequentialCommandGroup(
+          new IntakeIn(intake),
+          new SolidColor(LightsType.INTAKE, 0, lights, new int[] {10, 200, 10})))));
+
         /* Operator Controller */
-    operator.y().onTrue(new ToAngle(() -> Units.degreesToRadians(30), arm));
-    // operator.button(3).onTrue(new ToAngle(() -> Units.degreesToRadians(10),
-    // arm));
-    // operator.leftBumper().whileTrue(new ParallelCommandGroup(new ToRPM(() ->
-    // 4500, shooter), new FeedIn(feeder)));
+
+    // operator.y().whileTrue(new SequentialCommandGroup(
+    //   new ToRPM(() -> -4000, shooter)));
+    operator.y().whileTrue(new SolidColor(LightsType.ENDGAME, 0, lights, new int[] {255, 10, 255}));
+
     operator.rightBumper().whileTrue(new IntakeIn(intake));
-    operator.leftBumper().whileTrue(new Outake(intake));
+    operator.rightTrigger().onTrue(new SequentialCommandGroup(
+      new ToRPM(() -> 4700, shooter),
+      new ShootFeed(feeder).withTimeout(1),
+      new ToRPM(() -> 400, shooter)));
+    // shooter.setDefaultCommand(new ToRPM(() -> 0, shooter));
 
-    operator.rightTrigger().whileTrue(new ToRPM(() -> 4500, shooter));
-    shooter.setDefaultCommand(new ToRPM(() -> 0, shooter));
-
-    // operator.rightTrigger().and(operator.leftTrigger()).whileTrue(new FeedOut(feeder));
-    operator.b().whileTrue(new FeedIn(feeder));
-    operator.a().whileTrue(new FeedOut(feeder));
+    operator.leftTrigger().whileTrue(new FeedIn(feeder));
+    operator.b().whileTrue(new ShootFeed(feeder));
+    
     arm.setDefaultCommand(new ManualArm(() -> operator.getLeftY(), arm));
-
+    // lights.setDefaultCommand(new SolidColor(LightsType.IDLE, 0, lights, new int[] {100, 0, 300} ));
+    
     operator.x().whileTrue(new ClimbExtend(climber));
+    // operator.x().onTrue(new ToAngle(() -> Units.degreesToRadians(80), arm)); <- max arm angle
     operator.a().whileTrue(new ClimbRetract(climber));
-
-    // operator.a().whileTrue(new FeedIn(feeder));
-    operator.b().whileTrue(new FeedOut(feeder));
-    // arm.setDefaultCommand(new ToAngle(() -> operator.getLeftY(), arm));
-    // operator.b().whileTrue(new SolidColor(null, 0, lights, null)); Ignore this
-    // please :)
+    
+    /* Subwoofer shot */
+    operator.leftBumper().onTrue(new SequentialCommandGroup(
+      new ParallelCommandGroup(
+        new ToAngle(() -> Units.degreesToRadians(48.5), arm),
+        new ToRPM(()-> 4500, shooter),
+        new SolidColor(LightsType.SHOOTING, 0, lights, new int[] {150, 0, 0 })),
+      new ShootFeed(feeder).withTimeout(1),
+      new SolidColor(LightsType.SHOOTING, 0, lights, new int[] {0, 150, 0}),
+      new ParallelCommandGroup(
+        new ToRPM(() -> 400, shooter),
+        new ToAngle(() -> Units.degreesToRadians(10), arm)
+          )));
     
     
 
@@ -125,7 +147,10 @@ public class RobotContainer {
     /* Glass and SmartDashboard stuff */
     SmartDashboard.putData("Arm up", new ToAngle(() -> Units.degreesToRadians(90), arm));
     SmartDashboard.putData("Arm down", new ToAngle(() -> Units.degreesToRadians(37), arm));
-    SmartDashboard.putData("Shooter test command", new ToRPM(() -> 4500, shooter));
+    SmartDashboard.putData("Shooter test command", new SequentialCommandGroup(
+      new ToRPM(() -> 4700, shooter),
+      new ShootFeed(feeder).withTimeout(3),
+      new ToRPM(() -> 1000, shooter)));
 
     SmartDashboard.putData("Feed IN", new FeedIn(feeder));
     SmartDashboard.putData("Feed OUT", new FeedOut(feeder));

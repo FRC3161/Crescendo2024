@@ -27,13 +27,10 @@ public class VisionPhotonvision {
   public AprilTagFieldLayout kTagLayout;
 
   public VisionPhotonvision() {
-    try {
-      kTagLayout = new AprilTagFieldLayout(Filesystem.getDeployDirectory() + "/apriltaglayout.json");
-    } catch (Exception e) {
-    }
+    kTagLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
     camera = new PhotonCamera(Constants.VisionConstants.cameraName);
     photonPoseEstimator = new PhotonPoseEstimator(kTagLayout,
-        PoseStrategy.MULTI_TAG_PNP_ON_RIO, camera, Constants.VisionConstants.kRobotToCam);
+        PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera, Constants.VisionConstants.kRobotToCam);
     photonPoseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
   }

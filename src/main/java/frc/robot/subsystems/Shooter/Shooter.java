@@ -17,11 +17,15 @@ public class Shooter extends SubsystemBase {
   private final CANSparkMax follower = new CANSparkMax(Constants.ShooterConstants.follower, MotorType.kBrushless);
 
   private final RelativeEncoder encoder = leader.getEncoder();
+  // private final RelativeEncoder Rencoder = follower.getEncoder();
   private final SparkPIDController pid = leader.getPIDController();
+  // private final SparkPIDController Rpid = follower.getPIDController(); 
+  //Uncomment all of Rpid to split the shooter in the code
 
   private SimpleMotorFeedforward ffModel = new SimpleMotorFeedforward(Constants.ShooterConstants.shooterFeedforward[0],
-      Constants.ShooterConstants.shooterFeedforward[0]);
-
+      Constants.ShooterConstants.shooterFeedforward[1]);
+    // private SimpleMotorFeedforward RffModel = new SimpleMotorFeedforward(Constants.ShooterConstants.shooterFeedforward[0],
+    //   Constants.ShooterConstants.shooterFeedforward[1]);
   private double velocitySetpoint = 0;
   private double velocityRateOfChange = 0;
 
@@ -58,12 +62,19 @@ public class Shooter extends SubsystemBase {
     pid.setP(Constants.ShooterConstants.shooterPID[0]);
     pid.setI(Constants.ShooterConstants.shooterPID[1]);
     pid.setD(Constants.ShooterConstants.shooterPID[2]);
+    // Rpid.setP(Constants.ShooterConstants.shooterPID[0]);
+    // Rpid.setI(Constants.ShooterConstants.shooterPID[1]);
+    // Rpid.setD(Constants.ShooterConstants.shooterPID[2]);
 
-    pid.setIMaxAccum(0.02, 0);
+    pid.setIMaxAccum(0.04, 0);
+    // Rpid.setIMaxAccum(0.04, 0);
+    pid.setOutputRange(0, 9999);
+    // Rpid.setOutputRange(0, 9999);
   }
 
   public void resetI() {
     pid.setIAccum(0);
+    // Rpid.setIAccum(0);
   }
 
   public void checkTunableValues() {
@@ -74,47 +85,66 @@ public class Shooter extends SubsystemBase {
       pid.setP(shooterKp.get());
       pid.setI(shooterKi.get());
       pid.setD(shooterKd.get());
+      // Rpid.setP(shooterKp.get());
+      // Rpid.setI(shooterKi.get());
+      // Rpid.setD(shooterKd.get());
     }
     if (shooterKs.hasChanged() || shooterKv.hasChanged()) {
       ffModel = new SimpleMotorFeedforward(shooterKs.get(), shooterKv.get());
+      // Rffmodel = new SimpleMotorFeedforward(shooterKs.get(), shooterKv.get());
     }
   }
 
-  public void runVelocity(double rpm, double rpmPerSecond) {
-    this.velocitySetpoint = rpm;
+  public void runVelocity(double rpmL, double rpmPerSecond) { // Add rpmR
+    this.velocitySetpoint = rpmL;
     this.velocityRateOfChange = rpmPerSecond;
+    // this.RvelocitySetpoint = rpmR;
   }
 
   public void stop() {
     runVelocity(0, 0);
   }
 
-  public double getActualRPM() {
+  public double getActualRPMleader() {
     return encoder.getVelocity();
   }
+  // public double getActualRPMFollower() {
+  //   return Rencoder.getVelocity();
+  // }
 
-  public double getDesiredRPM() {
+  public double getDesiredRPMleader() {
     return velocitySetpoint;
   }
+  // public double getDesiredRPMfollower() {
+  //   return RvelocitySetpoint;
+  // }
 
   public double getDesiredRPMPerSecond() {
     return velocityRateOfChange;
   }
 
   public boolean atSetpoint() {
-    return Math.abs(getActualRPM() - velocitySetpoint) < Constants.ShooterConstants.toleranceRPM;
+    return Math.abs(getActualRPMleader() - velocitySetpoint) < Constants.ShooterConstants.toleranceRPM;
   }
+  // public boolean atRsetpoint() {
+  //   return Math.abs(getActualRPMFollower() - velocitySetpoint < Constants.ShooterConstants.toleranceRPM);
+  // }
 
   public void logValues() {
-    SmartDashboard.putNumber("Shooter Actual RPM", getActualRPM());
-    SmartDashboard.putNumber("Shooter Desired RPM", getDesiredRPM());
+    SmartDashboard.putNumber("Shooter Actual RPM", getActualRPMleader());
+    // SmartDashboard.putNumber("Shooter Actual RPM", getActualRPMFollower());
+
+    SmartDashboard.putNumber("Shooter Desired RPM", getDesiredRPMleader());
     SmartDashboard.putNumber("Shooter Desired RPM/s", velocityRateOfChange);
+
   }
 
   @Override
   public void periodic() {
     double feedforward = ffModel.calculate(velocitySetpoint, velocityRateOfChange);
     pid.setReference(velocitySetpoint, ControlType.kVelocity, 0, feedforward);
+    // Rpid.setReference(velocitySetpoint, ControlType.kVelocity, 0, feedforward);
+    // double Rfeedforward = Rffmodel.calculate(RvelocitySetpoint, velocityRateOfChange);
 
     checkTunableValues();
     logValues();

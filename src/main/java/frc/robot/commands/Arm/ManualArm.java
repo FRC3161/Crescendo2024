@@ -25,10 +25,10 @@ public class ManualArm extends Command {
 
   @Override
   public void execute() {
-    double armY = MathUtil.applyDeadband(this.m_angleSupplier.getAsDouble(), 0.1);
+    double armY = MathUtil.applyDeadband(this.m_angleSupplier.getAsDouble(), 0.3);
     // double armY = this.m_angleSupplier.getAsDouble();
 
-    double armChange = (50 / 20) * armY;
+    double armChange = (50 / 50) * armY;
     this.m_arm.runSetpoint(new Rotation2d(
       Units.degreesToRadians(armChange + m_arm.getSetpoint().getDegrees())
     ));

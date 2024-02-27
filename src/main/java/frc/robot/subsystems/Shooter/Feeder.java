@@ -3,15 +3,21 @@ package frc.robot.subsystems.Shooter;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.util.LoggedTunableNumber;
 import frc.robot.Constants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.ShooterConstants.FeedMode;
 
 public class Feeder extends SubsystemBase {
   private final CANSparkMax feeder = new CANSparkMax(Constants.ShooterConstants.feeder, MotorType.kBrushless);
-  private final double feedPower = 0.7;
+  private double feedPower = 1.0;
+  private final LoggedTunableNumber feedTunableNumber = new LoggedTunableNumber("Feed Power", feedPower);
   private FeedMode feedMode = FeedMode.OFF;
-
+  // public DigitalInput beam = new DigitalInput(ShooterConstants.beamDIO);
+  private DigitalInput beamy = ShooterConstants.beam;
   public Feeder() {
     setupMotor();
   }
@@ -27,17 +33,38 @@ public class Feeder extends SubsystemBase {
     feedMode = mode;
   }
 
+  public void checkTunableValues() {
+    if (feedTunableNumber.hasChanged()) {
+      feedPower = feedTunableNumber.get();
+    }
+  }
+
   @Override
   public void periodic() {
+    checkTunableValues();
+    SmartDashboard.putBoolean("Beamy", beamy.get());
     switch (feedMode) {
-      case IN:
+      case INFEED:
+      if (!beamy.get()) {
+        feeder.set(0);
+      }
+      else{
         feeder.set(feedPower);
-        break;
+      }
+      break;
+      case SHOOTFEED:
+      if (beamy.get()) {
+        feeder.set(0);
+      } else{
+        feeder.set(feedPower);
+      }  
+      break;
       case OUT:
         feeder.set(-feedPower);
         break;
       case OFF:
         feeder.set(0);
+        break;
       default:
         break;
     }
