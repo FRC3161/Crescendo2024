@@ -178,7 +178,8 @@ public final class Constants {
     public static final double[] shooterFeedforward = { 0.25, 0.002 };
     public static final int toleranceRPM = 100;
     public static final double maxVelocityPerSecond = 2000; // RPM/s
-    public static final double maxAcceleration = 700; // RPM/s^2
+    public static final double maxAcceleration = 850; // RPM/s^2 og val: 700
+    // TODO: remember to change accel if shooter is too fast - just an experiment¯\_(ツ)_/¯
 
     public static enum FeedMode {
       // IN,
@@ -218,7 +219,7 @@ public final class Constants {
     // Interpolation
     // {meters, angle from horizontal}
     public static final Interpolation1D armAngleInterpolation = new Interpolation1D(
-        new double[] { 1f, Units.degreesToRadians(10f) }, // f means make a float
+        new double[] { 1f, Units.degreesToRadians(10f) }, // f means store as a float
         new double[] { 10f, Units.degreesToRadians(30f) });
   }
 
@@ -232,7 +233,7 @@ public final class Constants {
 
    public static final double maxVelocity = 2000; // RPM/s
     public static final double maxAcceleration = 700; // RPM/s^2
-    public static final double retractSpeed = 0.3;
+    public static final double retractSpeed = 0.3; // TODO: Please increase, climber too slow 
 
     public static final TrapezoidProfile.Constraints climberConstraints = new TrapezoidProfile.Constraints(
         maxVelocity, maxAcceleration);

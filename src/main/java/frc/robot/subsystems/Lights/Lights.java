@@ -27,7 +27,7 @@ public class Lights extends SubsystemBase {
     led.setData(buffer);
     led.start();
 
-    idleCommand = new SolidColor(LightsType.IDLE, 0, this, new int[] { 179, 134, 27 });
+    idleCommand = new SolidColor(LightsType.IDLE, 0, this, new int[] { 109, 14, 300 });
     currentCommand = idleCommand;
     idleCommand.schedule();
   }

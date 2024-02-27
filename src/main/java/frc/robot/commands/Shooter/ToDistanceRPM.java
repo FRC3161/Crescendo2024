@@ -13,7 +13,7 @@ public class ToDistanceRPM extends ToRPM {
       if (target.isPresent())
         return target.get();
 
-      return shooter.getDesiredRPM();
+      return shooter.getDesiredRPMleader();
     }, shooter);
     m_drive = drive;
   }
