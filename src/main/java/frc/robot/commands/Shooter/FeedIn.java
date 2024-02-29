@@ -15,10 +15,16 @@ public class FeedIn extends Command {
   @Override
   public void initialize() {
     m_feeder.setFeedMode(FeedMode.INFEED);
+    m_feeder.shouldCommandStop = false;
   }
 
   @Override
   public void end(boolean interrupted) {
     m_feeder.setFeedMode(FeedMode.OFF);
+  }
+
+  @Override
+  public boolean isFinished() {
+    return m_feeder.shouldCommandStop;
   }
 }

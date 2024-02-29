@@ -42,8 +42,6 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     CANSparkLowLevel.enableExternalUSBControl(true);
 
-    // PathPlannerServer.startServer(5811);
-    // PortForwarder.add(5800, "photonvision.local", \)
   }
 
   @Override
@@ -94,6 +92,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    m_robotContainer.teleopInit();
     runningAuton = false;
 
     // This makes sure that the autonomous stops running when

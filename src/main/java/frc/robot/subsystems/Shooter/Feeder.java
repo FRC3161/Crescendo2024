@@ -16,8 +16,10 @@ public class Feeder extends SubsystemBase {
   private double feedPower = 1.0;
   private final LoggedTunableNumber feedTunableNumber = new LoggedTunableNumber("Feed Power", feedPower);
   private FeedMode feedMode = FeedMode.OFF;
+  public boolean shouldCommandStop = false;
   // public DigitalInput beam = new DigitalInput(ShooterConstants.beamDIO);
   private DigitalInput beamy = ShooterConstants.beam;
+
   public Feeder() {
     setupMotor();
   }
@@ -45,25 +47,27 @@ public class Feeder extends SubsystemBase {
     SmartDashboard.putBoolean("Beamy", beamy.get());
     switch (feedMode) {
       case INFEED:
-      if (!beamy.get()) {
-        feeder.set(0);
-      }
-      else{
-        feeder.set(feedPower);
-      }
-      break;
+        if (!beamy.get()) {
+          feeder.set(0);
+          shouldCommandStop = true;
+        } else {
+          feeder.set(feedPower);
+        }
+        break;
       case SHOOTFEED:
-      if (beamy.get()) {
-        feeder.set(0);
-      } else{
-        feeder.set(feedPower);
-      }  
-      break;
+        if (beamy.get()) {
+          feeder.set(0);
+          shouldCommandStop = true;
+        } else {
+          feeder.set(feedPower);
+        }
+        break;
       case OUT:
         feeder.set(-feedPower);
         break;
       case OFF:
         feeder.set(0);
+        shouldCommandStop = true;
         break;
       default:
         break;

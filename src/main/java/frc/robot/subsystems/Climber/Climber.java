@@ -14,52 +14,52 @@ import frc.robot.Constants;
 
 public class Climber extends SubsystemBase {
 
-    private CANSparkMax leftClimberMotor = new CANSparkMax(Constants.ClimberConstants.leftMotorID,
-            MotorType.kBrushless);
-    private CANSparkMax rightClimberMotor = new CANSparkMax(Constants.ClimberConstants.rightMotorID,
-            MotorType.kBrushless);
+  private CANSparkMax leftClimberMotor = new CANSparkMax(Constants.ClimberConstants.leftMotorID,
+      MotorType.kBrushless);
+  private CANSparkMax rightClimberMotor = new CANSparkMax(Constants.ClimberConstants.rightMotorID,
+      MotorType.kBrushless);
 
-    private RelativeEncoder climberEncoder = leftClimberMotor.getEncoder();
+  private RelativeEncoder climberEncoder = leftClimberMotor.getEncoder();
 
-    private final SparkPIDController pid;
+  private final SparkPIDController pid;
 
-    public Climber() {
-        setupMotors();
+  public Climber() {
+    setupMotors();
 
-        pid = leftClimberMotor.getPIDController();
-        pid.setP(Constants.ClimberConstants.pid[0]);
-        pid.setP(Constants.ClimberConstants.pid[1]);
-        pid.setP(Constants.ClimberConstants.pid[2]);
+    pid = leftClimberMotor.getPIDController();
+    pid.setP(Constants.ClimberConstants.pid[0]);
+    pid.setP(Constants.ClimberConstants.pid[1]);
+    pid.setP(Constants.ClimberConstants.pid[2]);
 
-    }
+  }
 
-    private void setupMotors() {
-        leftClimberMotor.restoreFactoryDefaults();
-        leftClimberMotor.enableVoltageCompensation(12);
-        leftClimberMotor.setSmartCurrentLimit(60, 40);
-        leftClimberMotor.setIdleMode(IdleMode.kBrake);
-        leftClimberMotor.setInverted(true);
+  private void setupMotors() {
+    leftClimberMotor.restoreFactoryDefaults();
+    leftClimberMotor.enableVoltageCompensation(12);
+    leftClimberMotor.setSmartCurrentLimit(60, 40);
+    leftClimberMotor.setIdleMode(IdleMode.kBrake);
+    leftClimberMotor.setInverted(true);
 
-        rightClimberMotor.restoreFactoryDefaults();
-        rightClimberMotor.enableVoltageCompensation(12);
-        rightClimberMotor.setSmartCurrentLimit(60, 40);
-        rightClimberMotor.setIdleMode(IdleMode.kBrake);
-        rightClimberMotor.setInverted(true);
+    rightClimberMotor.restoreFactoryDefaults();
+    rightClimberMotor.enableVoltageCompensation(12);
+    rightClimberMotor.setSmartCurrentLimit(60, 40);
+    rightClimberMotor.setIdleMode(IdleMode.kBrake);
+    rightClimberMotor.setInverted(true);
 
-        rightClimberMotor.follow(leftClimberMotor, false);
+    rightClimberMotor.follow(leftClimberMotor, true);
 
-    }
+  }
 
-    public void climbExtend(double speed) {
-        leftClimberMotor.set(speed);
-    }
+  public void climbExtend(double speed) {
+    leftClimberMotor.set(speed);
+  }
 
-    public void climbRetract(double speed) {
-        leftClimberMotor.set(-speed);
+  public void climbRetract(double speed) {
+    leftClimberMotor.set(-speed);
 
-    }
+  }
 
-    public void stop() {
-        leftClimberMotor.set(0);
-    }
+  public void stop() {
+    leftClimberMotor.set(0);
+  }
 }

@@ -2,9 +2,6 @@ package frc.robot;
 
 import com.pathplanner.lib.util.PIDConstants;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -15,20 +12,18 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.lib.util.Interpolation1D;
 import frc.lib.util.SwerveModuleConstants;
-import frc.robot.subsystems.Drive.Swerve;
 
 public final class Constants {
 
   public static boolean enableTunableValues = true;
 
   public static class LightsConstants {
-    public static int port = 1; // TODO: irl values TBD
-    public static int length = 0; // TODO: irl values TBD
+    public static int port = 0;
+    public static int length = 12;
 
     public static enum LightsType {
       ENDGAME,
@@ -44,10 +39,11 @@ public final class Constants {
     public static String cameraName = "orangepi";
     // The layout of the AprilTags on the field
     public static final Transform3d kRobotToCam = new Transform3d(
-        new Translation3d(-(Units.inchesToMeters(51) - Units.inchesToMeters(27 / 2)), 0.0, Units.inchesToMeters(8.17)),
+        new Translation3d(-(Units.inchesToMeters(25.5) - Units.inchesToMeters(27 / 2)), 0.0,
+            Units.inchesToMeters(8.17)),
         new Rotation3d(0, Units.degreesToRadians(-30), Math.PI));
     public static final Vector<N3> stateStdDevs = VecBuilder.fill(0.2, 0.2, 0.4);
-    public static final Vector<N3> kSingleTagStdDevs = VecBuilder.fill(2, 4, 4);
+    public static final Vector<N3> kSingleTagStdDevs = VecBuilder.fill(2, 2, 4);
     public static final Vector<N3> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
   }
 
@@ -152,7 +148,7 @@ public final class Constants {
 
   public static final class AutoConstants {
     // public static final double kMaxSpeedMetersPerSecond = 4;
-        public static final double kMaxSpeedMetersPerSecond = 2;
+    public static final double kMaxSpeedMetersPerSecond = 2;
 
     // public static final double kMaxAccelerationMetersPerSecondSquared = 2;
     public static final double kMaxAccelerationMetersPerSecondSquared = 0.5;
@@ -179,7 +175,8 @@ public final class Constants {
     public static final int toleranceRPM = 100;
     public static final double maxVelocityPerSecond = 2000; // RPM/s
     public static final double maxAcceleration = 850; // RPM/s^2 og val: 700
-    // TODO: remember to change accel if shooter is too fast - just an experiment¯\_(ツ)_/¯
+    // TODO: remember to change accel if shooter is too fast - just an
+    // experiment¯\_(ツ)_/¯
 
     public static enum FeedMode {
       // IN,
@@ -212,7 +209,6 @@ public final class Constants {
     public static final Rotation2d maxVelocityPerSecond = Rotation2d.fromDegrees(speed);
     public static final Rotation2d maxAcceleration = Rotation2d.fromDegrees(120);
 
-
     public static double[] armSGV = new double[] { 0.01, 0.0425, 0.0 };
     public static double[] armPID = new double[] { 2, 1, 0f };
 
@@ -223,17 +219,16 @@ public final class Constants {
         new double[] { 10f, Units.degreesToRadians(30f) });
   }
 
-
-  public static final class ClimberConstants{
+  public static final class ClimberConstants {
 
     public static final int leftMotorID = 51;
     public static final int rightMotorID = 52;
 
-    public static final double[] pid = {0,0,0};
+    public static final double[] pid = { 0, 0, 0 };
 
-   public static final double maxVelocity = 2000; // RPM/s
+    public static final double maxVelocity = 2000; // RPM/s
     public static final double maxAcceleration = 700; // RPM/s^2
-    public static final double retractSpeed = 0.3; // TODO: Please increase, climber too slow 
+    public static final double retractSpeed = 0.3; // TODO: Please increase, climber too slow
 
     public static final TrapezoidProfile.Constraints climberConstraints = new TrapezoidProfile.Constraints(
         maxVelocity, maxAcceleration);

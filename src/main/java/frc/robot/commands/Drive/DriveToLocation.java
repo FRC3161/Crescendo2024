@@ -1,5 +1,7 @@
 package frc.robot.commands.Drive;
 
+import java.util.function.Supplier;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 
@@ -18,5 +20,9 @@ public class DriveToLocation {
     command.addRequirements(drive);
 
     return command;
+  }
+
+  public static Command driveToUnsure(Supplier<Pose2d> target, Swerve drive) {
+    return driveTo(target.get(), drive);
   }
 }

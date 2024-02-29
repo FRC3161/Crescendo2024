@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -93,11 +94,6 @@ public class Swerve extends SubsystemBase {
             Constants.SwerveConstants.wheelBase / 2, // Drive base radius (distance from center to furthest module)
             new ReplanningConfig()),
         () -> {
-          // Boolean supplier that controls when the path will be mirrored for the red
-          // alliance
-          // This will flip the path being followed to the red side of the field.
-          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
           var alliance = DriverStation.getAlliance();
           if (alliance.isPresent()) {
             return alliance.get() == DriverStation.Alliance.Red;
@@ -111,6 +107,16 @@ public class Swerve extends SubsystemBase {
         });
 
     SmartDashboard.putData("Vision field", debugField2d);
+    PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
+
+  }
+
+  public Optional<Rotation2d> getRotationTargetOverride() {
+    if (driveMode == DriveMode.Snap) {
+      return Optional.of(snapSetpoint);
+    } else {
+      return Optional.empty();
+    }
   }
 
   public void setSnapSetpoint(Rotation2d setpoint) {
@@ -368,8 +374,7 @@ public class Swerve extends SubsystemBase {
     }
     gyro.logValues();
 
-
     poseEstimator.update(getYaw(), getPositions());
-  logValues();
+    logValues();
   }
 }

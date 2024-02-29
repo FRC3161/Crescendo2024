@@ -14,6 +14,7 @@ public class SnapTo extends Command {
   private Timer m_timer = new Timer();
   private final Swerve m_drive;
   private final SnapMode m_snapeMode;
+  private final boolean neverEnding;
   private TrapezoidProfile.State initialState;
   private TrapezoidProfile m_profiler = new TrapezoidProfile(
       new TrapezoidProfile.Constraints(
@@ -31,6 +32,13 @@ public class SnapTo extends Command {
   public SnapTo(Swerve drive, SnapMode mode) {
     m_drive = drive;
     m_snapeMode = mode;
+    neverEnding = false;
+  }
+
+  public SnapTo(Swerve drive, SnapMode mode, boolean neverEnding) {
+    m_drive = drive;
+    m_snapeMode = mode;
+    this.neverEnding = neverEnding;
   }
 
   @Override
@@ -79,6 +87,8 @@ public class SnapTo extends Command {
 
   @Override
   public boolean isFinished() {
+    if (neverEnding)
+      return false;
     return m_profiler.isFinished(m_timer.get()) && m_drive.isSnapAtSetpoint();
   }
 

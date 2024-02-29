@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
@@ -12,13 +13,18 @@ import frc.robot.Constants.ShooterConstants;
 public class Intake extends SubsystemBase {
   private CANSparkMax leader = new CANSparkMax(41, MotorType.kBrushless);
   private CANSparkMax follower = new CANSparkMax(42, MotorType.kBrushless);
-  // private DigitalInput beam = new DigitalInput(Constants.ShooterConstants.beamDIO);
+  // private DigitalInput beam = new
+  // DigitalInput(Constants.ShooterConstants.beamDIO);
   private DigitalInput beamy = ShooterConstants.beam;
+  public DigitalInput beamy2 = new DigitalInput(7);
+
   public Intake() {
+    leader.restoreFactoryDefaults();
     leader.setSmartCurrentLimit(40);
     leader.setIdleMode(IdleMode.kBrake);
     leader.enableVoltageCompensation(12);
 
+    follower.restoreFactoryDefaults();
     follower.setSmartCurrentLimit(40);
     follower.setIdleMode(IdleMode.kBrake);
     follower.enableVoltageCompensation(12);
@@ -28,11 +34,15 @@ public class Intake extends SubsystemBase {
 
   public void setSpeed(double value) {
     if (beamy.get()) {
-    leader.set(value);
+      leader.set(value);
+    } else {
+      leader.set(0);
+    }
   }
-  else{
-    leader.set(0);
-  }
+
+  @Override
+  public void periodic() {
+    SmartDashboard.putBoolean("beamy2", beamy2.get());
   }
 
   public void stop() {

@@ -9,6 +9,6 @@ public class Outake extends IntakeIn {
 
   @Override
   public void initialize() {
-    m_intake.setSpeed(0.7);
+    m_intake.setSpeed(-0.7);
   }
 }
