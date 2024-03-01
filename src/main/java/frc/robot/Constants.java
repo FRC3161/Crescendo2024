@@ -44,7 +44,7 @@ public final class Constants {
         new Rotation3d(0, Units.degreesToRadians(-30), Math.PI));
     public static final Vector<N3> stateStdDevs = VecBuilder.fill(0.2, 0.2, 0.4);
     public static final Vector<N3> kSingleTagStdDevs = VecBuilder.fill(2, 2, 4);
-    public static final Vector<N3> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
+    public static final Vector<N3> kMultiTagStdDevs = VecBuilder.fill(1, 1, 1);
   }
 
   public static final class Operators {
@@ -168,6 +168,7 @@ public final class Constants {
     public static final int leader = 31;
     public static final int follower = 32;
     public static final int feeder = 33;
+    public static final int feederTail = 34;
     // public static final int beamDIO = 9;
     public static final DigitalInput beam = new DigitalInput(9);
     public static final double[] shooterPID = { 0.0, 0.0000008, 0 };
@@ -177,6 +178,10 @@ public final class Constants {
     public static final double maxAcceleration = 850; // RPM/s^2 og val: 700
     // TODO: remember to change accel if shooter is too fast - just an
     // experiment¯\_(ツ)_/¯
+
+    public static final double[] tailPID = new double[] { 0, 0.000001, 0 };
+    public static final double tailFF = 0.0028500;
+    public static final double tailTolerance = 30;
 
     public static enum FeedMode {
       // IN,
@@ -215,8 +220,10 @@ public final class Constants {
     // Interpolation
     // {meters, angle from horizontal}
     public static final Interpolation1D armAngleInterpolation = new Interpolation1D(
-        new double[] { 1f, Units.degreesToRadians(10f) }, // f means store as a float
-        new double[] { 10f, Units.degreesToRadians(30f) });
+        new double[] { 1.38f, Units.degreesToRadians(48.5f) }, // f means store as a float
+        new double[] { 3f, Units.degreesToRadians(33f) },
+        new double[] { 4f, Units.degreesToRadians(28.5f) },
+        new double[] { 5f, Units.degreesToRadians(25f) });
   }
 
   public static final class ClimberConstants {

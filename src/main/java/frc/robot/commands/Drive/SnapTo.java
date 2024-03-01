@@ -55,7 +55,7 @@ public class SnapTo extends Command {
     double setpoint = 0;
     switch (m_snapeMode) {
       case SPEAKER:
-        setpoint = m_drive.getRotationRelativeToSpeaker().getRadians();
+        setpoint = Math.PI + m_drive.getRotationRelativeToSpeaker().getRadians();
         break;
       case LEFT:
         setpoint = Units.degreesToRadians(90);

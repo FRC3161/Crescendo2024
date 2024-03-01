@@ -73,6 +73,7 @@ public class RobotContainer {
   public void disabledActions() {
     arm.resetI();
     shooter.resetI();
+    feeder.resetI();
   }
 
   public void teleopInit() {
@@ -94,7 +95,7 @@ public class RobotContainer {
     driver.b().whileTrue(new SnapTo(s_Swerve, SnapMode.RIGHT));
     driver.y().whileTrue(new SnapTo(s_Swerve, SnapMode.FORWARD));
     driver.a().whileTrue(new SnapTo(s_Swerve, SnapMode.BACKWARD));
-    driver.povLeft().whileTrue(new SnapTo(s_Swerve, SnapMode.SPEAKER));
+    driver.povLeft().whileTrue(new SnapTo(s_Swerve, SnapMode.SPEAKER, true));
     driver.back().onTrue(new InstantCommand(s_Swerve::zeroGyro));
 
     driver.povDown().whileTrue(
@@ -126,7 +127,11 @@ public class RobotContainer {
     // shooter.setDefaultCommand(new ToRPM(() -> 0, shooter));
 
     operator.leftTrigger().whileTrue(new Outake(intake));
-    operator.b().whileTrue(new FeedOut(feeder));
+    operator.b().whileTrue(new SequentialCommandGroup(
+        new SolidColor(lights, new int[] { 255, 0, 0 }),
+        new ToAngle(() -> Units.degreesToRadians(10), arm),
+        new SolidColor(lights, new int[] { 0, 0, 255 }),
+        new FeedOut(feeder)));
 
     arm.setDefaultCommand(new ManualArm(() -> operator.getLeftY(), arm));
     // lights.setDefaultCommand(new SolidColor(LightsType.IDLE, 0, lights, new int[]
@@ -137,6 +142,15 @@ public class RobotContainer {
     // max arm angle
     operator.a().whileTrue(new ClimbRetract(climber));
 
+    driver.povUp().onTrue(
+        new SequentialCommandGroup(
+            new ParallelCommandGroup(
+                new ToRPM(() -> 4700, shooter),
+                new SnapTo(s_Swerve, SnapMode.SPEAKER)),
+            new ShootFeed(feeder).withTimeout(1),
+            new ToRPM(() -> 2000, shooter))
+            .deadlineWith(new ToDistanceAngle(s_Swerve, arm)));
+
     /* Subwoofer shot */
     operator.leftBumper().onTrue(new SequentialCommandGroup(
         new ParallelCommandGroup(
@@ -146,7 +160,6 @@ public class RobotContainer {
         new SolidColor(lights, new int[] { 0, 150, 0 }),
         new ShootFeed(feeder).withTimeout(1),
         new ParallelCommandGroup(
-
             new ToRPM(() -> 400, shooter),
             new ToAngle(() -> Units.degreesToRadians(10), arm))));
 

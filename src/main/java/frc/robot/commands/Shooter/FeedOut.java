@@ -12,8 +12,14 @@ public class FeedOut extends FeedIn {
   public void initialize() {
     m_feeder.setFeedMode(FeedMode.OUT);
   }
+
   @Override
   public void end(boolean interrupted) {
     m_feeder.setFeedMode(FeedMode.OFF);
+  }
+
+  @Override
+  public boolean isFinished() {
+    return false;
   }
 }
