@@ -6,20 +6,33 @@ import frc.robot.subsystems.Drive.Swerve;
 
 public class ToDistanceAngle extends ToAngle {
   private Swerve m_drive;
+  private boolean waitForPosition = false;
 
   public ToDistanceAngle(Swerve drive, Arm arm) {
     super(() -> {
-      var target = Constants.ArmConstants.armAngleInterpolation.getTarget(drive.getDistanceFromAmp());
-      if (target.isPresent())
-        return target.get();
+      // var target =
+      // Constants.ArmConstants.armAngleInterpolation.getTarget(drive.getDistanceFromAmp());
+      var target = Constants.ArmConstants.armAngleInterpolationPolynominalRegression
+          .getPrediction(drive.getDistanceFromSpeaker());
 
-      return arm.getSetpoint().getRadians();
+      return target;
     }, arm);
     m_drive = drive;
   }
 
+  public ToDistanceAngle(Swerve drive, Arm arm, boolean waitForPosition) {
+    super(() -> Constants.ArmConstants.armAngleInterpolationPolynominalRegression
+        .getPrediction(drive.getDistanceFromSpeaker()), arm);
+    m_drive = drive;
+    this.waitForPosition = waitForPosition;
+  }
+
   @Override
   public boolean isFinished() {
-    return false;
+    if (waitForPosition) {
+      return m_arm.atSetpoint();
+    } else {
+      return false;
+    }
   }
 }

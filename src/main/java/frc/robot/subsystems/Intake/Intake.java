@@ -7,6 +7,8 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.util.CANSparkMaxUtil;
+import frc.lib.util.CANSparkMaxUtil.Usage;
 import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
 
@@ -23,13 +25,22 @@ public class Intake extends SubsystemBase {
     leader.setSmartCurrentLimit(40);
     leader.setIdleMode(IdleMode.kBrake);
     leader.enableVoltageCompensation(12);
+    leader.setInverted(false);
+    CANSparkMaxUtil.setCANSparkMaxBusUsage(leader, Usage.kMinimal);
 
     follower.restoreFactoryDefaults();
     follower.setSmartCurrentLimit(40);
     follower.setIdleMode(IdleMode.kBrake);
     follower.enableVoltageCompensation(12);
+    leader.setInverted(false);
+    CANSparkMaxUtil.setCANSparkMaxBusUsage(follower, Usage.kMinimal);
 
     follower.follow(leader, false);
+  }
+
+  public void burnToFlash() {
+    leader.burnFlash();
+    follower.burnFlash();
   }
 
   public void setSpeed(double value) {

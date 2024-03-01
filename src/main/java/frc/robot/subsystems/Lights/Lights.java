@@ -1,10 +1,7 @@
 package frc.robot.subsystems.Lights;
 
-import java.util.PriorityQueue;
-
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -24,7 +21,7 @@ public class Lights extends SubsystemBase {
   }
 
   public void clearBuffer() {
-    colors = new int[] { 179, 134, 27 };
+    colors = Constants.LightsConstants.Colors.GOLD;
   }
 
   @Override

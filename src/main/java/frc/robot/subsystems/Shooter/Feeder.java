@@ -10,7 +10,9 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.util.CANSparkMaxUtil;
 import frc.lib.util.LoggedTunableNumber;
+import frc.lib.util.CANSparkMaxUtil.Usage;
 import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.ShooterConstants.FeedMode;
@@ -51,11 +53,20 @@ public class Feeder extends SubsystemBase {
     feeder.setInverted(true);
     feeder.enableVoltageCompensation(12.0);
     feeder.setSmartCurrentLimit(40);
+    feeder.setInverted(false);
+    CANSparkMaxUtil.setCANSparkMaxBusUsage(feeder, Usage.kMinimal);
 
     feederTail.restoreFactoryDefaults();
     feederTail.setInverted(true);
     feederTail.enableVoltageCompensation(12.0);
     feederTail.setSmartCurrentLimit(40);
+    feederTail.setInverted(false);
+    CANSparkMaxUtil.setCANSparkMaxBusUsage(feederTail, Usage.kVelocityOnly);
+  }
+
+  public void burnToFlash() {
+    feeder.burnFlash();
+    feederTail.burnFlash();
   }
 
   public void checkTunableValues() {

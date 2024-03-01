@@ -9,7 +9,9 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.util.CANSparkMaxUtil;
 import frc.lib.util.LoggedTunableNumber;
+import frc.lib.util.CANSparkMaxUtil.Usage;
 import frc.robot.Constants;
 
 public class Shooter extends SubsystemBase {
@@ -19,13 +21,14 @@ public class Shooter extends SubsystemBase {
   private final RelativeEncoder encoder = leader.getEncoder();
   // private final RelativeEncoder Rencoder = follower.getEncoder();
   private final SparkPIDController pid = leader.getPIDController();
-  // private final SparkPIDController Rpid = follower.getPIDController(); 
-  //Uncomment all of Rpid to split the shooter in the code
+  // private final SparkPIDController Rpid = follower.getPIDController();
+  // Uncomment all of Rpid to split the shooter in the code
 
   private SimpleMotorFeedforward ffModel = new SimpleMotorFeedforward(Constants.ShooterConstants.shooterFeedforward[0],
       Constants.ShooterConstants.shooterFeedforward[1]);
-    // private SimpleMotorFeedforward RffModel = new SimpleMotorFeedforward(Constants.ShooterConstants.shooterFeedforward[0],
-    //   Constants.ShooterConstants.shooterFeedforward[1]);
+  // private SimpleMotorFeedforward RffModel = new
+  // SimpleMotorFeedforward(Constants.ShooterConstants.shooterFeedforward[0],
+  // Constants.ShooterConstants.shooterFeedforward[1]);
   private double velocitySetpoint = 0;
   private double velocityRateOfChange = 0;
 
@@ -49,11 +52,15 @@ public class Shooter extends SubsystemBase {
     leader.setInverted(true);
     leader.enableVoltageCompensation(12.0);
     leader.setSmartCurrentLimit(40);
+    leader.setInverted(false);
+    CANSparkMaxUtil.setCANSparkMaxBusUsage(leader, Usage.kVelocityOnly);
 
     follower.restoreFactoryDefaults();
     follower.setInverted(true);
     follower.enableVoltageCompensation(12.0);
     follower.setSmartCurrentLimit(40);
+    follower.setInverted(false);
+    CANSparkMaxUtil.setCANSparkMaxBusUsage(follower, Usage.kVelocityOnly);
 
     follower.follow(leader, true);
 
@@ -70,6 +77,11 @@ public class Shooter extends SubsystemBase {
     // Rpid.setIMaxAccum(0.04, 0);
     pid.setOutputRange(0, 9999);
     // Rpid.setOutputRange(0, 9999);
+  }
+
+  public void burnToFlash() {
+    follower.burnFlash();
+    leader.burnFlash();
   }
 
   public void resetI() {
@@ -109,14 +121,14 @@ public class Shooter extends SubsystemBase {
     return encoder.getVelocity();
   }
   // public double getActualRPMFollower() {
-  //   return Rencoder.getVelocity();
+  // return Rencoder.getVelocity();
   // }
 
   public double getDesiredRPMleader() {
     return velocitySetpoint;
   }
   // public double getDesiredRPMfollower() {
-  //   return RvelocitySetpoint;
+  // return RvelocitySetpoint;
   // }
 
   public double getDesiredRPMPerSecond() {
@@ -127,7 +139,8 @@ public class Shooter extends SubsystemBase {
     return Math.abs(getActualRPMleader() - velocitySetpoint) < Constants.ShooterConstants.toleranceRPM;
   }
   // public boolean atRsetpoint() {
-  //   return Math.abs(getActualRPMFollower() - velocitySetpoint < Constants.ShooterConstants.toleranceRPM);
+  // return Math.abs(getActualRPMFollower() - velocitySetpoint <
+  // Constants.ShooterConstants.toleranceRPM);
   // }
 
   public void logValues() {
@@ -144,7 +157,8 @@ public class Shooter extends SubsystemBase {
     double feedforward = ffModel.calculate(velocitySetpoint, velocityRateOfChange);
     pid.setReference(velocitySetpoint, ControlType.kVelocity, 0, feedforward);
     // Rpid.setReference(velocitySetpoint, ControlType.kVelocity, 0, feedforward);
-    // double Rfeedforward = Rffmodel.calculate(RvelocitySetpoint, velocityRateOfChange);
+    // double Rfeedforward = Rffmodel.calculate(RvelocitySetpoint,
+    // velocityRateOfChange);
 
     checkTunableValues();
     logValues();

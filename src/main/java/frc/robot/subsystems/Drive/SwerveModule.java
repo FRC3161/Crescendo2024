@@ -72,6 +72,11 @@ public class SwerveModule {
     lastAngle = getState().angle.getDegrees();
   }
 
+  public void burnToFlash() {
+    driveMotor.burnFlash();
+    angleMotor.burnFlash();
+  }
+
   public void setDesiredState(SwerveModuleState desiredState) {
     // this.updateControllerValues();
     desiredState = OnboardModuleState.optimize(

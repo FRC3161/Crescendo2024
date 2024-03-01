@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.util.Arrays;
+
 import com.pathplanner.lib.util.PIDConstants;
 
 import edu.wpi.first.math.VecBuilder;
@@ -15,6 +17,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.lib.util.Interpolation1D;
+import frc.lib.util.Point;
+import frc.lib.util.PolynomialRegression;
 import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
@@ -32,6 +36,13 @@ public final class Constants {
       INTAKE,
       IDLE,
       DISABLED
+    }
+
+    public static class Colors {
+      public static int[] RED = new int[] { 255, 0, 0 };
+      public static int[] GREEN = new int[] { 0, 255, 0 };
+      public static int[] BLUE = new int[] { 0, 0, 255 };
+      public static int[] GOLD = new int[] { 179, 134, 27 };
     }
   }
 
@@ -174,6 +185,7 @@ public final class Constants {
     public static final double[] shooterPID = { 0.0, 0.0000008, 0 };
     public static final double[] shooterFeedforward = { 0.25, 0.002 };
     public static final int toleranceRPM = 100;
+    public static final int shooterIDLE = 2000;
     public static final double maxVelocityPerSecond = 2000; // RPM/s
     public static final double maxAcceleration = 850; // RPM/s^2 og val: 700
     // TODO: remember to change accel if shooter is too fast - just an
@@ -217,10 +229,17 @@ public final class Constants {
     public static double[] armSGV = new double[] { 0.01, 0.0425, 0.0 };
     public static double[] armPID = new double[] { 2, 1, 0f };
 
+    public static final PolynomialRegression armAngleInterpolationPolynominalRegression = new PolynomialRegression(
+        Arrays.asList(
+            new Point(1.43, Units.degreesToRadians(48.5)),
+            new Point(3, Units.degreesToRadians(33)),
+            new Point(4, Units.degreesToRadians(28.5)),
+            new Point(5, Units.degreesToRadians(25))),
+        2);
     // Interpolation
     // {meters, angle from horizontal}
     public static final Interpolation1D armAngleInterpolation = new Interpolation1D(
-        new double[] { 1.38f, Units.degreesToRadians(48.5f) }, // f means store as a float
+        new double[] { 1.43f, Units.degreesToRadians(48.5f) }, // f means store as a float
         new double[] { 3f, Units.degreesToRadians(33f) },
         new double[] { 4f, Units.degreesToRadians(28.5f) },
         new double[] { 5f, Units.degreesToRadians(25f) });

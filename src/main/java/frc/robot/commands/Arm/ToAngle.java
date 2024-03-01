@@ -12,7 +12,7 @@ import frc.robot.subsystems.Arm.Arm;
 public class ToAngle extends Command {
   private Timer m_timer = new Timer();
   private final DoubleSupplier m_angleSupplier;
-  private final Arm m_arm;
+  protected final Arm m_arm;
   private State initialState;
   private TrapezoidProfile m_profiler = new TrapezoidProfile(
       new TrapezoidProfile.Constraints(

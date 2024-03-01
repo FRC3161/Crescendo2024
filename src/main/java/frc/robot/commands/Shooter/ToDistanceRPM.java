@@ -9,7 +9,7 @@ public class ToDistanceRPM extends ToRPM {
 
   public ToDistanceRPM(Swerve drive, Shooter shooter) {
     super(() -> {
-      var target = Constants.ShooterConstants.shooterRPMInterpolation.getTarget(drive.getDistanceFromAmp());
+      var target = Constants.ShooterConstants.shooterRPMInterpolation.getTarget(drive.getDistanceFromSpeaker());
       if (target.isPresent())
         return target.get();
 

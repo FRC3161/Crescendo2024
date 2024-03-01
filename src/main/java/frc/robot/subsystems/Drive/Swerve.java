@@ -321,7 +321,7 @@ public class Swerve extends SubsystemBase {
     vision.resetPose(pose);
   }
 
-  public double getDistanceFromAmp() {
+  public double getDistanceFromSpeaker() {
     return getEstimatedPose().getTranslation().getDistance(getSpeakerPose().get().getTranslation().toTranslation2d());
   }
 
@@ -352,8 +352,8 @@ public class Swerve extends SubsystemBase {
   }
 
   public void logValues() {
-    SmartDashboard.putNumber("Distance From Amp", getDistanceFromAmp());
-    SmartDashboard.putNumber("Rotation to Amp", getRotationRelativeToSpeaker().getDegrees());
+    SmartDashboard.putNumber("Distance From Speaker", getDistanceFromSpeaker());
+    SmartDashboard.putNumber("Rotation to Speaker", getRotationRelativeToSpeaker().getDegrees());
 
     debugField2d.setRobotPose(getEstimatedPose());
     if (vision.latestVision.isPresent()) {
@@ -363,6 +363,12 @@ public class Swerve extends SubsystemBase {
     SmartDashboard.putNumber("Snap Setpoint", snapSetpoint.getDegrees());
     SmartDashboard.putNumber("Snap Actual", getYawForSnap().getDegrees());
 
+  }
+
+  public void burnToFlash() {
+    for (SwerveModule mod : mSwerveMods) {
+      mod.burnToFlash();
+    }
   }
 
   @Override

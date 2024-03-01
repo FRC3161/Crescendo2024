@@ -10,7 +10,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.util.CANSparkMaxUtil;
 import frc.lib.util.LoggedTunableNumber;
+import frc.lib.util.CANSparkMaxUtil.Usage;
 import frc.robot.Constants;
 import frc.robot.subsystems.Arm.Encoders.ArmEncoder;
 import frc.robot.subsystems.Arm.Encoders.ArmEncoderThroughbore;
@@ -40,7 +42,8 @@ public class Arm extends SubsystemBase {
   private LoggedTunableNumber armS = new LoggedTunableNumber("armS", Constants.ArmConstants.armSGV[0]);
   private LoggedTunableNumber armG = new LoggedTunableNumber("armG", Constants.ArmConstants.armSGV[1]);
   private LoggedTunableNumber armV = new LoggedTunableNumber("armV", Constants.ArmConstants.armSGV[2]);
-  private LoggedTunableNumber armAccel = new LoggedTunableNumber("ArmAccel", Constants.ArmConstants.maxAcceleration.getDegrees());
+  private LoggedTunableNumber armAccel = new LoggedTunableNumber("ArmAccel",
+      Constants.ArmConstants.maxAcceleration.getDegrees());
 
   public Arm() {
     setupMotors();
@@ -49,16 +52,23 @@ public class Arm extends SubsystemBase {
     runSetpoint(getEncoderPosition());
   }
 
+  public void burnToFlash() {
+    leader.burnFlash();
+    follower.burnFlash();
+  }
+
   private void setupMotors() {
     leader.restoreFactoryDefaults();
     leader.enableVoltageCompensation(12);
     leader.setSmartCurrentLimit(60, 40);
     leader.setIdleMode(IdleMode.kBrake);
+    CANSparkMaxUtil.setCANSparkMaxBusUsage(leader, Usage.kPositionOnly);
 
     follower.restoreFactoryDefaults();
     follower.enableVoltageCompensation(12);
     follower.setSmartCurrentLimit(60, 40);
     follower.setIdleMode(IdleMode.kBrake);
+    CANSparkMaxUtil.setCANSparkMaxBusUsage(follower, Usage.kPositionOnly);
 
     follower.follow(leader, true);
 
@@ -84,7 +94,7 @@ public class Arm extends SubsystemBase {
     if (armS.hasChanged() || armG.hasChanged() || armV.hasChanged()) {
       ffModel = new ArmFeedforward(armS.get(), armG.get(), armV.get());
     }
-    if (armAccel.hasChanged()){
+    if (armAccel.hasChanged()) {
       Constants.ArmConstants.speed = armAccel.get();
     }
   }

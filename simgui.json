@@ -1,0 +1,19 @@
+{
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Arm down": "Command",
+      "/SmartDashboard/Arm up": "Command",
+      "/SmartDashboard/Feed IN": "Command",
+      "/SmartDashboard/Feed OUT": "Command",
+      "/SmartDashboard/Reset Pose": "Command",
+      "/SmartDashboard/Shooter test command": "Command",
+      "/SmartDashboard/Vision field": "Field2d",
+      "/SmartDashboard/autos": "String Chooser",
+      "/SmartDashboard/burn to flash": "Command"
+    }
+  },
+  "NetworkTables Info": {
+    "visible": true
+  }
+}
