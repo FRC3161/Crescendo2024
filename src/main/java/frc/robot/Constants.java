@@ -182,8 +182,8 @@ public final class Constants {
     public static final int feederTail = 34;
     // public static final int beamDIO = 9;
     public static final DigitalInput beam = new DigitalInput(9);
-    public static final double[] shooterPID = { 0.0, 0.0000008, 0 };
-    public static final double[] shooterFeedforward = { 0.25, 0.002 };
+    public static final double[] shooterPID = { 0.0, 0.0000006, 0 };
+    public static final double[] shooterFeedforward = { 0.26, 0.002 };
     public static final int toleranceRPM = 100;
     public static final int shooterIDLE = 2000;
     public static final double maxVelocityPerSecond = 2000; // RPM/s
@@ -200,7 +200,8 @@ public final class Constants {
       OUT,
       OFF,
       INFEED,
-      SHOOTFEED
+      SHOOTFEED,
+      HP
     }
 
     // Interpolation

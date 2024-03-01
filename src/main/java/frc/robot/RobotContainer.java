@@ -40,6 +40,7 @@ import frc.robot.commands.Lights.SolidColor;
 import frc.robot.commands.Shooter.ShootFeed;
 import frc.robot.commands.Shooter.FeedIn;
 import frc.robot.commands.Shooter.FeedOut;
+import frc.robot.commands.Shooter.FeedSource;
 import frc.robot.commands.Shooter.ToRPM;
 import frc.robot.subsystems.Arm.Arm;
 import frc.robot.subsystems.Climber.Climber;
@@ -109,7 +110,7 @@ public class RobotContainer {
         () -> -driver.getLeftY(),
         () -> -driver.getLeftX(),
         () -> -driver.getRightX(),
-        driver.rightTrigger()::getAsBoolean));
+        () -> driver.getRightTriggerAxis()));
 
     driver.x().whileTrue(new SnapTo(s_Swerve, SnapMode.LEFT));
     driver.b().whileTrue(new SnapTo(s_Swerve, SnapMode.RIGHT));
@@ -136,7 +137,7 @@ public class RobotContainer {
     operator.rightTrigger().whileTrue(
         new SequentialCommandGroup(
             new ParallelCommandGroup(
-                new ToDistanceAngle(s_Swerve, arm),
+                new ToDistanceAngle(s_Swerve, arm, true),
                 new ToRPM(() -> 4700, shooter),
                 new SnapTo(s_Swerve, SnapMode.SPEAKER),
                 new FeedIn(feeder).deadlineWith(new IntakeIn(intake))),
@@ -148,6 +149,14 @@ public class RobotContainer {
         new ToAngle(() -> Constants.ArmConstants.min.getRadians(), arm),
         new SolidColor(lights, Constants.LightsConstants.Colors.BLUE),
         new FeedOut(feeder)));
+
+    driver.leftBumper().whileTrue(
+        new SequentialCommandGroup(
+            new SolidColor(lights, Constants.LightsConstants.Colors.RED),
+            new ParallelCommandGroup(
+                new ToAngle(() -> Constants.ArmConstants.min.getRadians(), arm),
+                new FeedSource(feeder)),
+            new SolidColor(lights, Constants.LightsConstants.Colors.GREEN)));
 
     operator.b().whileTrue(new SnapTo(s_Swerve, SnapMode.SPEAKER, true));
     operator.a().whileTrue(

@@ -30,7 +30,7 @@ public class ToDistanceAngle extends ToAngle {
   @Override
   public boolean isFinished() {
     if (waitForPosition) {
-      return m_arm.atSetpoint();
+      return super.isFinished();
     } else {
       return false;
     }

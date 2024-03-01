@@ -49,18 +49,17 @@ public class Feeder extends SubsystemBase {
   }
 
   public void setupMotor() {
-    feeder.restoreFactoryDefaults();
     feeder.setInverted(true);
     feeder.enableVoltageCompensation(12.0);
     feeder.setSmartCurrentLimit(40);
-    feeder.setInverted(false);
+    feeder.setInverted(true);
     CANSparkMaxUtil.setCANSparkMaxBusUsage(feeder, Usage.kMinimal);
 
     feederTail.restoreFactoryDefaults();
     feederTail.setInverted(true);
     feederTail.enableVoltageCompensation(12.0);
     feederTail.setSmartCurrentLimit(40);
-    feederTail.setInverted(false);
+    feederTail.setInverted(true);
     CANSparkMaxUtil.setCANSparkMaxBusUsage(feederTail, Usage.kVelocityOnly);
   }
 
@@ -72,7 +71,6 @@ public class Feeder extends SubsystemBase {
   public void checkTunableValues() {
     if (!Constants.enableTunableValues)
       return;
-
     if (tailP.hasChanged() || tailI.hasChanged() || tailD.hasChanged()) {
       feederTailPID.setP(tailP.get());
       feederTailPID.setI(tailI.get());
@@ -102,6 +100,16 @@ public class Feeder extends SubsystemBase {
     checkTunableValues();
     SmartDashboard.putBoolean("Beamy", beamy.get());
     switch (feedMode) {
+      case HP:
+        if (!beamy.get()) {
+          feeder.set(0);
+          tailSetpoint = 0;
+          shouldCommandStop = true;
+        } else {
+          tailSetpoint = -1710;
+          feeder.set(feedPower);
+        }
+        break;
       case INFEED:
         if (!beamy.get()) {
           feeder.set(0);

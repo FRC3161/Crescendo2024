@@ -21,21 +21,19 @@ public class Intake extends SubsystemBase {
   public DigitalInput beamy2 = new DigitalInput(7);
 
   public Intake() {
-    leader.restoreFactoryDefaults();
     leader.setSmartCurrentLimit(40);
     leader.setIdleMode(IdleMode.kBrake);
     leader.enableVoltageCompensation(12);
     leader.setInverted(false);
     CANSparkMaxUtil.setCANSparkMaxBusUsage(leader, Usage.kMinimal);
 
-    follower.restoreFactoryDefaults();
     follower.setSmartCurrentLimit(40);
     follower.setIdleMode(IdleMode.kBrake);
     follower.enableVoltageCompensation(12);
     leader.setInverted(false);
     CANSparkMaxUtil.setCANSparkMaxBusUsage(follower, Usage.kMinimal);
 
-    follower.follow(leader, false);
+    // follower.follow(leader, false);
   }
 
   public void burnToFlash() {
@@ -46,8 +44,10 @@ public class Intake extends SubsystemBase {
   public void setSpeed(double value) {
     if (beamy.get()) {
       leader.set(value);
+      follower.set(value);
     } else {
       leader.set(0);
+      follower.set(0);
     }
   }
 
@@ -58,5 +58,6 @@ public class Intake extends SubsystemBase {
 
   public void stop() {
     leader.set(0);
+    follower.set(0);
   }
 }

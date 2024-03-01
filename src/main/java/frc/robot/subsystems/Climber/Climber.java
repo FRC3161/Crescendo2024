@@ -36,14 +36,12 @@ public class Climber extends SubsystemBase {
   }
 
   private void setupMotors() {
-    leftClimberMotor.restoreFactoryDefaults();
     leftClimberMotor.enableVoltageCompensation(12);
     leftClimberMotor.setSmartCurrentLimit(60, 40);
     leftClimberMotor.setIdleMode(IdleMode.kBrake);
     leftClimberMotor.setInverted(true);
     CANSparkMaxUtil.setCANSparkMaxBusUsage(leftClimberMotor, Usage.kPositionOnly);
 
-    rightClimberMotor.restoreFactoryDefaults();
     rightClimberMotor.enableVoltageCompensation(12);
     rightClimberMotor.setSmartCurrentLimit(60, 40);
     rightClimberMotor.setIdleMode(IdleMode.kBrake);
