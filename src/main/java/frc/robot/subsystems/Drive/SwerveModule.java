@@ -135,7 +135,8 @@ public class SwerveModule {
 
   private void setSpeed(SwerveModuleState desiredState) {
     driveSetpoint = desiredState.speedMetersPerSecond;
-    var pidOutput = MathUtil.clamp(driveSetpoint, -Constants.SwerveConstants.maxSpeed,
+    var pidOutput = MathUtil.clamp(drivePIDController.calculate(getSpeed(), driveSetpoint),
+        -Constants.SwerveConstants.maxSpeed,
         Constants.SwerveConstants.maxSpeed);
     var ffOutput = feedforward.calculate(angleSetpoint);
 
