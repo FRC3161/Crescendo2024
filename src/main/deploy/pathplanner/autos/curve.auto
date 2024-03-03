@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3183917999267578,
-      "y": 5.5338287353515625
+      "x": 1.1150459051132202,
+      "y": 6.699905872344971
     },
-    "rotation": -4.914775576436056e-33
+    "rotation": 0.0
   },
   "command": {
     "type": "sequential",
@@ -14,19 +14,43 @@
         {
           "type": "named",
           "data": {
-            "name": "subShot"
+            "name": "shoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "NewPath.1"
+            "pathName": "curve.1"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "curve.2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "curve.3"
           }
         },
         {
