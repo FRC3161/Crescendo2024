@@ -2,14 +2,10 @@ package frc.robot.subsystems.Climber;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.ExponentialProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.CANSparkMaxUtil;
 import frc.lib.util.CANSparkMaxUtil.Usage;
@@ -38,17 +34,19 @@ public class Climber extends SubsystemBase {
   }
 
   private void setupMotors() {
+    leftClimberMotor.restoreFactoryDefaults();
+    CANSparkMaxUtil.setCANSparkMaxBusUsage(leftClimberMotor, Usage.kPositionOnly);
     leftClimberMotor.enableVoltageCompensation(12);
     leftClimberMotor.setSmartCurrentLimit(60, 40);
     leftClimberMotor.setIdleMode(IdleMode.kBrake);
     leftClimberMotor.setInverted(true);
-    CANSparkMaxUtil.setCANSparkMaxBusUsage(leftClimberMotor, Usage.kPositionOnly);
 
+    rightClimberMotor.restoreFactoryDefaults();
+    CANSparkMaxUtil.setCANSparkMaxBusUsage(rightClimberMotor, Usage.kPositionOnly);
     rightClimberMotor.enableVoltageCompensation(12);
     rightClimberMotor.setSmartCurrentLimit(60, 40);
     rightClimberMotor.setIdleMode(IdleMode.kBrake);
     rightClimberMotor.setInverted(true);
-    CANSparkMaxUtil.setCANSparkMaxBusUsage(rightClimberMotor, Usage.kPositionOnly);
 
     rightClimberMotor.follow(leftClimberMotor, true);
   }

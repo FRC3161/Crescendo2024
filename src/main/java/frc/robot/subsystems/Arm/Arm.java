@@ -58,15 +58,17 @@ public class Arm extends SubsystemBase {
   }
 
   private void setupMotors() {
+    leader.restoreFactoryDefaults();
+    CANSparkMaxUtil.setCANSparkMaxBusUsage(leader, Usage.kPositionOnly);
     leader.enableVoltageCompensation(12);
     leader.setSmartCurrentLimit(60, 40);
     leader.setIdleMode(IdleMode.kBrake);
-    CANSparkMaxUtil.setCANSparkMaxBusUsage(leader, Usage.kPositionOnly);
 
+    follower.restoreFactoryDefaults();
+    CANSparkMaxUtil.setCANSparkMaxBusUsage(follower, Usage.kPositionOnly);
     follower.enableVoltageCompensation(12);
     follower.setSmartCurrentLimit(60, 40);
     follower.setIdleMode(IdleMode.kBrake);
-    CANSparkMaxUtil.setCANSparkMaxBusUsage(follower, Usage.kPositionOnly);
 
     follower.follow(leader, true);
 

@@ -12,6 +12,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.math.OnboardModuleState;
 import frc.lib.util.CANSparkMaxUtil;
@@ -99,8 +100,9 @@ public class SwerveModule {
   }
 
   private void configAngleMotor() {
+    angleMotor.restoreFactoryDefaults();
     CANSparkMaxUtil.setCANSparkMaxBusUsage(angleMotor, Usage.kPositionOnly);
-    angleMotor.setSmartCurrentLimit(40);
+    angleMotor.setSmartCurrentLimit(40, 40);
     angleMotor.setInverted(true);
     angleMotor.setIdleMode(IdleMode.kBrake);
     integratedAngleEncoder.setPositionConversionFactor(Constants.SwerveConstants.angleConversionFactor);
@@ -113,8 +115,9 @@ public class SwerveModule {
   }
 
   private void configDriveMotor() {
+    driveMotor.restoreFactoryDefaults();
     CANSparkMaxUtil.setCANSparkMaxBusUsage(driveMotor, Usage.kAll);
-    driveMotor.setSmartCurrentLimit(40);
+    driveMotor.setSmartCurrentLimit(40, 40);
     if (moduleNumber == 1 || moduleNumber == 3) {
       driveMotor.setInverted(true);
     } else {

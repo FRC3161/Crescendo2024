@@ -24,6 +24,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -109,6 +110,7 @@ public class Swerve extends SubsystemBase {
     SmartDashboard.putData("Vision field", debugField2d);
     PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
 
+    Timer.delay(4); // Let the can bus cool down
   }
 
   public Optional<Rotation2d> getRotationTargetOverride() {

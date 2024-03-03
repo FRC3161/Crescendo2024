@@ -21,17 +21,19 @@ public class Intake extends SubsystemBase {
   public DigitalInput beamy2 = new DigitalInput(7);
 
   public Intake() {
-    leader.setSmartCurrentLimit(40);
+    leader.restoreFactoryDefaults();
+    CANSparkMaxUtil.setCANSparkMaxBusUsage(leader, Usage.kMinimal);
+    leader.setSmartCurrentLimit(40, 40);
     leader.setIdleMode(IdleMode.kBrake);
     leader.enableVoltageCompensation(12);
     leader.setInverted(false);
-    CANSparkMaxUtil.setCANSparkMaxBusUsage(leader, Usage.kMinimal);
 
-    follower.setSmartCurrentLimit(40);
+    follower.restoreFactoryDefaults();
+    CANSparkMaxUtil.setCANSparkMaxBusUsage(follower, Usage.kMinimal);
+    follower.setSmartCurrentLimit(40, 40);
     follower.setIdleMode(IdleMode.kBrake);
     follower.enableVoltageCompensation(12);
     leader.setInverted(false);
-    CANSparkMaxUtil.setCANSparkMaxBusUsage(follower, Usage.kMinimal);
 
     // follower.follow(leader, false);
   }

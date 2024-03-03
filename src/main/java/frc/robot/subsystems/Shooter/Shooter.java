@@ -48,17 +48,19 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setupMotor() {
+    leader.restoreFactoryDefaults();
+    CANSparkMaxUtil.setCANSparkMaxBusUsage(leader, Usage.kVelocityOnly);
     leader.setInverted(true);
     leader.enableVoltageCompensation(12.0);
-    leader.setSmartCurrentLimit(40);
+    leader.setSmartCurrentLimit(40, 40);
     leader.setInverted(true);
-    CANSparkMaxUtil.setCANSparkMaxBusUsage(leader, Usage.kVelocityOnly);
 
+    follower.restoreFactoryDefaults();
+    CANSparkMaxUtil.setCANSparkMaxBusUsage(follower, Usage.kVelocityOnly);
     follower.setInverted(true);
     follower.enableVoltageCompensation(12.0);
-    follower.setSmartCurrentLimit(40);
+    follower.setSmartCurrentLimit(40, 40);
     follower.setInverted(true);
-    CANSparkMaxUtil.setCANSparkMaxBusUsage(follower, Usage.kVelocityOnly);
 
     follower.follow(leader, true);
 

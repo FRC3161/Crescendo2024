@@ -49,18 +49,19 @@ public class Feeder extends SubsystemBase {
   }
 
   public void setupMotor() {
+    feeder.restoreFactoryDefaults();
+    CANSparkMaxUtil.setCANSparkMaxBusUsage(feeder, Usage.kMinimal);
     feeder.setInverted(true);
     feeder.enableVoltageCompensation(12.0);
-    feeder.setSmartCurrentLimit(40);
+    feeder.setSmartCurrentLimit(40, 40);
     feeder.setInverted(true);
-    CANSparkMaxUtil.setCANSparkMaxBusUsage(feeder, Usage.kMinimal);
 
     feederTail.restoreFactoryDefaults();
+    CANSparkMaxUtil.setCANSparkMaxBusUsage(feederTail, Usage.kVelocityOnly);
     feederTail.setInverted(true);
     feederTail.enableVoltageCompensation(12.0);
-    feederTail.setSmartCurrentLimit(40);
+    feederTail.setSmartCurrentLimit(40, 40);
     feederTail.setInverted(true);
-    CANSparkMaxUtil.setCANSparkMaxBusUsage(feederTail, Usage.kVelocityOnly);
   }
 
   public void burnToFlash() {
