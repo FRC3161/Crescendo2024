@@ -19,10 +19,10 @@ public class ClimberManual extends Command {
 
   @Override
   public void execute() {
-    double climberY = MathUtil.applyDeadband(changeSupplier.getAsDouble(), 0.2);
+    double climberY = MathUtil.applyDeadband(this.changeSupplier.getAsDouble(), 0.2);
 
-    double armChange = (0.3 / 50) * climberY;
-    m_climber.set(armChange);
+    // double armChange = (45 / 50) * climberY; TODO: needs investigation, too slow
+    m_climber.set(climberY);
   }
 
   @Override

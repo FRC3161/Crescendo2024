@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.564936280250549,
-      "y": 6.278568267822266
+      "x": 1.3183917999267578,
+      "y": 5.5338287353515625
     },
-    "rotation": 1.3007278556809815e-32
+    "rotation": -4.914775576436056e-33
   },
   "command": {
     "type": "sequential",
@@ -14,13 +14,25 @@
         {
           "type": "named",
           "data": {
-            "name": "shoot"
+            "name": "subShot"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "NewPath.1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
           }
         }
       ]
