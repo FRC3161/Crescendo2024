@@ -7,6 +7,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.SwerveConstants.DriveMode;
 import frc.robot.subsystems.Drive.Swerve;
 
@@ -14,7 +15,7 @@ public class SnapTo extends Command {
   private Timer m_timer = new Timer();
   private final Swerve m_drive;
   private final SnapMode m_snapeMode;
-  private final boolean neverEnding;
+  private final EndBehaviour m_endBehaviour;
   private TrapezoidProfile.State initialState;
   private TrapezoidProfile m_profiler = new TrapezoidProfile(
       new TrapezoidProfile.Constraints(
@@ -29,16 +30,26 @@ public class SnapTo extends Command {
     BACKWARD
   }
 
+  public static enum EndBehaviour {
+    NORMAL,
+    NEVER_ENDING,
+    NORMAL_WITHOUT_RESET
+  }
+
   public SnapTo(Swerve drive, SnapMode mode) {
     m_drive = drive;
     m_snapeMode = mode;
-    neverEnding = false;
+    m_endBehaviour = EndBehaviour.NORMAL;
   }
 
-  public SnapTo(Swerve drive, SnapMode mode, boolean neverEnding) {
+  public SnapTo(Swerve drive, SnapMode mode, EndBehaviour endBehaviour) {
     m_drive = drive;
     m_snapeMode = mode;
-    this.neverEnding = neverEnding;
+    m_endBehaviour = endBehaviour;
+  }
+
+  public static Command resetToDriverInput(Swerve drive) {
+    return Commands.runOnce(() -> drive.setDriveMode(DriveMode.DriverInput));
   }
 
   @Override
@@ -55,7 +66,11 @@ public class SnapTo extends Command {
     double setpoint = 0;
     switch (m_snapeMode) {
       case SPEAKER:
-        setpoint = Math.PI + m_drive.getRotationRelativeToSpeaker().getRadians();
+        setpoint = Math.PI + m_drive.getRotationRelativeToSpeaker().getRadians()
+            + m_drive.getSpeedCompensationAngle().getRadians();
+
+        // setpoint = Math.PI + m_drive.getSpeedCompensationAngle().getRadians(); can
+        // help with testing
         break;
       case LEFT:
         setpoint = Units.degreesToRadians(90);
@@ -87,14 +102,24 @@ public class SnapTo extends Command {
 
   @Override
   public boolean isFinished() {
-    if (neverEnding)
-      return false;
-    return m_profiler.isFinished(m_timer.get()) && m_drive.isSnapAtSetpoint();
+    switch (m_endBehaviour) {
+      case NEVER_ENDING:
+        return false;
+      case NORMAL_WITHOUT_RESET:
+        return m_profiler.isFinished(m_timer.get());
+      case NORMAL:
+        return m_profiler.isFinished(m_timer.get()) && m_drive.isSnapAtSetpoint();
+      default:
+        return m_profiler.isFinished(m_timer.get()) && m_drive.isSnapAtSetpoint();
+    }
   }
 
   @Override
   public void end(boolean interrupted) {
     m_timer.stop();
-    m_drive.setDriveMode(DriveMode.DriverInput);
+
+    if (m_endBehaviour != EndBehaviour.NORMAL_WITHOUT_RESET) {
+      m_drive.setDriveMode(DriveMode.DriverInput);
+    }
   }
 }

@@ -6,11 +6,9 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,17 +19,14 @@ import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.LightsConstants;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.Arm.ManualArm;
 import frc.robot.commands.Arm.ToAngle;
 import frc.robot.commands.Arm.ToDistanceAngle;
-import frc.robot.commands.Climber.ClimbExtend;
-import frc.robot.commands.Climber.ClimbRetract;
 import frc.robot.commands.Climber.ClimberManual;
-import frc.robot.commands.Drive.Tags;
 import frc.robot.commands.Drive.DriveToLocation;
 import frc.robot.commands.Drive.SnapTo;
 import frc.robot.commands.Drive.TeleopSwerve;
+import frc.robot.commands.Drive.SnapTo.EndBehaviour;
 import frc.robot.commands.Drive.SnapTo.SnapMode;
 import frc.robot.commands.Intake.IntakeIn;
 import frc.robot.commands.Intake.Outake;
@@ -91,7 +86,8 @@ public class RobotContainer {
   public Command getIdleCommands() {
     return new ParallelCommandGroup(
         new ToAngle(() -> Constants.ArmConstants.min.getRadians(), arm),
-        new ToRPM(() -> 2000, shooter));
+        new ToRPM(() -> 2000, shooter),
+        SnapTo.resetToDriverInput(s_Swerve));
   }
 
   public void idle() {
@@ -140,7 +136,7 @@ public class RobotContainer {
             new ParallelCommandGroup(
                 new ToDistanceAngle(s_Swerve, arm, true),
                 new ToRPM(() -> 4700, shooter),
-                new SnapTo(s_Swerve, SnapMode.SPEAKER),
+                new SnapTo(s_Swerve, SnapMode.SPEAKER, EndBehaviour.NORMAL_WITHOUT_RESET),
                 new FeedIn(feeder).deadlineWith(new IntakeIn(intake))),
             new ShootFeed(feeder).withTimeout(0.7),
             getIdleCommands()).handleInterrupt(this::idle));
@@ -167,7 +163,7 @@ public class RobotContainer {
         new ShootFeed(feeder).withTimeout(1),
         getIdleCommands()));
 
-    operator.b().whileTrue(new SnapTo(s_Swerve, SnapMode.SPEAKER, true));
+    operator.b().whileTrue(new SnapTo(s_Swerve, SnapMode.SPEAKER, EndBehaviour.NEVER_ENDING));
     operator.a().whileTrue(
         new SequentialCommandGroup(
             new SolidColor(lights, LightsConstants.Colors.RED),

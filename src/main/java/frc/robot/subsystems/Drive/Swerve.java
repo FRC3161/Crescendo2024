@@ -47,6 +47,8 @@ public class Swerve extends SubsystemBase {
 
   private Field2d debugField2d = new Field2d();
 
+  private Translation2d robotSpeed = new Translation2d();
+
   // Tunable values
   private LoggedTunableNumber driveP = new LoggedTunableNumber("driveP", Constants.SwerveConstants.drivePID[0]);
   private LoggedTunableNumber driveI = new LoggedTunableNumber("driveI", Constants.SwerveConstants.drivePID[1]);
@@ -162,6 +164,9 @@ public class Swerve extends SubsystemBase {
             translation.getY() * Constants.SwerveConstants.maxSpeed,
             rotation * Constants.SwerveConstants.maxAngularVelocity, getYaw()));
 
+    robotSpeed = new Translation2d(translation.getX() * Constants.SwerveConstants.maxSpeed,
+        translation.getY() * Constants.SwerveConstants.maxSpeed);
+
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.SwerveConstants.maxSpeed);
 
     setStates(swerveModuleStates);
@@ -171,6 +176,11 @@ public class Swerve extends SubsystemBase {
     ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
     targetSpeeds = new ChassisSpeeds(targetSpeeds.vxMetersPerSecond, targetSpeeds.vyMetersPerSecond,
         -targetSpeeds.omegaRadiansPerSecond);
+
+    var currentSpeed = ChassisSpeeds.fromRobotRelativeSpeeds(robotRelativeSpeeds.vxMetersPerSecond,
+        robotRelativeSpeeds.vyMetersPerSecond,
+        robotRelativeSpeeds.omegaRadiansPerSecond, poseEstimator.getEstimatedPosition().getRotation());
+    robotSpeed = new Translation2d(currentSpeed.vxMetersPerSecond, currentSpeed.vyMetersPerSecond);
 
     SwerveModuleState[] targetStates = Constants.SwerveConstants.swerveKinematics.toSwerveModuleStates(targetSpeeds);
     setStates(targetStates);
@@ -373,6 +383,10 @@ public class Swerve extends SubsystemBase {
     for (SwerveModule mod : mSwerveMods) {
       mod.burnToFlash();
     }
+  }
+
+  public Rotation2d getSpeedCompensationAngle() {
+    return Rotation2d.fromRadians(robotSpeed.getY() * Constants.ShooterConstants.onTheFlyMultiplier);
   }
 
   @Override
