@@ -232,18 +232,20 @@ public final class Constants {
 
     public static final PolynomialRegression armAngleInterpolationPolynominalRegression = new PolynomialRegression(
         Arrays.asList(
-            new Point(1.43, Units.degreesToRadians(48.5)),
-            new Point(3, Units.degreesToRadians(33)),
-            new Point(4, Units.degreesToRadians(28.5)),
-            new Point(5, Units.degreesToRadians(25))),
+            new Point(1.43, Units.degreesToRadians(50f)),
+            new Point(3, Units.degreesToRadians(37f)),
+            new Point(4, Units.degreesToRadians(32f)),
+            new Point(5, Units.degreesToRadians(27.5f))),
         2);
     // Interpolation
     // {meters, angle from horizontal}
-    public static final Interpolation1D armAngleInterpolation = new Interpolation1D(
-        new double[] { 1.43f, Units.degreesToRadians(48.5f) }, // f means store as a float
-        new double[] { 3f, Units.degreesToRadians(33f) },
-        new double[] { 4f, Units.degreesToRadians(28.5f) },
-        new double[] { 5f, Units.degreesToRadians(25f) });
+    // public static final Interpolation1D armAngleInterpolation = new
+    // Interpolation1D(
+    // new double[] { 1.43f, Units.degreesToRadians(50f) }, // f means store as a
+    // float
+    // new double[] { 3f, Units.degreesToRadians(37f) },
+    // new double[] { 4f, Units.degreesToRadians(32f) },
+    // new double[] { 5f, Units.degreesToRadians(27.5f) });
   }
 
   public static final class ClimberConstants {
@@ -255,7 +257,7 @@ public final class Constants {
 
     public static final double maxVelocity = 2000; // RPM/s
     public static final double maxAcceleration = 700; // RPM/s^2
-    public static final double retractSpeed = 0.3; // TODO: Please increase, climber too slow
+    public static final double retractSpeed = 0.7;
 
     public static final TrapezoidProfile.Constraints climberConstraints = new TrapezoidProfile.Constraints(
         maxVelocity, maxAcceleration);

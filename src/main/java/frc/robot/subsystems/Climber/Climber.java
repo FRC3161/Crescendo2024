@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.ExponentialProfile.Constraints;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.CANSparkMaxUtil;
@@ -21,17 +22,18 @@ public class Climber extends SubsystemBase {
   private CANSparkMax rightClimberMotor = new CANSparkMax(Constants.ClimberConstants.rightMotorID,
       MotorType.kBrushless);
 
-  private RelativeEncoder climberEncoder = leftClimberMotor.getEncoder();
+  private RelativeEncoder climberEncoderLeft = leftClimberMotor.getEncoder();
+  private RelativeEncoder climberEncoderRight = rightClimberMotor.getEncoder();
 
-  private final SparkPIDController pid;
+  // private final SparkPIDController pid;
 
   public Climber() {
     setupMotors();
 
-    pid = leftClimberMotor.getPIDController();
-    pid.setP(Constants.ClimberConstants.pid[0]);
-    pid.setP(Constants.ClimberConstants.pid[1]);
-    pid.setP(Constants.ClimberConstants.pid[2]);
+    // pid = leftClimberMotor.getPIDController();
+    // pid.setP(Constants.ClimberConstants.pid[0]);
+    // pid.setP(Constants.ClimberConstants.pid[1]);
+    // pid.setP(Constants.ClimberConstants.pid[2]);
 
   }
 
@@ -70,5 +72,11 @@ public class Climber extends SubsystemBase {
 
   public void stop() {
     leftClimberMotor.set(0);
+  }
+
+  @Override
+  public void periodic() {
+    SmartDashboard.putNumber("Actual Climber Left", climberEncoderLeft.getPosition());
+    SmartDashboard.putNumber("Actual Climber Right", climberEncoderRight.getPosition());
   }
 }

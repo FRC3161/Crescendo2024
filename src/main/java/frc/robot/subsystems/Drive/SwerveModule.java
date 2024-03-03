@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -40,6 +41,7 @@ public class SwerveModule {
   public final double[] anglePID;
   public final double[] driveSVA;
   public final double[] drivePID;
+  public final PIDController drivePIDController;
   public SimpleMotorFeedforward feedforward;
 
   // For logging
@@ -52,6 +54,7 @@ public class SwerveModule {
     this.anglePID = moduleConstants.anglePID;
     this.driveSVA = moduleConstants.driveSVA;
     this.drivePID = moduleConstants.drivePID;
+    this.drivePIDController = new PIDController(drivePID[0], drivePID[1], drivePID[2]);
 
     /* Angle Encoder Config */
     angleEncoder = new ModuleEncoderThrifty(moduleConstants.cancoderID);
@@ -131,6 +134,16 @@ public class SwerveModule {
 
   private void setSpeed(SwerveModuleState desiredState) {
     driveSetpoint = desiredState.speedMetersPerSecond;
+    // var pidOutput = MathUtil.clamp(drivePIDController.calculate(getSpeed(),
+    // driveSetpoint),
+    // -Constants.SwerveConstants.maxSpeed,
+    // Constants.SwerveConstants.maxSpeed);
+    // var ffOutput = feedforward.calculate(angleSetpoint);
+
+    // driveController.setReference((pidOutput / Constants.SwerveConstants.maxSpeed)
+    // * 12 + ffOutput,
+    // ControlType.kVoltage);
+
     driveController.setReference(
         desiredState.speedMetersPerSecond,
         ControlType.kVelocity,

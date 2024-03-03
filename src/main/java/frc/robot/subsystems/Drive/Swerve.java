@@ -273,6 +273,8 @@ public class Swerve extends SubsystemBase {
         mod.driveController.setP(driveP.get());
         mod.driveController.setI(driveI.get());
         mod.driveController.setD(driveD.get());
+
+        // mod.drivePIDController.setPID(driveP.get(), driveI.get(), driveD.get());
       }
     }
     if (driveS.hasChanged() || driveV.hasChanged() || driveA.hasChanged()) {

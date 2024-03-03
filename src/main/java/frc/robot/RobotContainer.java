@@ -103,6 +103,7 @@ public class RobotContainer {
     arm.setDefaultCommand(new ManualArm(() -> operator.getLeftY(), arm));
     climber.setDefaultCommand(
         new ClimberManual(climber, operator::getRightY));
+    lights.setDefaultCommand(new SolidColor(lights, LightsConstants.Colors.GOLD));
 
     /* Driver Controller */
     s_Swerve.setDefaultCommand(new TeleopSwerve(
@@ -116,6 +117,7 @@ public class RobotContainer {
     driver.b().whileTrue(new SnapTo(s_Swerve, SnapMode.RIGHT));
     driver.y().whileTrue(new SnapTo(s_Swerve, SnapMode.FORWARD));
     driver.a().whileTrue(new SnapTo(s_Swerve, SnapMode.BACKWARD));
+    driver.povDown().whileTrue(new Outake(intake));
     // driver.povLeft().whileTrue(new SnapTo(s_Swerve, SnapMode.SPEAKER, true));
     driver.back().onTrue(new InstantCommand(s_Swerve::zeroGyro));
 
@@ -133,7 +135,6 @@ public class RobotContainer {
         new SolidColor(lights, Constants.LightsConstants.Colors.BLUE)));
 
     /* Operator Controller */
-
     operator.rightTrigger().whileTrue(
         new SequentialCommandGroup(
             new ParallelCommandGroup(
@@ -157,6 +158,14 @@ public class RobotContainer {
                 new ToAngle(() -> Constants.ArmConstants.min.getRadians(), arm),
                 new FeedSource(feeder)),
             new SolidColor(lights, Constants.LightsConstants.Colors.GREEN)));
+    operator.leftBumper().whileTrue(new SequentialCommandGroup(
+        new ParallelCommandGroup(
+            new SolidColor(lights, Constants.LightsConstants.Colors.RED),
+            new ToAngle(() -> Units.degreesToRadians(50), arm),
+            new ToRPM(() -> 4500, shooter)),
+        new SolidColor(lights, Constants.LightsConstants.Colors.BLUE),
+        new ShootFeed(feeder).withTimeout(1),
+        getIdleCommands()));
 
     operator.b().whileTrue(new SnapTo(s_Swerve, SnapMode.SPEAKER, true));
     operator.a().whileTrue(
@@ -170,7 +179,7 @@ public class RobotContainer {
 
     // operator.x().whileTrue(new ClimbExtend(climber));
     // operator.x().onTrue(new ToAngle(() -> Units.degreesToRadians(80), arm)); <-
-    // max arm angle
+    // max arm angle ^
     // operator.a().whileTrue(new ClimbRetract(climber));
 
     /* Subwoofer shot */
@@ -190,6 +199,15 @@ public class RobotContainer {
     // NamedCommands.registerCommand("shoot", new ShooterDistance(drive, shooter));
     // NamedCommands.registerCommand("intake", new IntakeIn(intake));
     // NamedCommands.registerCommand("intake", new Outake(intake));
+    NamedCommands.registerCommand("subShot", new SequentialCommandGroup(
+        new ParallelCommandGroup(
+            new SolidColor(lights, Constants.LightsConstants.Colors.RED),
+            new ToAngle(() -> Units.degreesToRadians(48.5), arm),
+            new ToRPM(() -> 4500, shooter)),
+        new SolidColor(lights, Constants.LightsConstants.Colors.BLUE),
+        new ShootFeed(feeder).withTimeout(1),
+        getIdleCommands()));
+
     NamedCommands.registerCommand("shoot",
         new SequentialCommandGroup(
             new ParallelCommandGroup(
@@ -199,6 +217,18 @@ public class RobotContainer {
                 new ToDistanceAngle(s_Swerve, arm)),
             new SolidColor(lights, new int[] { 0, 150, 0 }),
             new ShootFeed(feeder).withTimeout(0.5)));
+
+    NamedCommands.registerCommand("Intake",
+        new SequentialCommandGroup(
+            new SolidColor(lights, Constants.LightsConstants.Colors.RED),
+            new ToAngle(() -> Units.degreesToRadians(15), arm),
+            new ParallelCommandGroup(
+                new FeedIn(feeder).deadlineWith(new IntakeIn(intake)),
+                new SequentialCommandGroup(
+                    new beamMessage(intake),
+                    new SolidColor(lights, Constants.LightsConstants.Colors.GREEN))),
+            new SolidColor(lights, Constants.LightsConstants.Colors.BLUE)));
+
   }
 
   public void configureAutoCommands() {
@@ -237,5 +267,6 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return m_chooser.getSelected();
+
   }
 }

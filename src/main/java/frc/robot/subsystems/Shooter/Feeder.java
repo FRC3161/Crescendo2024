@@ -129,7 +129,7 @@ public class Feeder extends SubsystemBase {
         }
         break;
       case OUT:
-        tailSetpoint = 2000;
+        tailSetpoint = 2300;
         if (isTailAtSetpoint()) {
           feeder.set(-feedPower);
         }
