@@ -129,7 +129,7 @@ public class Arm extends SubsystemBase {
   }
 
   public TrapezoidProfile.State getCurrenState() {
-    return new TrapezoidProfile.State(encoderPosition.getRadians(), 0);
+    return new TrapezoidProfile.State(encoderPosition.getRadians(), this.velocity.getRadians());
   }
 
   public boolean atSetpoint() {
