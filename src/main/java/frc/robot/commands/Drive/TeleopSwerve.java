@@ -52,7 +52,7 @@ public class TeleopSwerve extends Command {
 
     translationVal = joystickValues[0];
     strafeVal = joystickValues[1];
-    if (isNOSEnabled < 0.1) {
+    if (isNOSEnabled > 0.1) {
       translationVal = joystickValues[0] * 0.5;
       strafeVal = joystickValues[1] * 0.5;
     }
