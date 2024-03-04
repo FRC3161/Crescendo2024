@@ -37,6 +37,7 @@ import frc.robot.commands.Intake.beamMessage;
 import frc.robot.commands.Lights.SolidColor;
 import frc.robot.commands.Shooter.ShootFeed;
 import frc.robot.commands.Shooter.FeedIn;
+import frc.robot.commands.Shooter.FeedInNotifier;
 import frc.robot.commands.Shooter.FeedOut;
 import frc.robot.commands.Shooter.FeedSource;
 import frc.robot.commands.Shooter.ToRPM;
@@ -89,7 +90,7 @@ public class RobotContainer {
   public Command getIdleCommands() {
     return new ParallelCommandGroup(
         new ToAngle(() -> Constants.ArmConstants.min.getRadians(), arm),
-        new ToRPM(() -> 2000, shooter),
+        new ToRPM(() -> 0, shooter),
         SnapTo.resetToDriverInput(s_Swerve));
   }
 
@@ -130,7 +131,10 @@ public class RobotContainer {
             new FeedIn(feeder).deadlineWith(new IntakeIn(intake)),
             new SequentialCommandGroup(
                 new beamMessage(intake),
-                new SolidColor(lights, Constants.LightsConstants.Colors.GREEN))),
+                new SolidColor(lights, Constants.LightsConstants.Colors.GREEN),
+                new InstantCommand(() -> {
+                  new ToRPM(() -> 3000, shooter).schedule();
+                }))),
         new SolidColor(lights, Constants.LightsConstants.Colors.BLUE)));
 
     /* Operator Controller */

@@ -28,7 +28,7 @@ public class Feeder extends SubsystemBase {
   private FeedMode feedMode = FeedMode.OFF;
   public boolean shouldCommandStop = false;
   // public DigitalInput beam = new DigitalInput(ShooterConstants.beamDIO);
-  private DigitalInput beamy = ShooterConstants.beam;
+  public DigitalInput beamy = ShooterConstants.beam;
 
   // Tunable values
   private LoggedTunableNumber tailP = new LoggedTunableNumber("Tail P", Constants.ShooterConstants.tailPID[0]);
