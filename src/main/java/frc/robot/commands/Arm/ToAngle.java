@@ -2,6 +2,7 @@ package frc.robot.commands.Arm;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.Timer;
@@ -31,6 +32,7 @@ public class ToAngle extends Command {
     m_timer.reset();
     m_timer.start();
     initialState = m_arm.getCurrenState();
+    m_arm.setGoal(Rotation2d.fromRadians(m_angleSupplier.getAsDouble()));
   }
 
   @Override
@@ -38,6 +40,8 @@ public class ToAngle extends Command {
     var nextState = m_profiler.calculate(m_timer.get(),
         initialState,
         new TrapezoidProfile.State(m_angleSupplier.getAsDouble(), 0));
+
+    m_arm.setGoal(Rotation2d.fromRadians(m_angleSupplier.getAsDouble()));
 
     m_arm.runState(nextState);
   }

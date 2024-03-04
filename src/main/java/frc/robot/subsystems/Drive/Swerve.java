@@ -44,6 +44,7 @@ public class Swerve extends SubsystemBase {
   private final PIDController snapPIDController;
   private DriveMode driveMode = DriveMode.DriverInput;
   private Rotation2d snapSetpoint = new Rotation2d();
+  private Rotation2d snapGoal = new Rotation2d();
 
   private Field2d debugField2d = new Field2d();
 
@@ -125,6 +126,17 @@ public class Swerve extends SubsystemBase {
 
   public void setSnapSetpoint(Rotation2d setpoint) {
     this.snapSetpoint = setpoint;
+  }
+
+  public void setSnapGoal(Rotation2d goal) {
+    this.snapGoal = goal;
+  }
+
+  public boolean isSnapAtGoal() {
+    double errorBound = (Math.PI * 2) / 2.0;
+    var m_positionError = MathUtil.inputModulus(snapGoal.getRadians() - getYawForSnap().getRadians(), -errorBound,
+        errorBound);
+    return Math.abs(m_positionError) < Units.degreesToRadians(1);
   }
 
   public boolean isSnapAtSetpoint() {

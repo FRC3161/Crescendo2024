@@ -6,7 +6,12 @@ import frc.robot.subsystems.Drive.Swerve;
 
 public class ToDistanceAngle extends ToAngle {
   private Swerve m_drive;
-  private boolean waitForPosition = false;
+  private ArmEndBehaviour m_endBehaviour;
+
+  public static enum ArmEndBehaviour {
+    NORMAL,
+    NEVER_ENDING
+  }
 
   public ToDistanceAngle(Swerve drive, Arm arm) {
     super(() -> {
@@ -18,21 +23,25 @@ public class ToDistanceAngle extends ToAngle {
       return target;
     }, arm);
     m_drive = drive;
+    m_endBehaviour = ArmEndBehaviour.NORMAL;
   }
 
-  public ToDistanceAngle(Swerve drive, Arm arm, boolean waitForPosition) {
+  public ToDistanceAngle(Swerve drive, Arm arm, ArmEndBehaviour endBehaviour) {
     super(() -> Constants.ArmConstants.armAngleInterpolationPolynominalRegression
         .getPrediction(drive.getDistanceFromSpeaker()), arm);
     m_drive = drive;
-    this.waitForPosition = waitForPosition;
+    m_endBehaviour = endBehaviour;
   }
 
   @Override
   public boolean isFinished() {
-    if (waitForPosition) {
-      return super.isFinished();
-    } else {
-      return false;
+    switch (m_endBehaviour) {
+      case NORMAL:
+        return super.isFinished();
+      case NEVER_ENDING:
+        return false;
+      default:
+        return super.isFinished();
     }
   }
 }

@@ -34,6 +34,7 @@ public class Arm extends SubsystemBase {
 
   private Rotation2d setpoint = new Rotation2d();
   private Rotation2d velocity = new Rotation2d();
+  private Rotation2d goal = new Rotation2d();
 
   // Tunable values
   private LoggedTunableNumber armP = new LoggedTunableNumber("armP", Constants.ArmConstants.armPID[0]);
@@ -97,6 +98,15 @@ public class Arm extends SubsystemBase {
     if (armAccel.hasChanged()) {
       Constants.ArmConstants.speed = armAccel.get();
     }
+  }
+
+  public void setGoal(Rotation2d goal) {
+    this.goal = goal;
+  }
+
+  public boolean atGoal() {
+    return Math.abs(getEncoderPosition().getRadians() - goal.getRadians()) < Constants.ArmConstants.tolernace
+        .getRadians();
   }
 
   public void runSetpoint(Rotation2d setpoint) {

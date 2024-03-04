@@ -32,8 +32,7 @@ public class SnapTo extends Command {
 
   public static enum EndBehaviour {
     NORMAL,
-    NEVER_ENDING,
-    NORMAL_WITHOUT_RESET
+    NEVER_ENDING
   }
 
   public SnapTo(Swerve drive, SnapMode mode) {
@@ -96,6 +95,8 @@ public class SnapTo extends Command {
       }
     }
 
+    m_drive.setSnapGoal(Rotation2d.fromRadians(setpoint));
+
     var nextState = m_profiler.calculate(m_timer.get(), initialState, new TrapezoidProfile.State(setpoint, 0));
     m_drive.setSnapSetpoint(new Rotation2d(nextState.position));
   }
@@ -105,8 +106,6 @@ public class SnapTo extends Command {
     switch (m_endBehaviour) {
       case NEVER_ENDING:
         return false;
-      case NORMAL_WITHOUT_RESET:
-        return m_profiler.isFinished(m_timer.get());
       case NORMAL:
         return m_profiler.isFinished(m_timer.get()) && m_drive.isSnapAtSetpoint();
       default:
@@ -117,9 +116,6 @@ public class SnapTo extends Command {
   @Override
   public void end(boolean interrupted) {
     m_timer.stop();
-
-    if (m_endBehaviour != EndBehaviour.NORMAL_WITHOUT_RESET) {
-      m_drive.setDriveMode(DriveMode.DriverInput);
-    }
+    m_drive.setDriveMode(DriveMode.DriverInput);
   }
 }

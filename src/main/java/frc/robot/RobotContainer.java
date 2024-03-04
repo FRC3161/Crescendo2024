@@ -19,11 +19,14 @@ import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.LightsConstants;
+import frc.robot.commands.Arm.ArmNotifier;
 import frc.robot.commands.Arm.ManualArm;
 import frc.robot.commands.Arm.ToAngle;
 import frc.robot.commands.Arm.ToDistanceAngle;
+import frc.robot.commands.Arm.ToDistanceAngle.ArmEndBehaviour;
 import frc.robot.commands.Climber.ClimberManual;
 import frc.robot.commands.Drive.DriveToLocation;
+import frc.robot.commands.Drive.SnapNotifier;
 import frc.robot.commands.Drive.SnapTo;
 import frc.robot.commands.Drive.TeleopSwerve;
 import frc.robot.commands.Drive.SnapTo.EndBehaviour;
@@ -134,12 +137,16 @@ public class RobotContainer {
     operator.rightTrigger().whileTrue(
         new SequentialCommandGroup(
             new ParallelCommandGroup(
-                new ToDistanceAngle(s_Swerve, arm, true),
+                new SnapNotifier(s_Swerve),
+                new ArmNotifier(arm),
                 new ToRPM(() -> 4700, shooter),
-                new SnapTo(s_Swerve, SnapMode.SPEAKER, EndBehaviour.NORMAL_WITHOUT_RESET),
                 new FeedIn(feeder).deadlineWith(new IntakeIn(intake))),
             new ShootFeed(feeder).withTimeout(0.7),
-            getIdleCommands()).handleInterrupt(this::idle));
+            getIdleCommands())
+            .handleInterrupt(this::idle)
+            .deadlineWith(
+                new SnapTo(s_Swerve, SnapMode.SPEAKER, EndBehaviour.NEVER_ENDING),
+                new ToDistanceAngle(s_Swerve, arm, ArmEndBehaviour.NEVER_ENDING)));
 
     operator.leftTrigger().whileTrue(new SequentialCommandGroup(
         new SolidColor(lights, Constants.LightsConstants.Colors.RED),
