@@ -9,6 +9,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -77,6 +78,7 @@ public class RobotContainer {
     arm.resetI();
     shooter.resetI();
     feeder.resetI();
+    arm.runState(new TrapezoidProfile.State(arm.getEncoderPosition().getRadians(), 0));
   }
 
   public void teleopInit() {

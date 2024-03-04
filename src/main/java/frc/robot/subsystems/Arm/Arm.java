@@ -43,8 +43,6 @@ public class Arm extends SubsystemBase {
   private LoggedTunableNumber armS = new LoggedTunableNumber("armS", Constants.ArmConstants.armSGV[0]);
   private LoggedTunableNumber armG = new LoggedTunableNumber("armG", Constants.ArmConstants.armSGV[1]);
   private LoggedTunableNumber armV = new LoggedTunableNumber("armV", Constants.ArmConstants.armSGV[2]);
-  private LoggedTunableNumber armAccel = new LoggedTunableNumber("ArmAccel",
-      Constants.ArmConstants.maxAcceleration.getDegrees());
 
   public Arm() {
     setupMotors();
@@ -78,7 +76,6 @@ public class Arm extends SubsystemBase {
 
   public void resetI() {
     pid.reset();
-
   }
 
   public Rotation2d getEncoderPosition() {
@@ -94,9 +91,6 @@ public class Arm extends SubsystemBase {
     }
     if (armS.hasChanged() || armG.hasChanged() || armV.hasChanged()) {
       ffModel = new ArmFeedforward(armS.get(), armG.get(), armV.get());
-    }
-    if (armAccel.hasChanged()) {
-      Constants.ArmConstants.speed = armAccel.get();
     }
   }
 

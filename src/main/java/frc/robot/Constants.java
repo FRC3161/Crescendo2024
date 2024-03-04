@@ -187,7 +187,7 @@ public final class Constants {
     public static final int toleranceRPM = 100;
     public static final int shooterIDLE = 2000;
     public static final double maxVelocityPerSecond = 2000; // RPM/s
-    public static final double maxAcceleration = 850; // RPM/s^2 og val: 700
+    public static final double maxAcceleration = 1000; // RPM/s^2 og val: 700
     // TODO: remember to change accel if shooter is too fast - just an
     // experiment¯\_(ツ)_/¯
 
@@ -225,9 +225,8 @@ public final class Constants {
     public static final Rotation2d min = Rotation2d.fromDegrees(10);
     public static final Rotation2d tolernace = Rotation2d.fromDegrees(1);
 
-    public static double speed = 120; // something to help me change things :)
-    public static final Rotation2d maxVelocityPerSecond = Rotation2d.fromDegrees(speed);
-    public static final Rotation2d maxAcceleration = Rotation2d.fromDegrees(120);
+    public static final Rotation2d maxVelocityPerSecond = Rotation2d.fromDegrees(250);
+    public static final Rotation2d maxAcceleration = Rotation2d.fromDegrees(250);
 
     public static double[] armSGV = new double[] { 0.01, 0.0425, 0.0 };
     public static double[] armPID = new double[] { 2, 1, 0f };
