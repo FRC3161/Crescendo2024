@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.util.LoggedTunableNumber;
 import frc.robot.Constants;
+import frc.robot.FieldConstants;
 import frc.robot.Constants.SwerveConstants.DriveMode;
 
 public class Swerve extends SubsystemBase {
@@ -398,7 +399,9 @@ public class Swerve extends SubsystemBase {
   }
 
   public Rotation2d getSpeedCompensationAngle() {
-    return Rotation2d.fromRadians(robotSpeed.getY() * Constants.ShooterConstants.onTheFlyMultiplier);
+    return Rotation2d.fromRadians(
+        (robotSpeed.getY() * Constants.ShooterConstants.onTheFlyMultiplier)
+            * ((FieldConstants.fieldLength - getDistanceFromSpeaker()) / FieldConstants.fieldLength));
   }
 
   @Override

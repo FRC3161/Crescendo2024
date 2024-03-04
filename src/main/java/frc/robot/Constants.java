@@ -195,7 +195,7 @@ public final class Constants {
     public static final double tailFF = 0.0028500;
     public static final double tailTolerance = 30;
 
-    public static final double onTheFlyMultiplier = 5f;
+    public static final double onTheFlyMultiplier = 12f;
 
     public static enum FeedMode {
       // IN,
