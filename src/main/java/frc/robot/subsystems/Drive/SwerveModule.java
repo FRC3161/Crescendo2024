@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -127,8 +128,8 @@ public class SwerveModule {
     driveEncoder.setVelocityConversionFactor(Constants.SwerveConstants.driveConversionVelocityFactor);
     driveEncoder.setPositionConversionFactor(Constants.SwerveConstants.driveConversionPositionFactor);
     driveController.setP(drivePID[0]);
-    driveController.setP(drivePID[1]);
-    driveController.setP(drivePID[2]);
+    driveController.setI(drivePID[1]);
+    driveController.setD(drivePID[2]);
     driveController.setFF(0);
     this.feedforward = new SimpleMotorFeedforward(driveSVA[0], driveSVA[1], driveSVA[2]);
     driveMotor.enableVoltageCompensation(12);
@@ -137,21 +138,12 @@ public class SwerveModule {
 
   private void setSpeed(SwerveModuleState desiredState) {
     driveSetpoint = desiredState.speedMetersPerSecond;
-    // var pidOutput = MathUtil.clamp(drivePIDController.calculate(getSpeed(),
-    // driveSetpoint),
-    // -Constants.SwerveConstants.maxSpeed,
-    // Constants.SwerveConstants.maxSpeed);
-    // var ffOutput = feedforward.calculate(angleSetpoint);
 
-    // driveController.setReference((pidOutput / Constants.SwerveConstants.maxSpeed)
-    // * 12 + ffOutput,
-    // ControlType.kVoltage);
-
-    driveController.setReference(
-        desiredState.speedMetersPerSecond,
-        ControlType.kVelocity,
-        0,
-        feedforward.calculate(desiredState.speedMetersPerSecond));
+    // driveController.setReference(
+    // desiredState.speedMetersPerSecond,
+    // ControlType.kVelocity,
+    // 0,
+    // feedforward.calculate(desiredState.speedMetersPerSecond));
   }
 
   private void setAngle(SwerveModuleState desiredState) {
@@ -208,5 +200,20 @@ public class SwerveModule {
 
   public CANSparkMax getDriveMotor() {
     return this.driveMotor;
+  }
+
+  public void periodic() {
+    var pidOutput = MathUtil.clamp(drivePIDController.calculate(getSpeed(),
+        driveSetpoint),
+        -Constants.SwerveConstants.maxSpeed,
+        Constants.SwerveConstants.maxSpeed);
+    var ffOutput = feedforward.calculate(driveSetpoint);
+
+    SmartDashboard.putNumber(Constants.SwerveConstants.moduleNames[moduleNumber] + " PID output", pidOutput);
+    SmartDashboard.putNumber(Constants.SwerveConstants.moduleNames[moduleNumber] + " FF output", ffOutput);
+
+    driveController.setReference((pidOutput / Constants.SwerveConstants.maxSpeed)
+        * 12 + ffOutput,
+        ControlType.kVoltage);
   }
 }

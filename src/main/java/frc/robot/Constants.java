@@ -68,6 +68,7 @@ public final class Constants {
     public static enum DriveMode {
       DriverInput,
       Snap,
+      AutonomousSnap,
     }
 
     public static final double[] snapPID = { 2, 0, 0 };

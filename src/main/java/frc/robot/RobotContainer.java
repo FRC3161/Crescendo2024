@@ -17,7 +17,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.CommandStadiaController;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.LightsConstants;
 import frc.robot.commands.Arm.ArmNotifier;
@@ -90,10 +92,18 @@ public class RobotContainer {
   }
 
   public Command getIdleCommands() {
-    return new ParallelCommandGroup(
-        new ToAngle(() -> Constants.ArmConstants.min.getRadians(), arm),
-        new ToRPM(() -> 0, shooter),
-        SnapTo.resetToDriverInput(s_Swerve));
+    if (!feeder.beamy.get()) {
+      return new ParallelCommandGroup(
+          new ToAngle(() -> Constants.ArmConstants.min.getRadians(), arm),
+          new ToRPM(() -> 3000, shooter),
+          SnapTo.resetToDriverInput(s_Swerve));
+    } else {
+      return new ParallelCommandGroup(
+          new ToAngle(() -> Constants.ArmConstants.min.getRadians(), arm),
+          new ToRPM(() -> 0, shooter),
+          SnapTo.resetToDriverInput(s_Swerve));
+    }
+
   }
 
   public void idle() {
@@ -105,8 +115,6 @@ public class RobotContainer {
     arm.setDefaultCommand(new ManualArm(() -> operator.getLeftY(), arm));
     climber.setDefaultCommand(
         new ClimberManual(climber, operator::getRightY));
-    lights.setDefaultCommand(new SolidColor(lights, LightsConstants.Colors.GOLD));
-
     /* Driver Controller */
     s_Swerve.setDefaultCommand(new TeleopSwerve(
         s_Swerve,
@@ -147,9 +155,8 @@ public class RobotContainer {
                 new ArmNotifier(arm),
                 new ToRPM(() -> 4700, shooter),
                 new FeedIn(feeder).deadlineWith(new IntakeIn(intake))),
-            new ShootFeed(feeder).withTimeout(0.7),
-            getIdleCommands())
-            .handleInterrupt(this::idle)
+            new ShootFeed(feeder).withTimeout(0.7))
+            .finallyDo(this::idle)
             .deadlineWith(
                 new SnapTo(s_Swerve, SnapMode.SPEAKER, EndBehaviour.NEVER_ENDING),
                 new ToDistanceAngle(s_Swerve, arm, ArmEndBehaviour.NEVER_ENDING)));
@@ -217,15 +224,17 @@ public class RobotContainer {
         new ShootFeed(feeder).withTimeout(1),
         getIdleCommands()));
 
-    NamedCommands.registerCommand("shoot",
-        new SequentialCommandGroup(
-            new ParallelCommandGroup(
-                new SnapTo(s_Swerve, SnapMode.SPEAKER),
-                new SolidColor(lights, new int[] { 150, 0, 0 }),
-                new ToRPM(() -> 4500, shooter),
-                new ToDistanceAngle(s_Swerve, arm)),
-            new SolidColor(lights, new int[] { 0, 150, 0 }),
-            new ShootFeed(feeder).withTimeout(0.5)));
+    NamedCommands.registerCommand("shoot", new SequentialCommandGroup(
+        new ParallelCommandGroup(
+            new SnapNotifier(s_Swerve),
+            new ArmNotifier(arm),
+            new ToRPM(() -> 4700, shooter),
+            new FeedIn(feeder).deadlineWith(new IntakeIn(intake))),
+        new ShootFeed(feeder).withTimeout(0.7))
+        .finallyDo(this::idle)
+        .deadlineWith(
+            new SnapTo(s_Swerve, SnapMode.SPEAKER_AUTO, EndBehaviour.NEVER_ENDING),
+            new ToDistanceAngle(s_Swerve, arm, ArmEndBehaviour.NEVER_ENDING)));
 
     NamedCommands.registerCommand("Intake",
         new SequentialCommandGroup(
@@ -247,6 +256,27 @@ public class RobotContainer {
   }
 
   public void configureTestCommands() {
+    SmartDashboard.putData("Suboofer", new SequentialCommandGroup(
+        new ParallelCommandGroup(
+            new SolidColor(lights, Constants.LightsConstants.Colors.RED),
+            new ToAngle(() -> Units.degreesToRadians(48.5), arm),
+            new ToRPM(() -> 4500, shooter),
+            new FeedIn(feeder).deadlineWith(new IntakeIn(intake))),
+        new SolidColor(lights, Constants.LightsConstants.Colors.BLUE),
+        new ShootFeed(feeder).withTimeout(1)));
+
+    SmartDashboard.putData("Shoot", new SequentialCommandGroup(
+        new ParallelCommandGroup(
+            new SnapNotifier(s_Swerve),
+            new ArmNotifier(arm),
+            new ToRPM(() -> 4700, shooter),
+            new FeedIn(feeder).deadlineWith(new IntakeIn(intake))),
+        new ShootFeed(feeder).withTimeout(0.7))
+        .finallyDo(this::idle)
+        .deadlineWith(
+            new SnapTo(s_Swerve, SnapMode.SPEAKER, EndBehaviour.NEVER_ENDING),
+            new ToDistanceAngle(s_Swerve, arm, ArmEndBehaviour.NEVER_ENDING)));
+
     /* Glass and SmartDashboard stuff */
     SmartDashboard.putData("Arm up", new ToAngle(() -> Units.degreesToRadians(90), arm));
     SmartDashboard.putData("Arm down", new ToAngle(() -> Units.degreesToRadians(37), arm));

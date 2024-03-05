@@ -24,6 +24,7 @@ public class SnapTo extends Command {
 
   public static enum SnapMode {
     SPEAKER,
+    SPEAKER_AUTO,
     LEFT,
     RIGHT,
     FORWARD,
@@ -54,7 +55,11 @@ public class SnapTo extends Command {
   @Override
   public void initialize() {
     initialState = new TrapezoidProfile.State(m_drive.getYawForSnap().getRadians(), 0);
-    m_drive.setDriveMode(DriveMode.Snap);
+    if (m_snapeMode == SnapMode.SPEAKER_AUTO) {
+      m_drive.setDriveMode(DriveMode.AutonomousSnap);
+    } else {
+      m_drive.setDriveMode(DriveMode.Snap);
+    }
 
     m_timer.reset();
     m_timer.start();
@@ -65,6 +70,10 @@ public class SnapTo extends Command {
     double setpoint = 0;
     switch (m_snapeMode) {
       case SPEAKER:
+        setpoint = Math.PI + m_drive.getRotationRelativeToSpeaker().getRadians()
+            + m_drive.getSpeedCompensationAngle().getRadians();
+
+      case SPEAKER_AUTO:
         setpoint = Math.PI + m_drive.getRotationRelativeToSpeaker().getRadians()
             + m_drive.getSpeedCompensationAngle().getRadians();
 

@@ -5,7 +5,7 @@
       "x": 1.3183917999267578,
       "y": 5.5338287353515625
     },
-    "rotation": 179.9775026064942
+    "rotation": -4.914775576436056e-33
   },
   "command": {
     "type": "sequential",
@@ -18,15 +18,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Straight.1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Intake"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Straight.1"
+                }
+              }
+            ]
           }
         },
         {

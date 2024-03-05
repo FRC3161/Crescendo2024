@@ -166,6 +166,10 @@ public class Swerve extends SubsystemBase {
         rotation = -snapPIDController.calculate(getYawForSnap().getRadians(), snapSetpoint.getRadians());
         rotation = MathUtil.clamp(rotation, -1, 1);
         break;
+      case AutonomousSnap:
+        rotation = -snapPIDController.calculate(getYawForSnap().getRadians(), snapSetpoint.getRadians());
+        rotation = MathUtil.clamp(rotation, -1, 1);
+        break;
       case DriverInput:
 
         break;
@@ -187,8 +191,20 @@ public class Swerve extends SubsystemBase {
 
   public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
     ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
+    double rotation = targetSpeeds.omegaRadiansPerSecond;
+    switch (driveMode) {
+      case Snap:
+        rotation = -snapPIDController.calculate(getYawForSnap().getRadians(), snapSetpoint.getRadians());
+        rotation = MathUtil.clamp(rotation, -1, 1);
+        break;
+      case DriverInput:
+
+        break;
+      default:
+        break;
+    }
     targetSpeeds = new ChassisSpeeds(targetSpeeds.vxMetersPerSecond, targetSpeeds.vyMetersPerSecond,
-        -targetSpeeds.omegaRadiansPerSecond);
+        -rotation);
 
     var currentSpeed = ChassisSpeeds.fromRobotRelativeSpeeds(robotRelativeSpeeds.vxMetersPerSecond,
         robotRelativeSpeeds.vyMetersPerSecond,
@@ -399,7 +415,7 @@ public class Swerve extends SubsystemBase {
   }
 
   public Rotation2d getSpeedCompensationAngle() {
-    return Rotation2d.fromRadians(
+    return Rotation2d.fromDegrees(
         (robotSpeed.getY() * Constants.ShooterConstants.onTheFlyMultiplier)
             * ((FieldConstants.fieldLength - getDistanceFromSpeaker()) / FieldConstants.fieldLength));
   }
@@ -414,6 +430,19 @@ public class Swerve extends SubsystemBase {
     gyro.logValues();
 
     poseEstimator.update(getYaw(), getPositions());
+
+    switch (driveMode) {
+      case AutonomousSnap:
+        drive(new Translation2d(), 0);
+        break;
+
+      default:
+        break;
+    }
+
+    for (SwerveModule mod : mSwerveMods) {
+      mod.periodic();
+    }
     logValues();
   }
 }
