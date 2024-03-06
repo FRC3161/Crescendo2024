@@ -27,6 +27,7 @@ import frc.robot.commands.Arm.ManualArm;
 import frc.robot.commands.Arm.ToAngle;
 import frc.robot.commands.Arm.ToDistanceAngle;
 import frc.robot.commands.Arm.ToDistanceAngle.ArmEndBehaviour;
+import frc.robot.commands.Climber.ClimbHome;
 import frc.robot.commands.Climber.ClimberManual;
 import frc.robot.commands.Drive.DriveToLocation;
 import frc.robot.commands.Drive.SnapNotifier;
@@ -269,6 +270,8 @@ public class RobotContainer {
   }
 
   public void configureTestCommands() {
+    SmartDashboard.putData("Home Climber", new ClimbHome(climber));
+
     SmartDashboard.putData("Suboofer", new SequentialCommandGroup(
         new ParallelCommandGroup(
             new SolidColor(lights, Constants.LightsConstants.Colors.RED),

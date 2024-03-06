@@ -244,16 +244,21 @@ public final class Constants {
 
   public static final class ClimberConstants {
 
+    public static enum ClimberMode {
+      HOMING,
+      DEPLOY,
+      RETRACT,
+      MANUAL,
+      IDLE
+    }
+
     public static final int leftMotorID = 51;
     public static final int rightMotorID = 52;
-
-    public static final double[] pid = { 0, 0, 0 };
-
-    public static final double maxVelocity = 2000; // RPM/s
-    public static final double maxAcceleration = 700; // RPM/s^2
-    public static final double retractSpeed = 0.7;
-
-    public static final TrapezoidProfile.Constraints climberConstraints = new TrapezoidProfile.Constraints(
-        maxVelocity, maxAcceleration);
+    public static final double max = 10; // TODO: change
+    public static final double min = 2; // slightly above home
+    public static final double homingCurrentThreshold = 5;
+    public static final double selfHomeSpeed = 0.3;
+    public static final double deploySpeed = 0.7;
+    public static final double retractSpeed = 1;
   }
 }
