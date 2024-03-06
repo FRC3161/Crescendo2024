@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -56,6 +57,7 @@ public class Feeder extends SubsystemBase {
     feeder.enableVoltageCompensation(12.0);
     feeder.setSmartCurrentLimit(30, 30);
     feeder.setInverted(true);
+    feeder.setIdleMode(IdleMode.kBrake);
 
     feederTail.restoreFactoryDefaults();
     CANSparkMaxUtil.setCANSparkMaxBusUsage(feederTail, Usage.kVelocityOnly);
@@ -63,6 +65,7 @@ public class Feeder extends SubsystemBase {
     feederTail.enableVoltageCompensation(12.0);
     feederTail.setSmartCurrentLimit(30, 30);
     feederTail.setInverted(true);
+    feederTail.setIdleMode(IdleMode.kBrake);
   }
 
   public void burnToFlash() {
