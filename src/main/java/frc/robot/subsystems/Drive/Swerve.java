@@ -43,8 +43,10 @@ public class Swerve extends SubsystemBase {
   public final VisionPhotonvision vision = new VisionPhotonvision();
 
   private final PIDController snapPIDController;
+  private SimpleMotorFeedforward snapFFModel;
   private DriveMode driveMode = DriveMode.DriverInput;
   private Rotation2d snapSetpoint = new Rotation2d();
+  private Rotation2d snapVelocity = new Rotation2d();
   private Rotation2d snapGoal = new Rotation2d();
 
   private Field2d debugField2d = new Field2d();
@@ -68,6 +70,10 @@ public class Swerve extends SubsystemBase {
   private LoggedTunableNumber snapI = new LoggedTunableNumber("SnapI", Constants.SwerveConstants.snapPID[1]);
   private LoggedTunableNumber snapD = new LoggedTunableNumber("SnapD", Constants.SwerveConstants.snapPID[2]);
 
+  private LoggedTunableNumber snapS = new LoggedTunableNumber("SnapS", Constants.SwerveConstants.snapSVA[0]);
+  private LoggedTunableNumber snapV = new LoggedTunableNumber("SnapV", Constants.SwerveConstants.snapSVA[1]);
+  private LoggedTunableNumber snapA = new LoggedTunableNumber("SnapA", Constants.SwerveConstants.snapSVA[2]);
+
   public Swerve() {
     /* Gyro setup */
     gyro = new GyroPigeon2(Constants.SwerveConstants.pigeonID);
@@ -88,9 +94,15 @@ public class Swerve extends SubsystemBase {
         Constants.SwerveConstants.snapPID[0],
         Constants.SwerveConstants.snapPID[1],
         Constants.SwerveConstants.snapPID[2]);
+    snapFFModel = new SimpleMotorFeedforward(
+        Constants.SwerveConstants.snapSVA[0],
+        Constants.SwerveConstants.snapSVA[1],
+        Constants.SwerveConstants.snapSVA[2]);
 
     snapPIDController.setTolerance(Units.degreesToRadians(1));
     snapPIDController.enableContinuousInput(0, Math.PI * 2);
+    snapPIDController.setIntegratorRange(-0.1, 0.1);
+
     AutoBuilder.configureHolonomic(this::getEstimatedPose, this::setPose, this::getRobotRelativeSpeeds,
         this::driveRobotRelative, new HolonomicPathFollowerConfig(
             Constants.AutoConstants.translationPID, // Translation constants
@@ -125,8 +137,9 @@ public class Swerve extends SubsystemBase {
     }
   }
 
-  public void setSnapSetpoint(Rotation2d setpoint) {
+  public void setSnapSetpoint(Rotation2d setpoint, Rotation2d velocity) {
     this.snapSetpoint = setpoint;
+    this.snapVelocity = velocity;
   }
 
   public void setSnapGoal(Rotation2d goal) {
@@ -154,6 +167,14 @@ public class Swerve extends SubsystemBase {
     return new Rotation2d(yawRad);
   }
 
+  public double calculateSnapOutput(Rotation2d setpoint, Rotation2d snapVelocity) {
+    double ffOutput = -snapFFModel.calculate(snapVelocity.getRadians());
+    double rotation = -snapPIDController.calculate(getYawForSnap().getRadians(), snapSetpoint.getRadians());
+    rotation = MathUtil.clamp(rotation, -1, 1);
+    rotation /= 2;
+    return rotation + ffOutput;
+  }
+
   /**
    * The main function used for driving the robot
    * 
@@ -163,12 +184,10 @@ public class Swerve extends SubsystemBase {
   public void drive(Translation2d translation, double rotation) {
     switch (driveMode) {
       case Snap:
-        rotation = -snapPIDController.calculate(getYawForSnap().getRadians(), snapSetpoint.getRadians());
-        rotation = MathUtil.clamp(rotation, -1, 1);
+        rotation = calculateSnapOutput(snapSetpoint, snapVelocity);
         break;
       case AutonomousSnap:
-        rotation = -snapPIDController.calculate(getYawForSnap().getRadians(), snapSetpoint.getRadians());
-        rotation = MathUtil.clamp(rotation, -1, 1);
+        rotation = calculateSnapOutput(snapSetpoint, snapVelocity);
         break;
       case DriverInput:
 
@@ -194,8 +213,7 @@ public class Swerve extends SubsystemBase {
     double rotation = targetSpeeds.omegaRadiansPerSecond;
     switch (driveMode) {
       case Snap:
-        rotation = -snapPIDController.calculate(getYawForSnap().getRadians(), snapSetpoint.getRadians());
-        rotation = MathUtil.clamp(rotation, -1, 1);
+        rotation = calculateSnapOutput(snapSetpoint, snapVelocity);
         break;
       case DriverInput:
 
@@ -235,6 +253,10 @@ public class Swerve extends SubsystemBase {
     for (SwerveModule mod : mSwerveMods) {
       mod.setDesiredState(desiredStates[mod.moduleNumber]);
     }
+  }
+
+  public void resetSnapI() {
+    snapPIDController.reset();
   }
 
   /** Reset the module encoder values */
@@ -326,6 +348,10 @@ public class Swerve extends SubsystemBase {
 
     if (snapP.hasChanged() || snapI.hasChanged() || snapD.hasChanged()) {
       snapPIDController.setPID(snapP.get(), snapI.get(), snapD.get());
+    }
+
+    if (snapS.hasChanged() || snapV.hasChanged() || snapA.hasChanged()) {
+      snapFFModel = new SimpleMotorFeedforward(snapS.get(), snapV.get(), snapA.get());
     }
   }
 

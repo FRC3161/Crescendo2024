@@ -71,7 +71,7 @@ public class Arm extends SubsystemBase {
 
     follower.follow(leader, true);
 
-    pid.setIntegratorRange(-0.1, 0.1);
+    pid.setIntegratorRange(-0.08, 0.08);
   }
 
   public void resetI() {

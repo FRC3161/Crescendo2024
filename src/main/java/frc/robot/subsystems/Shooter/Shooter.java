@@ -107,8 +107,8 @@ public class Shooter extends SubsystemBase {
     }
   }
 
-  public void runVelocity(double rpmL, double rpmPerSecond) { // Add rpmR
-    this.velocitySetpoint = rpmL;
+  public void runVelocity(double rpm, double rpmPerSecond) { // Add rpmR
+    this.velocitySetpoint = rpm;
     this.velocityRateOfChange = rpmPerSecond;
     // this.RvelocitySetpoint = rpmR;
   }

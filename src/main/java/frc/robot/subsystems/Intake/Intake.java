@@ -23,14 +23,14 @@ public class Intake extends SubsystemBase {
   public Intake() {
     leader.restoreFactoryDefaults();
     CANSparkMaxUtil.setCANSparkMaxBusUsage(leader, Usage.kMinimal);
-    leader.setSmartCurrentLimit(40, 40);
+    leader.setSmartCurrentLimit(30, 30);
     leader.setIdleMode(IdleMode.kBrake);
     leader.enableVoltageCompensation(12);
     leader.setInverted(false);
 
     follower.restoreFactoryDefaults();
     CANSparkMaxUtil.setCANSparkMaxBusUsage(follower, Usage.kMinimal);
-    follower.setSmartCurrentLimit(40, 40);
+    follower.setSmartCurrentLimit(30, 30);
     follower.setIdleMode(IdleMode.kBrake);
     follower.enableVoltageCompensation(12);
     leader.setInverted(false);

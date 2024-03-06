@@ -71,7 +71,8 @@ public final class Constants {
       AutonomousSnap,
     }
 
-    public static final double[] snapPID = { 2, 0, 0 };
+    public static final double[] snapPID = { 0.5, 0, 0 };
+    public static final double[] snapSVA = { 0.015, 0.2, 0 };
 
     /* Drive Controls */
     public static final double stickDeadband = 0.1;
@@ -103,7 +104,7 @@ public final class Constants {
 
     /* Swerve Profiling Values */
     public static final double maxSpeed = 4.2; // meters per second
-    public static final double maxAngularVelocity = Math.PI; // rads per second
+    public static final double maxAngularVelocity = Math.PI * 2; // rads per second
 
     /* Neutral Modes */
     /* Angle Encoder Invert */
@@ -196,7 +197,7 @@ public final class Constants {
     public static final double tailFF = 0.0028500;
     public static final double tailTolerance = 30;
 
-    public static final double onTheFlyMultiplier = 12f;
+    public static final double onTheFlyMultiplier = 18f;
 
     public static enum FeedMode {
       // IN,
@@ -229,15 +230,15 @@ public final class Constants {
     public static final Rotation2d maxVelocityPerSecond = Rotation2d.fromDegrees(250);
     public static final Rotation2d maxAcceleration = Rotation2d.fromDegrees(250);
 
-    public static double[] armSGV = new double[] { 0.01, 0.0425, 0.0 };
-    public static double[] armPID = new double[] { 2, 1, 0f };
+    public static double[] armSGV = new double[] { 0.01, 0.05, 0.0 };
+    public static double[] armPID = new double[] { 2, 2, 0f };
 
     public static final PolynomialRegression armAngleInterpolationPolynominalRegression = new PolynomialRegression(
         Arrays.asList(
-            new Point(1.43, Units.degreesToRadians(50f)),
-            new Point(3, Units.degreesToRadians(37f)),
-            new Point(4, Units.degreesToRadians(32f)),
-            new Point(5, Units.degreesToRadians(27.5f))),
+            new Point(1.43, Units.degreesToRadians(48f)),
+            new Point(3, Units.degreesToRadians(35f)),
+            new Point(4, Units.degreesToRadians(30f)),
+            new Point(5, Units.degreesToRadians(25.5f))),
         2);
   }
 

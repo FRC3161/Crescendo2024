@@ -43,6 +43,7 @@ public class Feeder extends SubsystemBase {
 
     feederTailPID = feederTail.getPIDController();
     tailEncoder = feederTail.getEncoder();
+    tailEncoder.setVelocityConversionFactor(1 / 2);
     feederTailPID.setIMaxAccum(0.02, 0);
 
     tailEncoder.setPosition(0);
@@ -53,14 +54,14 @@ public class Feeder extends SubsystemBase {
     CANSparkMaxUtil.setCANSparkMaxBusUsage(feeder, Usage.kMinimal);
     feeder.setInverted(true);
     feeder.enableVoltageCompensation(12.0);
-    feeder.setSmartCurrentLimit(40, 40);
+    feeder.setSmartCurrentLimit(30, 30);
     feeder.setInverted(true);
 
     feederTail.restoreFactoryDefaults();
     CANSparkMaxUtil.setCANSparkMaxBusUsage(feederTail, Usage.kVelocityOnly);
     feederTail.setInverted(true);
     feederTail.enableVoltageCompensation(12.0);
-    feederTail.setSmartCurrentLimit(40, 40);
+    feederTail.setSmartCurrentLimit(30, 30);
     feederTail.setInverted(true);
   }
 
@@ -130,7 +131,7 @@ public class Feeder extends SubsystemBase {
         }
         break;
       case OUT:
-        tailSetpoint = 2300;
+        tailSetpoint = 2100;
         if (isTailAtSetpoint()) {
           feeder.set(-feedPower);
         }

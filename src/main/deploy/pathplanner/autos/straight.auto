@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3183917999267578,
-      "y": 5.5338287353515625
+      "x": 1.4060572385787964,
+      "y": 5.565796375274658
     },
-    "rotation": -4.914775576436056e-33
+    "rotation": -3.450240702114867e-27
   },
   "command": {
     "type": "sequential",
@@ -22,24 +22,50 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "Intake"
-                }
-              },
-              {
                 "type": "path",
                 "data": {
-                  "pathName": "Straight.1"
+                  "pathName": "onthefly.1"
                 }
               }
             ]
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "shoot"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "onthefly.2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "shootfly"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "onthefly.3"
+                }
+              }
+            ]
           }
         }
       ]

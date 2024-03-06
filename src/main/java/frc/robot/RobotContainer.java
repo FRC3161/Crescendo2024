@@ -39,6 +39,7 @@ import frc.robot.commands.Intake.Outake;
 import frc.robot.commands.Intake.beamMessage;
 import frc.robot.commands.Lights.SolidColor;
 import frc.robot.commands.Shooter.ShootFeed;
+import frc.robot.commands.Shooter.ShooterOFF;
 import frc.robot.commands.Shooter.FeedIn;
 import frc.robot.commands.Shooter.FeedInNotifier;
 import frc.robot.commands.Shooter.FeedOut;
@@ -73,13 +74,13 @@ public class RobotContainer {
     configureNamedCommands();
     configureAutoCommands();
     configureTestCommands();
-
   }
 
   public void disabledActions() {
     arm.resetI();
     shooter.resetI();
     feeder.resetI();
+    s_Swerve.resetSnapI();
     arm.runState(new TrapezoidProfile.State(arm.getEncoderPosition().getRadians(), 0));
   }
 
@@ -92,7 +93,7 @@ public class RobotContainer {
   }
 
   public Command getIdleCommands() {
-    if (!feeder.beamy.get()) {
+    if (!intake.beamy2.get()) {
       return new ParallelCommandGroup(
           new ToAngle(() -> Constants.ArmConstants.min.getRadians(), arm),
           new ToRPM(() -> 3000, shooter),
@@ -162,10 +163,11 @@ public class RobotContainer {
                 new ToDistanceAngle(s_Swerve, arm, ArmEndBehaviour.NEVER_ENDING)));
 
     operator.leftTrigger().whileTrue(new SequentialCommandGroup(
+        new ShooterOFF(shooter),
         new SolidColor(lights, Constants.LightsConstants.Colors.RED),
         new ToAngle(() -> Constants.ArmConstants.min.getRadians(), arm),
-        new SolidColor(lights, Constants.LightsConstants.Colors.BLUE),
-        new FeedOut(feeder)));
+        new FeedOut(feeder),
+        new SolidColor(lights, Constants.LightsConstants.Colors.BLUE)));
 
     driver.leftBumper().whileTrue(
         new SequentialCommandGroup(
@@ -234,6 +236,17 @@ public class RobotContainer {
         .finallyDo(this::idle)
         .deadlineWith(
             new SnapTo(s_Swerve, SnapMode.SPEAKER_AUTO, EndBehaviour.NEVER_ENDING),
+            new ToDistanceAngle(s_Swerve, arm, ArmEndBehaviour.NEVER_ENDING)));
+    NamedCommands.registerCommand("shootfly", new SequentialCommandGroup(
+        new ParallelCommandGroup(
+            new SnapNotifier(s_Swerve),
+            new ArmNotifier(arm),
+            new ToRPM(() -> 4700, shooter),
+            new FeedIn(feeder).deadlineWith(new IntakeIn(intake))),
+        new ShootFeed(feeder).withTimeout(0.7))
+        .finallyDo(this::idle)
+        .deadlineWith(
+            new SnapTo(s_Swerve, SnapMode.SPEAKER, EndBehaviour.NEVER_ENDING),
             new ToDistanceAngle(s_Swerve, arm, ArmEndBehaviour.NEVER_ENDING)));
 
     NamedCommands.registerCommand("Intake",

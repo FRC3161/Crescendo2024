@@ -19,8 +19,8 @@ public class SnapTo extends Command {
   private TrapezoidProfile.State initialState;
   private TrapezoidProfile m_profiler = new TrapezoidProfile(
       new TrapezoidProfile.Constraints(
-          Units.degreesToRadians(400),
-          Units.degreesToRadians(500)));
+          Units.degreesToRadians(1600),
+          Units.degreesToRadians(1400)));
 
   public static enum SnapMode {
     SPEAKER,
@@ -107,7 +107,7 @@ public class SnapTo extends Command {
     m_drive.setSnapGoal(Rotation2d.fromRadians(setpoint));
 
     var nextState = m_profiler.calculate(m_timer.get(), initialState, new TrapezoidProfile.State(setpoint, 0));
-    m_drive.setSnapSetpoint(new Rotation2d(nextState.position));
+    m_drive.setSnapSetpoint(new Rotation2d(nextState.position), new Rotation2d(nextState.velocity));
   }
 
   @Override
