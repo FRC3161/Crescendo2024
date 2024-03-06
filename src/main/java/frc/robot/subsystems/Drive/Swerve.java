@@ -186,12 +186,6 @@ public class Swerve extends SubsystemBase {
       case Snap:
         rotation = calculateSnapOutput(snapSetpoint, snapVelocity);
         break;
-      case AutonomousSnap:
-        rotation = calculateSnapOutput(snapSetpoint, snapVelocity);
-        break;
-      case DriverInput:
-
-        break;
       default:
         break;
     }
@@ -213,7 +207,7 @@ public class Swerve extends SubsystemBase {
     double rotation = targetSpeeds.omegaRadiansPerSecond;
     switch (driveMode) {
       case Snap:
-        rotation = calculateSnapOutput(snapSetpoint, snapVelocity);
+        rotation = calculateSnapOutput(snapSetpoint, snapVelocity) * Constants.SwerveConstants.maxAngularVelocity;
         break;
       case DriverInput:
 
