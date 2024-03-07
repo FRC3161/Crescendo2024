@@ -44,7 +44,7 @@ public class Feeder extends SubsystemBase {
 
     feederTailPID = feederTail.getPIDController();
     tailEncoder = feederTail.getEncoder();
-    tailEncoder.setVelocityConversionFactor(1 / 2);
+    tailEncoder.setVelocityConversionFactor(1 / 6);
     feederTailPID.setIMaxAccum(0.02, 0);
 
     tailEncoder.setPosition(0);
@@ -134,7 +134,7 @@ public class Feeder extends SubsystemBase {
         }
         break;
       case OUT:
-        tailSetpoint = 2100;
+        tailSetpoint = 4500;
         if (isTailAtSetpoint()) {
           feeder.set(-feedPower);
         }

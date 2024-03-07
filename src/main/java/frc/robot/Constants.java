@@ -193,7 +193,7 @@ public final class Constants {
     // TODO: remember to change accel if shooter is too fast - just an
     // experiment¯\_(ツ)_/¯
 
-    public static final double[] tailPID = new double[] { 0, 0.000001, 0 };
+    public static final double[] tailPID = new double[] { 0, 0, 0 };
     public static final double tailFF = 0.0028500;
     public static final double tailTolerance = 30;
 
@@ -230,8 +230,8 @@ public final class Constants {
     public static final Rotation2d maxVelocityPerSecond = Rotation2d.fromDegrees(250);
     public static final Rotation2d maxAcceleration = Rotation2d.fromDegrees(250);
 
-    public static double[] armSGV = new double[] { 0.01, 0.05, 0.0 };
-    public static double[] armPID = new double[] { 2, 2, 0f };
+    public static double[] armSGV = new double[] { 0.01, 0.0425, 0.0 };
+    public static double[] armPID = new double[] { 2, 1, 0f };
 
     public static final PolynomialRegression armAngleInterpolationPolynominalRegression = new PolynomialRegression(
         Arrays.asList(
@@ -254,10 +254,12 @@ public final class Constants {
 
     public static final int leftMotorID = 51;
     public static final int rightMotorID = 52;
-    public static final double max = 10; // TODO: change
-    public static final double min = 2; // slightly above home
-    public static final double homingCurrentThreshold = 5;
-    public static final double selfHomeSpeed = 0.3;
+    public static final double max = 140; // TODO: change
+    public static final double desiredMax = 125; // TODO: change
+    public static final double min = -2; // slightly above homec
+    public static final double desiredMin = 10; // slightly above homec
+    public static final double homingCurrentThreshold = 10;
+    public static final double selfHomeSpeedVoltage = 10;
     public static final double deploySpeed = 0.7;
     public static final double retractSpeed = 1;
   }

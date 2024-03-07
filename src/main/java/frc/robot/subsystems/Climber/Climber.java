@@ -2,9 +2,12 @@ package frc.robot.subsystems.Climber;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -17,6 +20,11 @@ public class Climber extends SubsystemBase {
       MotorType.kBrushless);
   private CANSparkMax rightClimberMotor = new CANSparkMax(Constants.ClimberConstants.rightMotorID,
       MotorType.kBrushless);
+
+  private Timer timer = new Timer();
+
+  private final SparkPIDController leftPID;
+  private final SparkPIDController rightPID;
 
   private final RelativeEncoder encoderLeft;
   private final RelativeEncoder encoderRight;
@@ -33,21 +41,30 @@ public class Climber extends SubsystemBase {
 
     encoderLeft = leftClimberMotor.getEncoder();
     resetEncoderLeft();
+    leftPID = leftClimberMotor.getPIDController();
 
     encoderRight = rightClimberMotor.getEncoder();
     resetEncoderRight();
+    rightPID = rightClimberMotor.getPIDController();
+  }
+
+  private static enum States {
+    BADBADBAD,
+    OKAYUP,
+    OKAYDOWN,
+    GOOD
   }
 
   private void setupMotors() {
     leftClimberMotor.restoreFactoryDefaults();
     leftClimberMotor.enableVoltageCompensation(12);
-    leftClimberMotor.setSmartCurrentLimit(60, 40);
+    leftClimberMotor.setSmartCurrentLimit(20, 20);
     leftClimberMotor.setIdleMode(IdleMode.kBrake);
     leftClimberMotor.setInverted(true);
 
     rightClimberMotor.restoreFactoryDefaults();
     rightClimberMotor.enableVoltageCompensation(12);
-    rightClimberMotor.setSmartCurrentLimit(60, 40);
+    rightClimberMotor.setSmartCurrentLimit(20, 20);
     rightClimberMotor.setIdleMode(IdleMode.kBrake);
     rightClimberMotor.setInverted(true);
   }
@@ -59,6 +76,10 @@ public class Climber extends SubsystemBase {
 
   public void setMode(ClimberMode mode) {
     climberMode = mode;
+    if (climberMode == ClimberMode.HOMING) {
+      timer.reset();
+      timer.start();
+    }
     isLeftDone = false;
     isRightDone = false;
   }
@@ -109,29 +130,45 @@ public class Climber extends SubsystemBase {
     return isLeftDone && isRightDone;
   }
 
-  public boolean isRightOutOfBounds() {
-    var encoderValue = encoderRight.getPosition();
-    return encoderValue <= ClimberConstants.min || encoderValue >= ClimberConstants.max;
+  public States outOfBounds(double encoderValue) {
+    if (encoderValue <= ClimberConstants.min) {
+      return States.BADBADBAD;
+    } else if (encoderValue <= ClimberConstants.desiredMin) {
+      return States.OKAYUP;
+    } else if (encoderValue < ClimberConstants.desiredMax) {
+      return States.GOOD;
+    } else if (encoderValue < ClimberConstants.max) {
+      return States.OKAYDOWN;
+    } else if (encoderValue >= ClimberConstants.max) {
+      return States.BADBADBAD;
+    } else {
+      return States.BADBADBAD;
+    }
   }
 
-  public boolean isLeftOutOfBounds() {
-    var encoderValue = encoderLeft.getPosition();
-    return encoderValue <= ClimberConstants.min || encoderValue >= ClimberConstants.max;
+  public States isRightOutOfBounds() {
+    return outOfBounds(-encoderRight.getPosition());
+  }
+
+  public States isLeftOutOfBounds() {
+    return outOfBounds(-encoderLeft.getPosition());
   }
 
   private void handleLeft() {
     switch (climberMode) {
       case HOMING:
         if (leftClimberMotor.getOutputCurrent() >= ClimberConstants.homingCurrentThreshold) {
+          if (timer.get() < 1)
+            return;
           stopLeft();
           isLeftDone = true;
           encoderLeft.setPosition(0);
         } else {
-          setLeft(ClimberConstants.selfHomeSpeed);
+          setLeft(ClimberConstants.selfHomeSpeedVoltage);
         }
         break;
       case DEPLOY:
-        if (encoderLeft.getPosition() >= ClimberConstants.max) {
+        if (-encoderLeft.getPosition() >= ClimberConstants.max) {
           stopRight();
           isLeftDone = true;
         } else {
@@ -139,7 +176,7 @@ public class Climber extends SubsystemBase {
         }
         break;
       case RETRACT:
-        if (encoderLeft.getPosition() <= ClimberConstants.min) {
+        if (-encoderLeft.getPosition() <= ClimberConstants.min) {
           stopLeft();
           isLeftDone = true;
         } else {
@@ -147,8 +184,22 @@ public class Climber extends SubsystemBase {
         }
         break;
       case MANUAL:
-        if (isLeftOutOfBounds()) {
-          stopLeft();
+        switch (isLeftOutOfBounds()) {
+          case BADBADBAD:
+            stopLeft();
+            break;
+          case OKAYUP:
+            if (leftPower > 0) {
+              setLeft(0);
+            }
+            break;
+          case OKAYDOWN:
+            if (leftPower < 0) {
+              setLeft(0);
+            }
+            break;
+          default:
+            break;
         }
         break;
       case IDLE:
@@ -163,11 +214,13 @@ public class Climber extends SubsystemBase {
     switch (climberMode) {
       case HOMING:
         if (rightClimberMotor.getOutputCurrent() >= ClimberConstants.homingCurrentThreshold) {
+          if (timer.get() < 1)
+            return;
           stopRight();
           isRightDone = true;
           encoderRight.setPosition(0);
         } else {
-          setRight(ClimberConstants.selfHomeSpeed);
+          setRight(ClimberConstants.selfHomeSpeedVoltage);
         }
         break;
       case DEPLOY:
@@ -187,8 +240,24 @@ public class Climber extends SubsystemBase {
         }
         break;
       case MANUAL:
-        if (isRightOutOfBounds()) {
-          stopRight();
+        switch (isRightOutOfBounds()) {
+          case BADBADBAD:
+            stopRight();
+            break;
+
+          case OKAYUP:
+            if (rightPower > 0) {
+              setRight(0);
+            }
+            break;
+
+          case OKAYDOWN:
+            if (rightPower < 0) {
+              setRight(0);
+            }
+            break;
+          default:
+            break;
         }
         break;
       case IDLE:
@@ -207,8 +276,16 @@ public class Climber extends SubsystemBase {
     handleLeft();
     handleRight();
 
-    leftClimberMotor.set(leftPower);
-    rightClimberMotor.set(rightPower);
+    if (leftPower > 1) {
+      leftPID.setReference(leftPower, ControlType.kVoltage);
+    } else {
+      leftPID.setReference(leftPower, ControlType.kDutyCycle);
+    }
 
+    if (rightPower > 1) {
+      rightPID.setReference(rightPower, ControlType.kVoltage);
+    } else {
+      rightPID.setReference(rightPower, ControlType.kDutyCycle);
+    }
   }
 }
