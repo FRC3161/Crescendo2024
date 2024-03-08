@@ -62,14 +62,14 @@ public class Arm extends SubsystemBase {
     leader.enableVoltageCompensation(12);
     leader.setSmartCurrentLimit(60, 40);
     leader.setIdleMode(IdleMode.kBrake);
+    leader.setInverted(false);
 
     follower.restoreFactoryDefaults();
     CANSparkMaxUtil.setCANSparkMaxBusUsage(follower, Usage.kPositionOnly);
     follower.enableVoltageCompensation(12);
     follower.setSmartCurrentLimit(60, 40);
     follower.setIdleMode(IdleMode.kBrake);
-
-    follower.follow(leader, true);
+    follower.setInverted(true);
 
     pid.setIntegratorRange(-0.05, 0.05);
   }
@@ -154,7 +154,10 @@ public class Arm extends SubsystemBase {
     var ffOutput = ffModel.calculate(setpoint.getRadians(), velocity.getRadians());
     var pidOutput = pid.calculate(getEncoderPosition().getRadians(), setpoint.getRadians());
 
+    SmartDashboard.putNumber("ffoutput arm", ffOutput);
+
     leader.set(ffOutput + pidOutput);
+    follower.set(ffOutput + pidOutput);
   }
 
 }

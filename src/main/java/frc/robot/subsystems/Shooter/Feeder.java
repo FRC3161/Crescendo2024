@@ -36,6 +36,7 @@ public class Feeder extends SubsystemBase {
   private LoggedTunableNumber tailI = new LoggedTunableNumber("Tail I", Constants.ShooterConstants.tailPID[1]);
   private LoggedTunableNumber tailD = new LoggedTunableNumber("Tail D", Constants.ShooterConstants.tailPID[2]);
   private LoggedTunableNumber tailFF = new LoggedTunableNumber("Tail FF", Constants.ShooterConstants.tailFF);
+  private LoggedTunableNumber tailSPEED = new LoggedTunableNumber("Tail Speed", 3400);
 
   private SimpleMotorFeedforward ffModel = new SimpleMotorFeedforward(0, Constants.ShooterConstants.tailFF);
 
@@ -46,6 +47,7 @@ public class Feeder extends SubsystemBase {
     tailEncoder = feederTail.getEncoder();
     tailEncoder.setVelocityConversionFactor(1 / 6);
     feederTailPID.setIMaxAccum(0.02, 0);
+    // feederTailPID.setOutputRange(0, 9999);
 
     tailEncoder.setPosition(0);
   }
@@ -134,7 +136,7 @@ public class Feeder extends SubsystemBase {
         }
         break;
       case OUT:
-        tailSetpoint = 4500;
+        tailSetpoint = tailSPEED.get();
         if (isTailAtSetpoint()) {
           feeder.set(-feedPower);
         }

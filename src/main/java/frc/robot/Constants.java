@@ -193,8 +193,8 @@ public final class Constants {
     // TODO: remember to change accel if shooter is too fast - just an
     // experiment¯\_(ツ)_/¯
 
-    public static final double[] tailPID = new double[] { 0, 0, 0 };
-    public static final double tailFF = 0.0028500;
+    public static final double[] tailPID = new double[] { 0, 0.000001, 0 };
+    public static final double tailFF = 0.002250;
     public static final double tailTolerance = 30;
 
     public static final double onTheFlyMultiplier = 18f;
@@ -224,10 +224,10 @@ public final class Constants {
 
     public static final Rotation2d offset = Rotation2d.fromDegrees(88 - 90);
     public static final Rotation2d max = Rotation2d.fromDegrees(90);
-    public static final Rotation2d min = Rotation2d.fromDegrees(10);
+    public static final Rotation2d min = Rotation2d.fromDegrees(3);
     public static final Rotation2d tolernace = Rotation2d.fromDegrees(1);
 
-    public static final Rotation2d maxVelocityPerSecond = Rotation2d.fromDegrees(250);
+    public static final Rotation2d maxVelocityPerSecond = Rotation2d.fromDegrees(500);
     public static final Rotation2d maxAcceleration = Rotation2d.fromDegrees(250);
 
     public static double[] armSGV = new double[] { 0.01, 0.0425, 0.0 };
@@ -235,10 +235,10 @@ public final class Constants {
 
     public static final PolynomialRegression armAngleInterpolationPolynominalRegression = new PolynomialRegression(
         Arrays.asList(
-            new Point(1.43, Units.degreesToRadians(48f)),
-            new Point(3, Units.degreesToRadians(35f)),
-            new Point(4, Units.degreesToRadians(30f)),
-            new Point(5, Units.degreesToRadians(25.5f))),
+            new Point(1.43, Units.degreesToRadians(47f)),
+            new Point(3, Units.degreesToRadians(34f)),
+            new Point(4, Units.degreesToRadians(29f)),
+            new Point(5, Units.degreesToRadians(24.5f))),
         2);
   }
 

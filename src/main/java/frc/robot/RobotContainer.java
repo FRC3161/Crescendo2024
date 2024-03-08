@@ -94,7 +94,7 @@ public class RobotContainer {
   }
 
   public Command getIdleCommands() {
-    if (!intake.beamy2.get()) {
+    if (!feeder.beamy.get()) {
       return new ParallelCommandGroup(
           new ToAngle(() -> Constants.ArmConstants.min.getRadians(), arm),
           new ToRPM(() -> 3000, shooter),
@@ -176,7 +176,7 @@ public class RobotContainer {
             new ParallelCommandGroup(
                 new ToAngle(() -> Constants.ArmConstants.min.getRadians(), arm),
                 new FeedSource(feeder)),
-            new SolidColor(lights, Constants.LightsConstants.Colors.GREEN)));
+            new SolidColor(lights, Constants.LightsConstants.Colors.GREEN)).finallyDo(this::idle));
     operator.leftBumper().whileTrue(new SequentialCommandGroup(
         new ParallelCommandGroup(
             new SolidColor(lights, Constants.LightsConstants.Colors.RED),
@@ -208,8 +208,7 @@ public class RobotContainer {
             new ToAngle(() -> Units.degreesToRadians(48.5), arm),
             new ToRPM(() -> 4500, shooter)),
         new SolidColor(lights, Constants.LightsConstants.Colors.BLUE),
-        new ShootFeed(feeder).withTimeout(1),
-        getIdleCommands()));
+        new ShootFeed(feeder).withTimeout(1)).finallyDo(this::idle));
 
   }
 
@@ -224,8 +223,7 @@ public class RobotContainer {
             new ToAngle(() -> Units.degreesToRadians(48.5), arm),
             new ToRPM(() -> 4500, shooter)),
         new SolidColor(lights, Constants.LightsConstants.Colors.BLUE),
-        new ShootFeed(feeder).withTimeout(1),
-        getIdleCommands()));
+        new ShootFeed(feeder).withTimeout(1)));
 
     NamedCommands.registerCommand("shoot", new SequentialCommandGroup(
         new ParallelCommandGroup(
@@ -250,7 +248,7 @@ public class RobotContainer {
             new SnapTo(s_Swerve, SnapMode.SPEAKER, EndBehaviour.NEVER_ENDING),
             new ToDistanceAngle(s_Swerve, arm, ArmEndBehaviour.NEVER_ENDING)));
 
-    NamedCommands.registerCommand("Intake",
+    NamedCommands.registerCommand("intake",
         new SequentialCommandGroup(
             new SolidColor(lights, Constants.LightsConstants.Colors.RED),
             new ToAngle(() -> Units.degreesToRadians(15), arm),

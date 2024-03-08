@@ -6,11 +6,32 @@
       "/SmartDashboard/Arm up": "Command",
       "/SmartDashboard/Feed IN": "Command",
       "/SmartDashboard/Feed OUT": "Command",
+      "/SmartDashboard/Home Climber": "Command",
       "/SmartDashboard/Reset Pose": "Command",
+      "/SmartDashboard/Shoot": "Command",
       "/SmartDashboard/Shooter test command": "Command",
+      "/SmartDashboard/Suboofer": "Command",
       "/SmartDashboard/Vision field": "Field2d",
       "/SmartDashboard/autos": "String Chooser",
       "/SmartDashboard/burn to flash": "Command"
+    },
+    "windows": {
+      "/SmartDashboard/Vision field": {
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/autos": {
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables Info": {
