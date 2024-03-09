@@ -23,6 +23,12 @@ import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
 
+  public static enum RobotMode {
+    AUTONOMOUS,
+    TELEOP,
+    DISABLED
+  }
+
   public static boolean enableTunableValues = true;
 
   public static class LightsConstants {

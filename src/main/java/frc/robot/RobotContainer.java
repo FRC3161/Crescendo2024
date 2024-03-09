@@ -14,6 +14,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ProxyCommand;
@@ -22,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandStadiaController;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.LightsConstants;
+import frc.robot.Constants.RobotMode;
 import frc.robot.commands.Arm.ArmNotifier;
 import frc.robot.commands.Arm.ManualArm;
 import frc.robot.commands.Arm.ToAngle;
@@ -56,6 +58,8 @@ import frc.robot.subsystems.Shooter.Shooter;
 
 public class RobotContainer {
 
+  private RobotMode robotMode = RobotMode.DISABLED;
+
   /* Controllers */
   private final CommandXboxController driver = new CommandXboxController(Constants.Operators.driver);
   private final CommandXboxController operator = new CommandXboxController(Constants.Operators.operator);
@@ -77,6 +81,10 @@ public class RobotContainer {
     configureTestCommands();
   }
 
+  public void setRobotMode(RobotMode mode) {
+    robotMode = mode;
+  }
+
   public void disabledActions() {
     arm.resetI();
     shooter.resetI();
@@ -94,16 +102,32 @@ public class RobotContainer {
   }
 
   public Command getIdleCommands() {
-    if (!feeder.beamy.get()) {
-      return new ParallelCommandGroup(
-          new ToAngle(() -> Constants.ArmConstants.min.getRadians(), arm),
-          new ToRPM(() -> 3000, shooter),
-          SnapTo.resetToDriverInput(s_Swerve));
-    } else {
-      return new ParallelCommandGroup(
-          new ToAngle(() -> Constants.ArmConstants.min.getRadians(), arm),
-          new ToRPM(() -> 0, shooter),
-          SnapTo.resetToDriverInput(s_Swerve));
+    switch (robotMode) {
+      case TELEOP:
+        if (!feeder.beamy.get()) {
+          return new ParallelCommandGroup(
+              new ToAngle(() -> Constants.ArmConstants.min.getRadians(), arm),
+              new ToRPM(() -> 3000, shooter),
+              SnapTo.resetToDriverInput(s_Swerve));
+        } else {
+          return new ParallelCommandGroup(
+              new ToAngle(() -> Constants.ArmConstants.min.getRadians(), arm),
+              new ToRPM(() -> 0, shooter),
+              SnapTo.resetToDriverInput(s_Swerve));
+        }
+
+      case AUTONOMOUS:
+        if (!feeder.beamy.get()) {
+          return new ParallelCommandGroup(
+              new ToRPM(() -> 4700, shooter),
+              SnapTo.resetToDriverInput(s_Swerve));
+        } else {
+          return new ParallelCommandGroup(
+              new ToRPM(() -> 4700, shooter),
+              SnapTo.resetToDriverInput(s_Swerve));
+        }
+      default:
+        return Commands.none();
     }
 
   }
@@ -221,18 +245,17 @@ public class RobotContainer {
         new ParallelCommandGroup(
             new SolidColor(lights, Constants.LightsConstants.Colors.RED),
             new ToAngle(() -> Units.degreesToRadians(48.5), arm),
-            new ToRPM(() -> 4500, shooter)),
+            new ToRPM(() -> 4700, shooter)),
         new SolidColor(lights, Constants.LightsConstants.Colors.BLUE),
         new ShootFeed(feeder).withTimeout(1)));
 
-    NamedCommands.registerCommand("shoot", new SequentialCommandGroup(
+    NamedCommands.registerCommand("Shoot", new SequentialCommandGroup(
         new ParallelCommandGroup(
             new SnapNotifier(s_Swerve),
             new ArmNotifier(arm),
             new ToRPM(() -> 4700, shooter),
             new FeedIn(feeder).deadlineWith(new IntakeIn(intake))),
         new ShootFeed(feeder).withTimeout(0.7))
-        .finallyDo(this::idle)
         .deadlineWith(
             new SnapTo(s_Swerve, SnapMode.SPEAKER_AUTO, EndBehaviour.NEVER_ENDING),
             new ToDistanceAngle(s_Swerve, arm, ArmEndBehaviour.NEVER_ENDING)));
@@ -243,7 +266,6 @@ public class RobotContainer {
             new ToRPM(() -> 4700, shooter),
             new FeedIn(feeder).deadlineWith(new IntakeIn(intake))),
         new ShootFeed(feeder).withTimeout(0.7))
-        .finallyDo(this::idle)
         .deadlineWith(
             new SnapTo(s_Swerve, SnapMode.SPEAKER, EndBehaviour.NEVER_ENDING),
             new ToDistanceAngle(s_Swerve, arm, ArmEndBehaviour.NEVER_ENDING)));
@@ -251,7 +273,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("intake",
         new SequentialCommandGroup(
             new SolidColor(lights, Constants.LightsConstants.Colors.RED),
-            new ToAngle(() -> Units.degreesToRadians(15), arm),
+            new ToAngle(() -> Units.degreesToRadians(30), arm),
             new ParallelCommandGroup(
                 new FeedIn(feeder).deadlineWith(new IntakeIn(intake)),
                 new SequentialCommandGroup(
