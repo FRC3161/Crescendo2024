@@ -203,6 +203,8 @@ public class Swerve extends SubsystemBase {
   }
 
   public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
+    if (driveMode == DriveMode.AutonomousSnap)
+      return;
     ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
     double rotation = targetSpeeds.omegaRadiansPerSecond;
     switch (driveMode) {
@@ -389,9 +391,25 @@ public class Swerve extends SubsystemBase {
   }
 
   public Rotation2d getRotationRelativeToSpeaker() {
-    return getEstimatedPose().getTranslation().minus(getSpeakerPose().get().getTranslation().toTranslation2d())
-        .unaryMinus()
-        .getAngle();
+    var alliance = DriverStation.getAlliance();
+
+    if (!alliance.isPresent())
+      return new Rotation2d();
+
+    switch (alliance.get()) {
+      case Blue:
+        return new Rotation2d(
+            getEstimatedPose().getTranslation().minus(getSpeakerPose().get().getTranslation().toTranslation2d())
+                .unaryMinus()
+                .getAngle().getRadians() + Math.PI);
+      case Red:
+        return getEstimatedPose().getTranslation().minus(getSpeakerPose().get().getTranslation().toTranslation2d())
+            .unaryMinus()
+            .getAngle();
+
+      default:
+        return new Rotation2d();
+    }
   }
 
   public Optional<PhotonTrackedTarget> getClosestTag() {

@@ -1,7 +1,5 @@
 package frc.robot.commands.Drive;
 
-import javax.naming.InitialContext;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -70,15 +68,12 @@ public class SnapTo extends Command {
     double setpoint = 0;
     switch (m_snapeMode) {
       case SPEAKER:
-        setpoint = Math.PI + m_drive.getRotationRelativeToSpeaker().getRadians()
+        setpoint = m_drive.getRotationRelativeToSpeaker().getRadians()
             + m_drive.getSpeedCompensationAngle().getRadians();
 
       case SPEAKER_AUTO:
-        setpoint = Math.PI + m_drive.getRotationRelativeToSpeaker().getRadians()
+        setpoint = m_drive.getRotationRelativeToSpeaker().getRadians()
             + m_drive.getSpeedCompensationAngle().getRadians();
-
-        // setpoint = Math.PI + m_drive.getSpeedCompensationAngle().getRadians(); can
-        // help with testing
         break;
       case LEFT:
         setpoint = Units.degreesToRadians(90);
