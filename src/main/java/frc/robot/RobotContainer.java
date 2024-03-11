@@ -258,7 +258,9 @@ public class RobotContainer {
         new ShootFeed(feeder).withTimeout(0.7))
         .deadlineWith(
             new SnapTo(s_Swerve, SnapMode.SPEAKER_AUTO, EndBehaviour.NEVER_ENDING),
-            new ToDistanceAngle(s_Swerve, arm, ArmEndBehaviour.NEVER_ENDING)));
+            new ToDistanceAngle(s_Swerve, arm, ArmEndBehaviour.NEVER_ENDING))
+        .finallyDo(this::idle));
+
     NamedCommands.registerCommand("shootfly", new SequentialCommandGroup(
         new ParallelCommandGroup(
             new SnapNotifier(s_Swerve),
@@ -268,7 +270,8 @@ public class RobotContainer {
         new ShootFeed(feeder).withTimeout(0.7))
         .deadlineWith(
             new SnapTo(s_Swerve, SnapMode.SPEAKER, EndBehaviour.NEVER_ENDING),
-            new ToDistanceAngle(s_Swerve, arm, ArmEndBehaviour.NEVER_ENDING)));
+            new ToDistanceAngle(s_Swerve, arm, ArmEndBehaviour.NEVER_ENDING))
+        .finallyDo(this::idle));
 
     NamedCommands.registerCommand("intake",
         new SequentialCommandGroup(
