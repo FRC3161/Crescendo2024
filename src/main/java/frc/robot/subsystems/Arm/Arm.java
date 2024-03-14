@@ -60,14 +60,14 @@ public class Arm extends SubsystemBase {
     leader.restoreFactoryDefaults();
     CANSparkMaxUtil.setCANSparkMaxBusUsage(leader, Usage.kPositionOnly);
     leader.enableVoltageCompensation(12);
-    leader.setSmartCurrentLimit(60, 40);
+    leader.setSmartCurrentLimit(30, 30);
     leader.setIdleMode(IdleMode.kBrake);
     leader.setInverted(false);
 
     follower.restoreFactoryDefaults();
     CANSparkMaxUtil.setCANSparkMaxBusUsage(follower, Usage.kPositionOnly);
     follower.enableVoltageCompensation(12);
-    follower.setSmartCurrentLimit(60, 40);
+    follower.setSmartCurrentLimit(30, 30);
     follower.setIdleMode(IdleMode.kBrake);
     follower.setInverted(true);
 

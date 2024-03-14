@@ -11,31 +11,31 @@ import frc.lib.util.CANSparkMaxUtil;
 import frc.lib.util.CANSparkMaxUtil.Usage;
 import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.IntakeConstants.IntakeMode;
 
 public class Intake extends SubsystemBase {
   private CANSparkMax leader = new CANSparkMax(41, MotorType.kBrushless);
   private CANSparkMax follower = new CANSparkMax(42, MotorType.kBrushless);
-  // private DigitalInput beam = new
-  // DigitalInput(Constants.ShooterConstants.beamDIO);
   private DigitalInput beamy = ShooterConstants.beam;
   public DigitalInput beamy2 = new DigitalInput(7);
+  private IntakeMode intakeMode = IntakeMode.OFF;
+  private double value = 0.7;
 
   public Intake() {
     leader.restoreFactoryDefaults();
     CANSparkMaxUtil.setCANSparkMaxBusUsage(leader, Usage.kMinimal);
-    leader.setSmartCurrentLimit(30, 30);
+    leader.setSmartCurrentLimit(20, 20);
     leader.setIdleMode(IdleMode.kBrake);
     leader.enableVoltageCompensation(12);
     leader.setInverted(false);
 
     follower.restoreFactoryDefaults();
     CANSparkMaxUtil.setCANSparkMaxBusUsage(follower, Usage.kMinimal);
-    follower.setSmartCurrentLimit(30, 30);
+    follower.setSmartCurrentLimit(20, 20);
     follower.setIdleMode(IdleMode.kBrake);
     follower.enableVoltageCompensation(12);
     leader.setInverted(false);
 
-    // follower.follow(leader, false);
   }
 
   public void burnToFlash() {
@@ -53,6 +53,15 @@ public class Intake extends SubsystemBase {
     }
   }
 
+  public void setOutspeed(double value) {
+    leader.set(value);
+    follower.set(value);
+  }
+
+  public void setIntakeMode(IntakeMode mode) {
+    intakeMode = mode;
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("beamy2", beamy2.get());
@@ -62,4 +71,5 @@ public class Intake extends SubsystemBase {
     leader.set(0);
     follower.set(0);
   }
+
 }

@@ -111,9 +111,9 @@ public class SnapTo extends Command {
       case NEVER_ENDING:
         return false;
       case NORMAL:
-        return m_profiler.isFinished(m_timer.get()) && m_drive.isSnapAtSetpoint();
+        return m_drive.isSnapAtGoal();
       default:
-        return m_profiler.isFinished(m_timer.get()) && m_drive.isSnapAtSetpoint();
+        return m_drive.isSnapAtGoal();
     }
   }
 

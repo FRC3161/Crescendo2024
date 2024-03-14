@@ -103,7 +103,7 @@ public class SwerveModule {
   private void configAngleMotor() {
     angleMotor.restoreFactoryDefaults();
     CANSparkMaxUtil.setCANSparkMaxBusUsage(angleMotor, Usage.kPositionOnly);
-    angleMotor.setSmartCurrentLimit(40, 40);
+    angleMotor.setSmartCurrentLimit(30, 30);
     angleMotor.setInverted(true);
     angleMotor.setIdleMode(IdleMode.kBrake);
     integratedAngleEncoder.setPositionConversionFactor(Constants.SwerveConstants.angleConversionFactor);
@@ -118,7 +118,7 @@ public class SwerveModule {
   private void configDriveMotor() {
     driveMotor.restoreFactoryDefaults();
     CANSparkMaxUtil.setCANSparkMaxBusUsage(driveMotor, Usage.kAll);
-    driveMotor.setSmartCurrentLimit(40, 40);
+    driveMotor.setSmartCurrentLimit(30, 30);
     if (moduleNumber == 1 || moduleNumber == 3) {
       driveMotor.setInverted(true);
     } else {

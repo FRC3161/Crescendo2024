@@ -48,7 +48,8 @@ public final class Constants {
       public static int[] RED = new int[] { 255, 0, 0 };
       public static int[] GREEN = new int[] { 0, 255, 0 };
       public static int[] BLUE = new int[] { 0, 0, 255 };
-      public static int[] GOLD = new int[] { 179, 134, 27 };
+      public static int[] GOLD = new int[] { 212, 175, 55 };
+      public static int[] MAGENTA = new int[] {255, 0, 255};
     }
   }
 
@@ -180,6 +181,13 @@ public final class Constants {
     // Constraint for the motion profilied robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+  }
+  public static final class IntakeConstants {
+    public static enum IntakeMode {
+      IN,
+      OUT,
+      OFF
+    }
   }
 
   public static final class ShooterConstants {

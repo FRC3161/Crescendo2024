@@ -4,8 +4,14 @@
 
 package frc.robot;
 
+import java.util.List;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -28,6 +34,7 @@ import frc.robot.commands.Arm.ArmNotifier;
 import frc.robot.commands.Arm.ManualArm;
 import frc.robot.commands.Arm.ToAngle;
 import frc.robot.commands.Arm.ToDistanceAngle;
+import frc.robot.commands.Arm.ToPoseAngle;
 import frc.robot.commands.Arm.ToDistanceAngle.ArmEndBehaviour;
 import frc.robot.commands.Climber.ClimbHome;
 import frc.robot.commands.Climber.ClimberManual;
@@ -98,7 +105,7 @@ public class RobotContainer {
   }
 
   public void disabledInit() {
-    lights.colors = Constants.LightsConstants.Colors.RED;
+    lights.colors = Constants.LightsConstants.Colors.MAGENTA;
   }
 
   public Command getIdleCommands() {
@@ -149,10 +156,10 @@ public class RobotContainer {
         () -> -driver.getRightX(),
         () -> driver.getRightTriggerAxis()));
 
-    driver.x().whileTrue(new SnapTo(s_Swerve, SnapMode.LEFT));
-    driver.b().whileTrue(new SnapTo(s_Swerve, SnapMode.RIGHT));
-    driver.y().whileTrue(new SnapTo(s_Swerve, SnapMode.FORWARD));
-    driver.a().whileTrue(new SnapTo(s_Swerve, SnapMode.BACKWARD));
+    driver.x().onTrue(new SnapTo(s_Swerve, SnapMode.LEFT));
+    driver.b().onTrue(new SnapTo(s_Swerve, SnapMode.RIGHT));
+    driver.y().onTrue(new SnapTo(s_Swerve, SnapMode.FORWARD));
+    driver.a().onTrue(new SnapTo(s_Swerve, SnapMode.BACKWARD));
     driver.povDown().whileTrue(new Outake(intake));
     // driver.povLeft().whileTrue(new SnapTo(s_Swerve, SnapMode.SPEAKER, true));
     driver.back().onTrue(new InstantCommand(s_Swerve::zeroGyro));
@@ -162,7 +169,7 @@ public class RobotContainer {
             DriveToLocation.driveTo(new Pose2d(1.5768705606460571, 6.266633987426758, new Rotation2d()), s_Swerve)));
     driver.rightBumper().whileTrue(new SequentialCommandGroup(
         new SolidColor(lights, Constants.LightsConstants.Colors.RED),
-        new ToAngle(() -> Units.degreesToRadians(15), arm),
+        new ToAngle(() -> Units.degreesToRadians(19), arm),
         new ParallelCommandGroup(
             new FeedIn(feeder).deadlineWith(new IntakeIn(intake)),
             new SequentialCommandGroup(
@@ -249,7 +256,7 @@ public class RobotContainer {
         new SolidColor(lights, Constants.LightsConstants.Colors.BLUE),
         new ShootFeed(feeder).withTimeout(1)));
 
-    NamedCommands.registerCommand("Shoot", new SequentialCommandGroup(
+    NamedCommands.registerCommand("shoot", new SequentialCommandGroup(
         new ParallelCommandGroup(
             new SnapNotifier(s_Swerve),
             new ArmNotifier(arm),
@@ -283,6 +290,13 @@ public class RobotContainer {
                     new beamMessage(intake),
                     new SolidColor(lights, Constants.LightsConstants.Colors.GREEN))),
             new SolidColor(lights, Constants.LightsConstants.Colors.BLUE)));
+
+    NamedCommands.registerCommand("prepare", new ParallelCommandGroup(
+        new ToPoseAngle(s_Swerve, arm),
+        new ToRPM(() -> 4700, shooter)));
+
+    NamedCommands.registerCommand("dodge", new ParallelCommandGroup(
+        new ToAngle(() -> Constants.ArmConstants.min.getRadians(), arm)));
 
   }
 
@@ -345,6 +359,5 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return m_chooser.getSelected();
-
   }
 }

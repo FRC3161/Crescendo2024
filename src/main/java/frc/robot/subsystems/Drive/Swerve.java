@@ -1,5 +1,6 @@
 package frc.robot.subsystems.Drive;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -50,6 +51,7 @@ public class Swerve extends SubsystemBase {
   private Rotation2d snapGoal = new Rotation2d();
 
   private Field2d debugField2d = new Field2d();
+  private Pose2d lastActivePathPose = new Pose2d();
 
   private Translation2d robotSpeed = new Translation2d();
 
@@ -99,7 +101,7 @@ public class Swerve extends SubsystemBase {
         Constants.SwerveConstants.snapSVA[1],
         Constants.SwerveConstants.snapSVA[2]);
 
-    snapPIDController.setTolerance(Units.degreesToRadians(1));
+    snapPIDController.setTolerance(Units.degreesToRadians(5));
     snapPIDController.enableContinuousInput(0, Math.PI * 2);
     snapPIDController.setIntegratorRange(-0.1, 0.1);
 
@@ -123,10 +125,23 @@ public class Swerve extends SubsystemBase {
           debugField2d.getObject("pathplanner target pose").setPose(targetPose);
         });
 
+    PathPlannerLogging.setLogActivePathCallback(this::handleActivePathLogger);
+
     SmartDashboard.putData("Vision field", debugField2d);
     PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
 
     Timer.delay(4); // Let the can bus cool down
+  }
+
+  private void handleActivePathLogger(List<Pose2d> poses) {
+    if (poses.isEmpty())
+      return;
+
+    lastActivePathPose = poses.get(poses.size() - 1);
+  }
+
+  private Pose2d getLastActivePathPose() {
+    return lastActivePathPose;
   }
 
   public Optional<Rotation2d> getRotationTargetOverride() {
@@ -150,7 +165,7 @@ public class Swerve extends SubsystemBase {
     double errorBound = (Math.PI * 2) / 2.0;
     var m_positionError = MathUtil.inputModulus(snapGoal.getRadians() - getYawForSnap().getRadians(), -errorBound,
         errorBound);
-    return Math.abs(m_positionError) < Units.degreesToRadians(1);
+    return Math.abs(m_positionError) < Units.degreesToRadians(5);
   }
 
   public boolean isSnapAtSetpoint() {
@@ -384,6 +399,10 @@ public class Swerve extends SubsystemBase {
   public void setPose(Pose2d pose) {
     poseEstimator.resetPosition(getYaw(), getPositions(), pose);
     vision.resetPose(pose);
+  }
+
+  public double getAutoPoseDistanceFromSpeaker() {
+    return lastActivePathPose.getTranslation().getDistance(getSpeakerPose().get().getTranslation().toTranslation2d());
   }
 
   public double getDistanceFromSpeaker() {

@@ -1,5 +1,6 @@
 package frc.robot.commands.Intake;
 
+import frc.robot.Constants.IntakeConstants.IntakeMode;
 import frc.robot.subsystems.Intake.Intake;
 
 public class Outake extends IntakeIn {
@@ -9,6 +10,7 @@ public class Outake extends IntakeIn {
 
   @Override
   public void initialize() {
-    m_intake.setSpeed(-0.7);
+    m_intake.setOutspeed(-0.7);
+    // m_intake.setIntakeMode(IntakeMode.OUT);
   }
 }
