@@ -124,15 +124,7 @@ public class RobotContainer {
         }
 
       case AUTONOMOUS:
-        if (!feeder.beamy.get()) {
-          return new ParallelCommandGroup(
-              new ToRPM(() -> 4700, shooter),
-              SnapTo.resetToDriverInput(s_Swerve));
-        } else {
-          return new ParallelCommandGroup(
-              new ToRPM(() -> 4700, shooter),
-              SnapTo.resetToDriverInput(s_Swerve));
-        }
+        return Commands.none();
       default:
         return Commands.none();
     }
@@ -248,7 +240,7 @@ public class RobotContainer {
     // NamedCommands.registerCommand("shoot", new ShooterDistance(drive, shooter));
     // NamedCommands.registerCommand("intake", new IntakeIn(intake));
     // NamedCommands.registerCommand("intake", new Outake(intake));
-    NamedCommands.registerCommand("subShot", new SequentialCommandGroup(
+    NamedCommands.registerCommand("shotsub", new SequentialCommandGroup(
         new ParallelCommandGroup(
             new SolidColor(lights, Constants.LightsConstants.Colors.RED),
             new ToAngle(() -> Units.degreesToRadians(48.5), arm),
@@ -256,19 +248,33 @@ public class RobotContainer {
         new SolidColor(lights, Constants.LightsConstants.Colors.BLUE),
         new ShootFeed(feeder).withTimeout(1)));
 
-    NamedCommands.registerCommand("shoot", new SequentialCommandGroup(
+    NamedCommands.registerCommand("noteShoot", new SequentialCommandGroup(
         new ParallelCommandGroup(
-            new SnapNotifier(s_Swerve),
+            // new SnapNotifier(s_Swerve),
             new ArmNotifier(arm),
             new ToRPM(() -> 4700, shooter),
             new FeedIn(feeder).deadlineWith(new IntakeIn(intake))),
         new ShootFeed(feeder).withTimeout(0.7))
         .deadlineWith(
-            new SnapTo(s_Swerve, SnapMode.SPEAKER_AUTO, EndBehaviour.NEVER_ENDING),
+            // new SnapTo(s_Swerve, SnapMode.SPEAKER_AUTO, EndBehaviour.NORMAL),
             new ToDistanceAngle(s_Swerve, arm, ArmEndBehaviour.NEVER_ENDING))
         .finallyDo(this::idle));
 
-    NamedCommands.registerCommand("shootfly", new SequentialCommandGroup(
+    NamedCommands.registerCommand("rampUpShooter", new ToRPM(() -> 4700, shooter));
+
+    NamedCommands.registerCommand("noteShootClose", new SequentialCommandGroup(
+        new ParallelCommandGroup(
+            // new SnapNotifier(s_Swerve),
+            new ArmNotifier(arm),
+            new ToRPM(() -> 4000, shooter),
+            new FeedIn(feeder).deadlineWith(new IntakeIn(intake))),
+        new ShootFeed(feeder).withTimeout(0.7))
+        .deadlineWith(
+            // new SnapTo(s_Swerve, SnapMode.SPEAKER_AUTO, EndBehaviour.NORMAL),
+            new ToDistanceAngle(s_Swerve, arm, ArmEndBehaviour.NEVER_ENDING))
+        .finallyDo(this::idle));
+
+    NamedCommands.registerCommand("noteShootFly", new SequentialCommandGroup(
         new ParallelCommandGroup(
             new SnapNotifier(s_Swerve),
             new ArmNotifier(arm),
@@ -280,10 +286,10 @@ public class RobotContainer {
             new ToDistanceAngle(s_Swerve, arm, ArmEndBehaviour.NEVER_ENDING))
         .finallyDo(this::idle));
 
-    NamedCommands.registerCommand("intake",
+    NamedCommands.registerCommand("noteIn",
         new SequentialCommandGroup(
             new SolidColor(lights, Constants.LightsConstants.Colors.RED),
-            new ToAngle(() -> Units.degreesToRadians(30), arm),
+            // new ToAngle(() -> Units.degreesToRadians(30), arm),
             new ParallelCommandGroup(
                 new FeedIn(feeder).deadlineWith(new IntakeIn(intake)),
                 new SequentialCommandGroup(
@@ -307,6 +313,19 @@ public class RobotContainer {
   }
 
   public void configureTestCommands() {
+
+    SmartDashboard.putData("test shoot", new SequentialCommandGroup(
+        new ParallelCommandGroup(
+            new SnapNotifier(s_Swerve),
+            new ArmNotifier(arm),
+            new ToRPM(() -> 4700, shooter),
+            new FeedIn(feeder).deadlineWith(new IntakeIn(intake))),
+        new ShootFeed(feeder).withTimeout(0.7))
+        .deadlineWith(
+            new SnapTo(s_Swerve, SnapMode.SPEAKER_AUTO, EndBehaviour.NORMAL),
+            new ToDistanceAngle(s_Swerve, arm, ArmEndBehaviour.NEVER_ENDING))
+        .finallyDo(this::idle));
+
     SmartDashboard.putData("Home Climber", new ClimbHome(climber));
 
     SmartDashboard.putData("Suboofer", new SequentialCommandGroup(

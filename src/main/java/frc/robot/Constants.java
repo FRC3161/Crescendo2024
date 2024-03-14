@@ -49,7 +49,7 @@ public final class Constants {
       public static int[] GREEN = new int[] { 0, 255, 0 };
       public static int[] BLUE = new int[] { 0, 0, 255 };
       public static int[] GOLD = new int[] { 212, 175, 55 };
-      public static int[] MAGENTA = new int[] {255, 0, 255};
+      public static int[] MAGENTA = new int[] { 255, 0, 255 };
     }
   }
 
@@ -78,7 +78,7 @@ public final class Constants {
       AutonomousSnap,
     }
 
-    public static final double[] snapPID = { 0.5, 0, 0 };
+    public static final double[] snapPID = { 1, 0, 0 };
     public static final double[] snapSVA = { 0.015, 0.2, 0 };
 
     /* Drive Controls */
@@ -182,6 +182,7 @@ public final class Constants {
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
   }
+
   public static final class IntakeConstants {
     public static enum IntakeMode {
       IN,
@@ -202,8 +203,8 @@ public final class Constants {
     public static final double[] shooterFeedforward = { 0.26, 0.002 };
     public static final int toleranceRPM = 100;
     public static final int shooterIDLE = 2000;
-    public static final double maxVelocityPerSecond = 2000; // RPM/s
-    public static final double maxAcceleration = 1000; // RPM/s^2 og val: 700
+    public static final double maxVelocityPerSecond = 4000; // RPM/s
+    public static final double maxAcceleration = 2000; // RPM/s^2 og val: 700
     // TODO: remember to change accel if shooter is too fast - just an
     // experiment¯\_(ツ)_/¯
 

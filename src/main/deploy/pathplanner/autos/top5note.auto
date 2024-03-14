@@ -5,7 +5,7 @@
       "x": 1.3816450834274292,
       "y": 7.015666484832764
     },
-    "rotation": 9.037119863164162e-22
+    "rotation": -2.0618765733647087e-25
   },
   "command": {
     "type": "sequential",
@@ -20,19 +20,38 @@
         {
           "type": "named",
           "data": {
-            "name": "shoot"
+            "name": "noteShootClose"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "top5note.2"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "top5note.2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "noteIn"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "rampUpShooter"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "shoot"
+            "name": "noteShoot"
           }
         },
         {
@@ -44,7 +63,37 @@
         {
           "type": "named",
           "data": {
-            "name": "shoot"
+            "name": "noteShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "top5note.4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "noteShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "dodge"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "top5note.5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "noteShoot"
           }
         }
       ]

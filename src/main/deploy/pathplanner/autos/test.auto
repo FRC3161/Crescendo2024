@@ -5,7 +5,7 @@
       "x": 1.40126633644104,
       "y": 5.551969528198242
     },
-    "rotation": -3.3380488726432765e-26
+    "rotation": -3.684627012928423e-25
   },
   "command": {
     "type": "sequential",
@@ -20,7 +20,7 @@
         {
           "type": "named",
           "data": {
-            "name": "shoot"
+            "name": "noteShoot"
           }
         },
         {
@@ -30,7 +30,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "intake"
+                  "name": "noteIn"
                 }
               },
               {
@@ -45,7 +45,67 @@
         {
           "type": "named",
           "data": {
-            "name": "shoot"
+            "name": "noteShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "7note.3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "noteShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "7note.4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "noteShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "7note.5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "noteShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "7note.6"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "noteShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "7note.7"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "noteShoot"
           }
         }
       ]

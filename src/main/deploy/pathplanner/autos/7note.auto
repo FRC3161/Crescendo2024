@@ -5,7 +5,7 @@
       "x": 1.40126633644104,
       "y": 5.551969528198242
     },
-    "rotation": -3.3380488726432765e-26
+    "rotation": 1.0256697653125563e-24
   },
   "command": {
     "type": "sequential",
@@ -20,19 +20,13 @@
         {
           "type": "named",
           "data": {
-            "name": "shoot"
+            "name": "noteShoot"
           }
         },
         {
           "type": "parallel",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "intake"
-                }
-              },
               {
                 "type": "path",
                 "data": {
@@ -45,7 +39,7 @@
         {
           "type": "named",
           "data": {
-            "name": "shoot"
+            "name": "noteShoot"
           }
         },
         {
@@ -57,7 +51,7 @@
         {
           "type": "named",
           "data": {
-            "name": "shoot"
+            "name": "noteShoot"
           }
         },
         {
@@ -69,7 +63,7 @@
         {
           "type": "named",
           "data": {
-            "name": "shoot"
+            "name": "noteShoot"
           }
         },
         {
@@ -81,7 +75,7 @@
         {
           "type": "named",
           "data": {
-            "name": "shoot"
+            "name": "noteShoot"
           }
         }
       ]

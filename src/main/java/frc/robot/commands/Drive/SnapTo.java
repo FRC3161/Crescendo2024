@@ -70,6 +70,7 @@ public class SnapTo extends Command {
       case SPEAKER:
         setpoint = m_drive.getRotationRelativeToSpeaker().getRadians()
             + m_drive.getSpeedCompensationAngle().getRadians();
+        break;
 
       case SPEAKER_AUTO:
         setpoint = m_drive.getRotationRelativeToSpeaker().getRadians()

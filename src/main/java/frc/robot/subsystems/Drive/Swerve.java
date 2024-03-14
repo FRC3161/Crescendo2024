@@ -128,7 +128,6 @@ public class Swerve extends SubsystemBase {
     PathPlannerLogging.setLogActivePathCallback(this::handleActivePathLogger);
 
     SmartDashboard.putData("Vision field", debugField2d);
-    PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
 
     Timer.delay(4); // Let the can bus cool down
   }
@@ -146,7 +145,7 @@ public class Swerve extends SubsystemBase {
 
   public Optional<Rotation2d> getRotationTargetOverride() {
     if (driveMode == DriveMode.Snap) {
-      return Optional.of(snapSetpoint);
+      return Optional.of(snapGoal);
     } else {
       return Optional.empty();
     }
@@ -201,6 +200,9 @@ public class Swerve extends SubsystemBase {
       case Snap:
         rotation = calculateSnapOutput(snapSetpoint, snapVelocity);
         break;
+      case AutonomousSnap:
+        rotation = calculateSnapOutput(snapSetpoint, snapVelocity);
+        break;
       default:
         break;
     }
@@ -218,20 +220,8 @@ public class Swerve extends SubsystemBase {
   }
 
   public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
-    if (driveMode == DriveMode.AutonomousSnap)
-      return;
     ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
     double rotation = targetSpeeds.omegaRadiansPerSecond;
-    switch (driveMode) {
-      case Snap:
-        rotation = -calculateSnapOutput(snapSetpoint, snapVelocity) * Constants.SwerveConstants.maxAngularVelocity;
-        break;
-      case DriverInput:
-
-        break;
-      default:
-        break;
-    }
     targetSpeeds = new ChassisSpeeds(targetSpeeds.vxMetersPerSecond, targetSpeeds.vyMetersPerSecond,
         -rotation);
 
@@ -369,6 +359,9 @@ public class Swerve extends SubsystemBase {
   public void updateVisionMeasurements() {
     var visionEst = vision.getEstimatedGlobalPose();
     visionEst.ifPresent(est -> {
+      if (est.estimatedPose.toPose2d().getX() > 4) {
+        return;
+      }
       var estPose = est.estimatedPose.toPose2d();
       var estStdDevs = vision.getEstimationStdDevs(estPose);
       poseEstimator.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
@@ -492,7 +485,6 @@ public class Swerve extends SubsystemBase {
       case AutonomousSnap:
         drive(new Translation2d(), 0);
         break;
-
       default:
         break;
     }
