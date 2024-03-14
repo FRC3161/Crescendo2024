@@ -180,11 +180,20 @@ public class RobotContainer {
                 new ArmNotifier(arm),
                 new ToRPM(() -> 4700, shooter),
                 new FeedIn(feeder).deadlineWith(new IntakeIn(intake))),
-            new ShootFeed(feeder).withTimeout(0.7))
+            new ShootFeed(feeder).withTimeout(0.4))
             .finallyDo(this::idle)
             .deadlineWith(
                 new SnapTo(s_Swerve, SnapMode.SPEAKER, EndBehaviour.NEVER_ENDING),
                 new ToDistanceAngle(s_Swerve, arm, ArmEndBehaviour.NEVER_ENDING)));
+
+    operator.a().whileTrue(new SequentialCommandGroup(
+      new ParallelCommandGroup(
+        new SolidColor(lights, Constants.LightsConstants.Colors.RED),
+        new ToAngle(() -> Units.degreesToRadians(35), arm),
+        new ToRPM(() -> 4700, shooter)),
+      new ShootFeed(feeder).withTimeout(0.4),
+      new SolidColor(lights, Constants.LightsConstants.Colors.GREEN).finallyDo(this::idle)
+    ));
 
     operator.leftTrigger().whileTrue(new SequentialCommandGroup(
         new ShooterOFF(shooter),
@@ -192,6 +201,8 @@ public class RobotContainer {
         new ToAngle(() -> Constants.ArmConstants.min.getRadians(), arm),
         new FeedOut(feeder),
         new SolidColor(lights, Constants.LightsConstants.Colors.BLUE)));
+
+    operator.start().whileTrue(new SolidColor(lights, Constants.LightsConstants.Colors.BRIGHT));
 
     driver.leftBumper().whileTrue(
         new SequentialCommandGroup(
@@ -206,23 +217,16 @@ public class RobotContainer {
             new ToAngle(() -> Units.degreesToRadians(50), arm),
             new ToRPM(() -> 4500, shooter)),
         new SolidColor(lights, Constants.LightsConstants.Colors.BLUE),
-        new ShootFeed(feeder).withTimeout(1),
+        new ShootFeed(feeder).withTimeout(0.4),
         getIdleCommands()));
 
     operator.b().whileTrue(new SnapTo(s_Swerve, SnapMode.SPEAKER, EndBehaviour.NEVER_ENDING));
-    operator.a().whileTrue(
-        new SequentialCommandGroup(
-            new SolidColor(lights, LightsConstants.Colors.RED),
-            new FeedIn(feeder).deadlineWith(new IntakeIn(intake)),
-            new SolidColor(lights, LightsConstants.Colors.BLUE)));
+    // operator.a().whileTrue(
+    //     new SequentialCommandGroup(
+    //         new SolidColor(lights, LightsConstants.Colors.RED),
+    //         new FeedIn(feeder).deadlineWith(new IntakeIn(intake)),
+    //         new SolidColor(lights, LightsConstants.Colors.BLUE)));
 
-    // lights.setDefaultCommand(new SolidColor(LightsType.IDLE, 0, lights, new int[]
-    // {100, 0, 300} ));
-
-    // operator.x().whileTrue(new ClimbExtend(climber));
-    // operator.x().onTrue(new ToAngle(() -> Units.degreesToRadians(80), arm)); <-
-    // max arm angle ^
-    // operator.a().whileTrue(new ClimbRetract(climber));
 
     /* Subwoofer shot */
     operator.rightBumper().onTrue(new SequentialCommandGroup(
@@ -231,7 +235,7 @@ public class RobotContainer {
             new ToAngle(() -> Units.degreesToRadians(48.5), arm),
             new ToRPM(() -> 4500, shooter)),
         new SolidColor(lights, Constants.LightsConstants.Colors.BLUE),
-        new ShootFeed(feeder).withTimeout(1)).finallyDo(this::idle));
+        new ShootFeed(feeder).withTimeout(0.4)).finallyDo(this::idle));
 
   }
 
@@ -246,7 +250,7 @@ public class RobotContainer {
             new ToAngle(() -> Units.degreesToRadians(48.5), arm),
             new ToRPM(() -> 4700, shooter)),
         new SolidColor(lights, Constants.LightsConstants.Colors.BLUE),
-        new ShootFeed(feeder).withTimeout(1)));
+        new ShootFeed(feeder).withTimeout(0.4)));
 
     NamedCommands.registerCommand("noteShoot", new SequentialCommandGroup(
         new ParallelCommandGroup(
@@ -254,7 +258,7 @@ public class RobotContainer {
             new ArmNotifier(arm),
             new ToRPM(() -> 4700, shooter),
             new FeedIn(feeder).deadlineWith(new IntakeIn(intake))),
-        new ShootFeed(feeder).withTimeout(0.7))
+        new ShootFeed(feeder).withTimeout(0.4))
         .deadlineWith(
             // new SnapTo(s_Swerve, SnapMode.SPEAKER_AUTO, EndBehaviour.NORMAL),
             new ToDistanceAngle(s_Swerve, arm, ArmEndBehaviour.NEVER_ENDING))
@@ -268,7 +272,7 @@ public class RobotContainer {
             new ArmNotifier(arm),
             new ToRPM(() -> 4000, shooter),
             new FeedIn(feeder).deadlineWith(new IntakeIn(intake))),
-        new ShootFeed(feeder).withTimeout(0.7))
+        new ShootFeed(feeder).withTimeout(0.4))
         .deadlineWith(
             // new SnapTo(s_Swerve, SnapMode.SPEAKER_AUTO, EndBehaviour.NORMAL),
             new ToDistanceAngle(s_Swerve, arm, ArmEndBehaviour.NEVER_ENDING))
@@ -280,7 +284,7 @@ public class RobotContainer {
             new ArmNotifier(arm),
             new ToRPM(() -> 4700, shooter),
             new FeedIn(feeder).deadlineWith(new IntakeIn(intake))),
-        new ShootFeed(feeder).withTimeout(0.7))
+        new ShootFeed(feeder).withTimeout(0.4))
         .deadlineWith(
             new SnapTo(s_Swerve, SnapMode.SPEAKER, EndBehaviour.NEVER_ENDING),
             new ToDistanceAngle(s_Swerve, arm, ArmEndBehaviour.NEVER_ENDING))
