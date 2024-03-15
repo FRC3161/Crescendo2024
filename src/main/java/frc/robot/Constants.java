@@ -48,8 +48,9 @@ public final class Constants {
       public static int[] RED = new int[] { 255, 0, 0 };
       public static int[] GREEN = new int[] { 0, 255, 0 };
       public static int[] BLUE = new int[] { 0, 0, 255 };
-      public static int[] GOLD = new int[] { 212, 175, 55 };
+      public static int[] GOLD = new int[] { 175, 184, 6 };
       public static int[] MAGENTA = new int[] { 255, 0, 255 };
+      public static int[] BRIGHT = new int[] { 234, 255, 48 };
     }
   }
 
@@ -238,7 +239,7 @@ public final class Constants {
     public static final int encoderID = 0;
 
     public static final Rotation2d offset = Rotation2d.fromDegrees(88 - 90);
-    public static final Rotation2d max = Rotation2d.fromDegrees(90);
+    public static final Rotation2d max = Rotation2d.fromDegrees(85);
     public static final Rotation2d min = Rotation2d.fromDegrees(3);
     public static final Rotation2d tolernace = Rotation2d.fromDegrees(1);
 
