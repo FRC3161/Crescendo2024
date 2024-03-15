@@ -1,6 +1,7 @@
 package frc.robot.commands.Drive;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
@@ -122,5 +123,11 @@ public class SnapTo extends Command {
   public void end(boolean interrupted) {
     m_timer.stop();
     m_drive.setDriveMode(DriveMode.DriverInput);
+    switch (m_snapeMode) {
+      case SPEAKER_AUTO:
+        m_drive.drive(new Translation2d(), 0);
+      default:
+        break;
+    }
   }
 }
