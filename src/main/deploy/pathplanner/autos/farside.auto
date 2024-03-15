@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.680597186088562,
-      "y": 4.0390095710754395
+      "x": 1.378177285194397,
+      "y": 4.093484878540039
     },
-    "rotation": -8.833299677506144e-24
+    "rotation": 1.4638317727160976e-26
   },
   "command": {
     "type": "sequential",
@@ -20,7 +20,7 @@
         {
           "type": "named",
           "data": {
-            "name": "noteShootClose"
+            "name": "noteShoot"
           }
         },
         {
@@ -56,7 +56,7 @@
         {
           "type": "named",
           "data": {
-            "name": "noteShootClose"
+            "name": "noteShoot"
           }
         }
       ]
