@@ -39,6 +39,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotInit() {
+    PortForwarder.add(5800, "photonvision.local", 5800);
     LiveWindow.disableAllTelemetry();
     m_robotContainer = new RobotContainer();
     CANSparkLowLevel.enableExternalUSBControl(true);
