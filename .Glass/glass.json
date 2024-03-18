@@ -1,5 +1,13 @@
 {
   "NetworkTables": {
+    "Transitory Values": {
+      "open": false
+    },
+    "retained": {
+      "SmartDashboard": {
+        "open": true
+      }
+    },
     "transitory": {
       "SmartDashboard": {
         "TunableNumbers": {
@@ -14,12 +22,27 @@
       "/SmartDashboard/Arm up": "Command",
       "/SmartDashboard/Feed IN": "Command",
       "/SmartDashboard/Feed OUT": "Command",
+      "/SmartDashboard/Home Climber": "Command",
       "/SmartDashboard/Reset Pose": "Command",
+      "/SmartDashboard/Shoot": "Command",
       "/SmartDashboard/Shooter test command": "Command",
+      "/SmartDashboard/Suboofer": "Command",
       "/SmartDashboard/Vision field": "Field2d",
-      "/SmartDashboard/autos": "String Chooser"
+      "/SmartDashboard/autos": "String Chooser",
+      "/SmartDashboard/burn to flash": "Command",
+      "/SmartDashboard/test shoot": "Command"
     },
     "windows": {
+      "/FMSInfo": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Home Climber": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Reset Pose": {
         "window": {
           "visible": true
@@ -42,10 +65,9 @@
             255.0
           ]
         },
-        "bottom": 544,
-        "builtin": "2024 Crescendo",
-        "height": 8.013679504394531,
-        "left": 46,
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
         "pathplanner target pose": {
           "color": [
             0.0,
@@ -54,9 +76,14 @@
             255.0
           ]
         },
-        "right": 1088,
-        "top": 36,
+        "right": 2961,
+        "top": 79,
         "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/autos": {
         "window": {
           "visible": true
         }
@@ -83,7 +110,7 @@
             0.0,
             0.8500000238418579
           ],
-          "height": 617,
+          "height": 110,
           "series": [
             {
               "color": [
