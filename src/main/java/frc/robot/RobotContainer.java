@@ -190,7 +190,7 @@ public class RobotContainer {
       new ParallelCommandGroup(
         new SolidColor(lights, Constants.LightsConstants.Colors.RED),
         new ToAngle(() -> Units.degreesToRadians(35), arm),
-        new ToRPM(() -> 4700, shooter)),
+        new ToRPM(() -> 2700, shooter)),
       new ShootFeed(feeder).withTimeout(0.4),
       new SolidColor(lights, Constants.LightsConstants.Colors.GREEN).finallyDo(this::idle)
     ));
@@ -235,7 +235,7 @@ public class RobotContainer {
             new ToAngle(() -> Units.degreesToRadians(48.5), arm),
             new ToRPM(() -> 4500, shooter)),
         new SolidColor(lights, Constants.LightsConstants.Colors.BLUE),
-        new ShootFeed(feeder).withTimeout(0.4)).finallyDo(this::idle));
+        new ShootFeed(feeder).withTimeout(0.7)).finallyDo(this::idle));
 
   }
 

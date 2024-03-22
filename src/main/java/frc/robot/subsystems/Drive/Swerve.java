@@ -359,9 +359,6 @@ public class Swerve extends SubsystemBase {
   public void updateVisionMeasurements() {
     var visionEst = vision.getEstimatedGlobalPose();
     visionEst.ifPresent(est -> {
-      if (est.estimatedPose.toPose2d().getX() > 4) {
-        return;
-      }
       var estPose = est.estimatedPose.toPose2d();
       var estStdDevs = vision.getEstimationStdDevs(estPose);
       poseEstimator.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
