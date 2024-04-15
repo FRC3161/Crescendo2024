@@ -730,42 +730,5 @@
       "timestamp": 4.717843126718564
     }
   ],
-  "eventMarkers": [
-    {
-      "timestamp": 1.5629986349971163,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "noteIn"
-        }
-      }
-    },
-    {
-      "timestamp": 3.459661294266909,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "prepare"
-        }
-      }
-    },
-    {
-      "timestamp": 0.19999999999999996,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "dodge"
-        }
-      }
-    },
-    {
-      "timestamp": 1.8288318800024574,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "prepare"
-        }
-      }
-    }
-  ]
+  "eventMarkers": []
 }

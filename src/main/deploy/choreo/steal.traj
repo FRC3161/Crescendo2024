@@ -2530,42 +2530,5 @@
       "timestamp": 10.996431150846412
     }
   ],
-  "eventMarkers": [
-    {
-      "timestamp": 3.2944964594550097,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "noteIn"
-        }
-      }
-    },
-    {
-      "timestamp": 7.838024466380313,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "noteIn"
-        }
-      }
-    },
-    {
-      "timestamp": 8.853644718990498,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "dodge"
-        }
-      }
-    },
-    {
-      "timestamp": 0,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "prepare"
-        }
-      }
-    }
-  ]
+  "eventMarkers": []
 }

@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandStadiaController;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.LightsConstants;
 import frc.robot.Constants.RobotMode;
+import frc.robot.Constants.IntakeConstants.IntakeMode;
 import frc.robot.commands.Arm.ArmNotifier;
 import frc.robot.commands.Arm.ManualArm;
 import frc.robot.commands.Arm.ToAngle;
@@ -164,7 +165,7 @@ public class RobotContainer {
         new SolidColor(lights, Constants.LightsConstants.Colors.RED),
         new ToAngle(() -> Units.degreesToRadians(19), arm),
         new ParallelCommandGroup(
-            new FeedIn(feeder).deadlineWith(new IntakeIn(intake)),
+            new FeedIn(feeder).deadlineWith(new IntakeIn(intake, IntakeMode.IN)),
             new SequentialCommandGroup(
                 new beamMessage(intake),
                 new SolidColor(lights, Constants.LightsConstants.Colors.GREEN),
@@ -180,7 +181,7 @@ public class RobotContainer {
                 new SnapNotifier(s_Swerve),
                 new ArmNotifier(arm),
                 new ToRPM(() -> 4700, shooter),
-                new FeedIn(feeder).deadlineWith(new IntakeIn(intake))),
+                new FeedIn(feeder).deadlineWith(new IntakeIn(intake, IntakeMode.IN))),
             new ShootFeed(feeder).withTimeout(0.4))
             .finallyDo(this::idle)
             .deadlineWith(
@@ -258,7 +259,7 @@ public class RobotContainer {
             // new SnapNotifier(s_Swerve),
             new ArmNotifier(arm),
             new ToRPM(() -> 4700, shooter),
-            new FeedIn(feeder).deadlineWith(new IntakeIn(intake))),
+            new FeedIn(feeder).deadlineWith(new IntakeIn(intake, IntakeMode.IN))),
         new ShootFeed(feeder).withTimeout(0.4))
         .deadlineWith(
             // new SnapTo(s_Swerve, SnapMode.SPEAKER_AUTO, EndBehaviour.NORMAL),
@@ -271,7 +272,7 @@ public class RobotContainer {
             // new SnapNotifier(s_Swerve),
             new ArmNotifier(arm),
             new ToRPM(() -> 4000, shooter),
-            new FeedIn(feeder).deadlineWith(new IntakeIn(intake))),
+            new FeedIn(feeder).deadlineWith(new IntakeIn(intake, IntakeMode.IN))),
         new ShootFeed(feeder).withTimeout(0.4))
         .deadlineWith(
             // new SnapTo(s_Swerve, SnapMode.SPEAKER_AUTO, EndBehaviour.NORMAL),
@@ -283,7 +284,7 @@ public class RobotContainer {
             new SnapNotifier(s_Swerve),
             new ArmNotifier(arm),
             new ToRPM(() -> 4700, shooter),
-            new FeedIn(feeder).deadlineWith(new IntakeIn(intake))),
+            new FeedIn(feeder).deadlineWith(new IntakeIn(intake, IntakeMode.IN))),
         new ShootFeed(feeder).withTimeout(0.4))
         .deadlineWith(
             new SnapTo(s_Swerve, SnapMode.SPEAKER, EndBehaviour.NEVER_ENDING),
@@ -295,7 +296,7 @@ public class RobotContainer {
             new SolidColor(lights, Constants.LightsConstants.Colors.RED),
             // new ToAngle(() -> Units.degreesToRadians(30), arm),
             new ParallelCommandGroup(
-                new FeedIn(feeder).deadlineWith(new IntakeIn(intake)),
+                new FeedIn(feeder).deadlineWith(new IntakeIn(intake, IntakeMode.IN)),
                 new SequentialCommandGroup(
                     new beamMessage(intake),
                     new SolidColor(lights, Constants.LightsConstants.Colors.GREEN))),
@@ -307,7 +308,14 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("dodge", new ParallelCommandGroup(
         new ToAngle(() -> Constants.ArmConstants.min.getRadians(), arm)));
-
+    
+    NamedCommands.registerCommand("stash", new ParallelCommandGroup(
+      new FeedIn(feeder).deadlineWith(new IntakeIn(intake, IntakeMode.STASH)),
+      new SequentialCommandGroup(
+        new ToRPM(() -> 2700, shooter),
+        new FeedOut(feeder))
+    )
+    );
   }
 
   public void configureAutoCommands() {
@@ -323,7 +331,7 @@ public class RobotContainer {
             new SnapNotifier(s_Swerve),
             new ArmNotifier(arm),
             new ToRPM(() -> 4700, shooter),
-            new FeedIn(feeder).deadlineWith(new IntakeIn(intake))),
+            new FeedIn(feeder).deadlineWith(new IntakeIn(intake, IntakeMode.IN))),
         new ShootFeed(feeder).withTimeout(0.7))
         .deadlineWith(
             new SnapTo(s_Swerve, SnapMode.SPEAKER_AUTO, EndBehaviour.NORMAL),
@@ -337,7 +345,7 @@ public class RobotContainer {
             new SolidColor(lights, Constants.LightsConstants.Colors.RED),
             new ToAngle(() -> Units.degreesToRadians(48.5), arm),
             new ToRPM(() -> 4500, shooter),
-            new FeedIn(feeder).deadlineWith(new IntakeIn(intake))),
+            new FeedIn(feeder).deadlineWith(new IntakeIn(intake, IntakeMode.IN))),
         new SolidColor(lights, Constants.LightsConstants.Colors.BLUE),
         new ShootFeed(feeder).withTimeout(1)));
 
@@ -346,7 +354,7 @@ public class RobotContainer {
             new SnapNotifier(s_Swerve),
             new ArmNotifier(arm),
             new ToRPM(() -> 4700, shooter),
-            new FeedIn(feeder).deadlineWith(new IntakeIn(intake))),
+            new FeedIn(feeder).deadlineWith(new IntakeIn(intake, IntakeMode.IN))),
         new ShootFeed(feeder).withTimeout(0.7))
         .finallyDo(this::idle)
         .deadlineWith(

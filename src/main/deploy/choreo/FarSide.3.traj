@@ -640,24 +640,5 @@
       "timestamp": 4.67164687776194
     }
   ],
-  "eventMarkers": [
-    {
-      "timestamp": 1.61472588834682,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "noteIn"
-        }
-      }
-    },
-    {
-      "timestamp": 3.6716468777619404,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "prepare"
-        }
-      }
-    }
-  ]
+  "eventMarkers": []
 }

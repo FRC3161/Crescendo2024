@@ -1270,24 +1270,5 @@
       "timestamp": 4.711187328374162
     }
   ],
-  "eventMarkers": [
-    {
-      "timestamp": 1.5527806439080631,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "noteIn"
-        }
-      }
-    },
-    {
-      "timestamp": 2.5684008965182485,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "dodge"
-        }
-      }
-    }
-  ]
+  "eventMarkers": []
 }

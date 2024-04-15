@@ -730,33 +730,5 @@
       "timestamp": 4.53789510241581
     }
   ],
-  "eventMarkers": [
-    {
-      "timestamp": 0.09999999999999964,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "dodge"
-        }
-      }
-    },
-    {
-      "timestamp": 0.8041979841399538,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "noteIn"
-        }
-      }
-    },
-    {
-      "timestamp": 3.3393880762922024,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "prepare"
-        }
-      }
-    }
-  ]
+  "eventMarkers": []
 }

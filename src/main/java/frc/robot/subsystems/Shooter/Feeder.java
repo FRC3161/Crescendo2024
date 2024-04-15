@@ -127,6 +127,9 @@ public class Feeder extends SubsystemBase {
           feeder.set(feedPower);
         }
         break;
+      case CONTINUE:
+        feeder.set(feedPower);
+        tailSetpoint = 1710;
       case SHOOTFEED:
         if (beamy.get()) {
           feeder.set(0);
