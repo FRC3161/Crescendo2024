@@ -1,5 +1,8 @@
 package frc.robot.subsystems.Intake;
 
+import java.util.function.BooleanSupplier;
+
+import com.fasterxml.jackson.databind.ser.std.BooleanSerializer;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -20,19 +23,21 @@ public class Intake extends SubsystemBase {
   public DigitalInput beamy2 = new DigitalInput(7);
   private IntakeMode intakeMode = IntakeMode.OFF;
   private double value = 0.7;
+  private int stallLim = 20;
+  private int freeLim = 20;
 
   public Intake() {
     leader.restoreFactoryDefaults();
     CANSparkMaxUtil.setCANSparkMaxBusUsage(leader, Usage.kMinimal);
-    leader.setSmartCurrentLimit(20, 20);
-    leader.setIdleMode(IdleMode.kBrake);
+    leader.setSmartCurrentLimit(stallLim, freeLim);
+    leader.setIdleMode(IdleMode.kCoast);
     leader.enableVoltageCompensation(12);
     leader.setInverted(false);
 
     follower.restoreFactoryDefaults();
     CANSparkMaxUtil.setCANSparkMaxBusUsage(follower, Usage.kMinimal);
-    follower.setSmartCurrentLimit(20, 20);
-    follower.setIdleMode(IdleMode.kBrake);
+    follower.setSmartCurrentLimit(stallLim, freeLim);
+    follower.setIdleMode(IdleMode.kCoast);
     follower.enableVoltageCompensation(12);
     leader.setInverted(false);
 
@@ -41,7 +46,17 @@ public class Intake extends SubsystemBase {
   public void burnToFlash() {
     leader.burnFlash();
     follower.burnFlash();
-  }
+  } 
+  
+  // public void setLimit(Boolean button){
+  //   if(!button){
+  //     freeLim = 15;
+  //     stallLim = 15;
+  //   } else {
+  //     freeLim = 20;
+  //     stallLim = 20;
+
+  //   } }
 
   public void setSpeed(double value) {
     if (beamy.get()) {
@@ -65,6 +80,8 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("beamy2", beamy2.get());
+    SmartDashboard.putNumber("plswork", freeLim);
+    SmartDashboard.putNumber("prayer", stallLim);
   }
 
   public void stop() {

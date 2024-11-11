@@ -5,7 +5,7 @@
       "x": 1.40126633644104,
       "y": 5.551969528198242
     },
-    "rotation": -3.684627012928423e-25
+    "rotation": -7.997535547723415e-26
   },
   "command": {
     "type": "sequential",
@@ -63,7 +63,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "7note.4"
+            "pathName": "midC3.1"
           }
         },
         {
@@ -75,31 +75,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "7note.5"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "noteShoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "7note.6"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "noteShoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "7note.7"
+            "pathName": "midC2.1"
           }
         },
         {

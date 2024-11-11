@@ -21,6 +21,7 @@ public class Shooter extends SubsystemBase {
   private final RelativeEncoder encoder = leader.getEncoder();
   // private final RelativeEncoder Rencoder = follower.getEncoder();
   private final SparkPIDController pid = leader.getPIDController();
+  private final SparkPIDController pid2 = follower.getPIDController();
   // private final SparkPIDController Rpid = follower.getPIDController();
   // Uncomment all of Rpid to split the shooter in the code
 
@@ -52,30 +53,40 @@ public class Shooter extends SubsystemBase {
     CANSparkMaxUtil.setCANSparkMaxBusUsage(leader, Usage.kVelocityOnly);
     leader.setInverted(true);
     leader.enableVoltageCompensation(12.0);
-    leader.setSmartCurrentLimit(60, 60);
-    leader.setInverted(true);
+    leader.setSmartCurrentLimit(40, 40);
+    leader.setInverted(false);
 
     follower.restoreFactoryDefaults();
     CANSparkMaxUtil.setCANSparkMaxBusUsage(follower, Usage.kVelocityOnly);
     follower.setInverted(true);
     follower.enableVoltageCompensation(12.0);
-    follower.setSmartCurrentLimit(60, 60);
+    follower.setSmartCurrentLimit(40, 40);
     follower.setInverted(true);
 
-    follower.follow(leader, true);
+    // follower.follow(leader, true);
 
     encoder.setVelocityConversionFactor(1);
 
     pid.setP(Constants.ShooterConstants.shooterPID[0]);
     pid.setI(Constants.ShooterConstants.shooterPID[1]);
     pid.setD(Constants.ShooterConstants.shooterPID[2]);
+
+    pid2.setP(Constants.ShooterConstants.shooterPID[0]);
+    pid2.setI(Constants.ShooterConstants.shooterPID[1]);
+    pid2.setD(Constants.ShooterConstants.shooterPID[2]);
+
+    
     // Rpid.setP(Constants.ShooterConstants.shooterPID[0]);
     // Rpid.setI(Constants.ShooterConstants.shooterPID[1]);
     // Rpid.setD(Constants.ShooterConstants.shooterPID[2]);
 
     pid.setIMaxAccum(0.04, 0);
+        pid2.setIMaxAccum(0.04, 0);
+
     // Rpid.setIMaxAccum(0.04, 0);
     pid.setOutputRange(0, 9999);
+        pid2.setOutputRange(0, 9999);
+
     // Rpid.setOutputRange(0, 9999);
   }
 
@@ -86,6 +97,8 @@ public class Shooter extends SubsystemBase {
 
   public void resetI() {
     pid.setIAccum(0);
+    pid2.setIAccum(0);
+
     // Rpid.setIAccum(0);
   }
 
@@ -97,6 +110,9 @@ public class Shooter extends SubsystemBase {
       pid.setP(shooterKp.get());
       pid.setI(shooterKi.get());
       pid.setD(shooterKd.get());
+      pid2.setP(shooterKp.get());
+      pid2.setI(shooterKi.get());
+      pid2.setD(shooterKd.get());
       // Rpid.setP(shooterKp.get());
       // Rpid.setI(shooterKi.get());
       // Rpid.setD(shooterKd.get());
@@ -156,6 +172,8 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     double feedforward = ffModel.calculate(velocitySetpoint, velocityRateOfChange);
     pid.setReference(velocitySetpoint, ControlType.kVelocity, 0, feedforward);
+    pid2.setReference(velocitySetpoint, ControlType.kVelocity, 0, feedforward);
+
     // Rpid.setReference(velocitySetpoint, ControlType.kVelocity, 0, feedforward);
     // double Rfeedforward = Rffmodel.calculate(RvelocitySetpoint,
     // velocityRateOfChange);

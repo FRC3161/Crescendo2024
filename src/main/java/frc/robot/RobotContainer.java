@@ -4,7 +4,9 @@
 
 package frc.robot;
 
+import java.nio.Buffer;
 import java.util.List;
+import java.util.TimerTask;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -17,6 +19,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -30,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandStadiaController;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.LightsConstants;
 import frc.robot.Constants.RobotMode;
+import frc.robot.Constants.IntakeConstants.IntakeMode;
 import frc.robot.commands.Arm.ArmNotifier;
 import frc.robot.commands.Arm.ManualArm;
 import frc.robot.commands.Arm.ToAngle;
@@ -62,9 +67,12 @@ import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Lights.Lights;
 import frc.robot.subsystems.Shooter.Feeder;
 import frc.robot.subsystems.Shooter.Shooter;
+import java.util.TimerTask;
+
 
 public class RobotContainer {
 
+  //private double updateInterval = 0.0; //LED delay
   private RobotMode robotMode = RobotMode.DISABLED;
 
   /* Controllers */
@@ -88,25 +96,55 @@ public class RobotContainer {
     configureTestCommands();
   }
 
+
+
   public void setRobotMode(RobotMode mode) {
     robotMode = mode;
   }
+  
+  
+
 
   public void disabledActions() {
     arm.resetI();
     shooter.resetI();
-    feeder.resetI();
+    feeder.resetI(); 
     s_Swerve.resetSnapI();
     arm.runState(new TrapezoidProfile.State(arm.getEncoderPosition().getRadians(), 0));
-  }
+  //   int counter = 0;
+  //   counter += 1;
+  //   if (counter > 120) {
+  //     updateLEDs();
+  //     counter = 0;
+  // }
+  //  lights.led.setData(lights.buffer);
+
+}
+
+
+// private void updateLEDs() {
+//   for (int i = 0; i < lights.buffer.getLength(); i++) {
+//       final int hue = (lights.rainbowFirstPixelHue + (i * 180 / lights.buffer.getLength())) % 180;
+//       lights.buffer.setHSV(i, hue, 255, 255);
+//   }
+//   lights.rainbowFirstPixelHue += 1;
+//   lights.rainbowFirstPixelHue %= 180;
+
+//   lights.led.setData(lights.buffer);
+
+//   }
+
 
   public void teleopInit() {
     lights.clearBuffer();
+    new ToAngle(() -> Constants.ArmConstants.min.getRadians(), arm).schedule();
   }
 
-  public void disabledInit() {
-    lights.colors = Constants.LightsConstants.Colors.MAGENTA;
-  }
+ 
+ public void disabledInit(){
+   lights.colors = Constants.LightsConstants.Colors.MAGENTA;
+
+ }
 
   public Command getIdleCommands() {
     switch (robotMode) {
@@ -146,7 +184,7 @@ public class RobotContainer {
         () -> -driver.getLeftY(),
         () -> -driver.getLeftX(),
         () -> -driver.getRightX(),
-        () -> driver.getRightTriggerAxis()));
+        () -> driver.rightTrigger().getAsBoolean()));
 
     driver.x().onTrue(new SnapTo(s_Swerve, SnapMode.LEFT));
     driver.b().onTrue(new SnapTo(s_Swerve, SnapMode.RIGHT));
@@ -170,7 +208,7 @@ public class RobotContainer {
                 new InstantCommand(() -> {
                   new ToRPM(() -> 3000, shooter).schedule();
                 }))),
-        new SolidColor(lights, Constants.LightsConstants.Colors.BLUE)));
+        new SolidColor(lights, Constants.LightsConstants.Colors.BLUE)).finallyDo(this::idle));
 
     /* Operator Controller */
     operator.rightTrigger().whileTrue(
@@ -187,13 +225,15 @@ public class RobotContainer {
                 new ToDistanceAngle(s_Swerve, arm, ArmEndBehaviour.NEVER_ENDING)));
 
     operator.a().whileTrue(new SequentialCommandGroup(
-      new ParallelCommandGroup(
-        new SolidColor(lights, Constants.LightsConstants.Colors.RED),
-        new ToAngle(() -> Units.degreesToRadians(35), arm),
-        new ToRPM(() -> 4700, shooter)),
+      new SequentialCommandGroup( 
+        new ParallelCommandGroup(
+          new SolidColor(lights, Constants.LightsConstants.Colors.RED),
+          new ToAngle(() -> Units.degreesToRadians(45), arm)),
+        new ToRPM(() -> 2700, shooter)),
       new ShootFeed(feeder).withTimeout(0.4),
-      new SolidColor(lights, Constants.LightsConstants.Colors.GREEN).finallyDo(this::idle)
-    ));
+      new SolidColor(lights, Constants.LightsConstants.Colors.GREEN)
+    ).finallyDo(this::idle));
+
 
     operator.leftTrigger().whileTrue(new SequentialCommandGroup(
         new ShooterOFF(shooter),
@@ -202,31 +242,64 @@ public class RobotContainer {
         new FeedOut(feeder),
         new SolidColor(lights, Constants.LightsConstants.Colors.BLUE)));
 
-    operator.start().whileTrue(new SolidColor(lights, Constants.LightsConstants.Colors.BRIGHT));
+    operator.start().whileTrue(new SolidColor(lights, Constants.LightsConstants.Colors.BRIGHT).withTimeout(1));
+
+                
+    
+    driver.leftTrigger().whileTrue(new SequentialCommandGroup(
+      new SolidColor(lights, Constants.LightsConstants.Colors.RED),
+      new ToAngle(() -> Units.degreesToRadians(26), arm),
+      new ParallelCommandGroup(
+          new FeedIn(feeder).deadlineWith(new IntakeIn(intake)),
+          new SequentialCommandGroup(
+              new beamMessage(intake),
+              new SolidColor(lights, Constants.LightsConstants.Colors.GREEN),
+              new InstantCommand(() -> {
+                new ToRPM(() -> 3000, shooter).schedule();
+              }))),
+      new SolidColor(lights, Constants.LightsConstants.Colors.BLUE).finallyDo(this::idle)));
+
+      driver.rightBumper().whileTrue(new SequentialCommandGroup(
+      new SolidColor(lights, Constants.LightsConstants.Colors.RED),
+      new ToAngle(() -> Units.degreesToRadians(19), arm),
+      new ParallelCommandGroup(
+          new FeedIn(feeder).deadlineWith(new IntakeIn(intake)),
+          new SequentialCommandGroup(
+              new beamMessage(intake),
+              new SolidColor(lights, Constants.LightsConstants.Colors.GREEN),
+              new InstantCommand(() -> {
+                new ToRPM(() -> 3000, shooter);
+              })
+  
+             )),
+        new SolidColor(lights, Constants.LightsConstants.Colors.BLUE).finallyDo(this::idle))); 
+        
+
 
     driver.leftBumper().whileTrue(
         new SequentialCommandGroup(
-            new SolidColor(lights, Constants.LightsConstants.Colors.RED),
+            new SolidColor(lights, Constants.LightsConstants.Colors.BRIGHT),
             new ParallelCommandGroup(
                 new ToAngle(() -> Constants.ArmConstants.min.getRadians(), arm),
                 new FeedSource(feeder)),
             new SolidColor(lights, Constants.LightsConstants.Colors.GREEN)).finallyDo(this::idle));
+
     operator.leftBumper().whileTrue(new SequentialCommandGroup(
         new ParallelCommandGroup(
             new SolidColor(lights, Constants.LightsConstants.Colors.RED),
             new ToAngle(() -> Units.degreesToRadians(50), arm),
             new ToRPM(() -> 4500, shooter)),
         new SolidColor(lights, Constants.LightsConstants.Colors.BLUE),
-        new ShootFeed(feeder).withTimeout(0.4),
-        getIdleCommands()));
-
-    operator.b().whileTrue(new SnapTo(s_Swerve, SnapMode.SPEAKER, EndBehaviour.NEVER_ENDING));
+        new ShootFeed(feeder).withTimeout(0.4)).finallyDo(this::idle));
+    
+  
+    
     // operator.a().whileTrue(
     //     new SequentialCommandGroup(
     //         new SolidColor(lights, LightsConstants.Colors.RED),
     //         new FeedIn(feeder).deadlineWith(new IntakeIn(intake)),
     //         new SolidColor(lights, LightsConstants.Colors.BLUE)));
-
+ 
 
     /* Subwoofer shot */
     operator.rightBumper().onTrue(new SequentialCommandGroup(
@@ -235,7 +308,7 @@ public class RobotContainer {
             new ToAngle(() -> Units.degreesToRadians(48.5), arm),
             new ToRPM(() -> 4500, shooter)),
         new SolidColor(lights, Constants.LightsConstants.Colors.BLUE),
-        new ShootFeed(feeder).withTimeout(0.4)).finallyDo(this::idle));
+        new ShootFeed(feeder).withTimeout(0.7)).finallyDo(this::idle));
 
   }
 
@@ -258,12 +331,11 @@ public class RobotContainer {
             new ArmNotifier(arm),
             new ToRPM(() -> 4700, shooter),
             new FeedIn(feeder).deadlineWith(new IntakeIn(intake))),
-        new ShootFeed(feeder).withTimeout(0.4))
+        new ShootFeed(feeder).withTimeout(0.6))
         .deadlineWith(
             // new SnapTo(s_Swerve, SnapMode.SPEAKER_AUTO, EndBehaviour.NORMAL),
             new ToDistanceAngle(s_Swerve, arm, ArmEndBehaviour.NEVER_ENDING))
         .finallyDo(this::idle));
-
     NamedCommands.registerCommand("rampUpShooter", new ToRPM(() -> 4700, shooter));
 
     NamedCommands.registerCommand("noteShootClose", new SequentialCommandGroup(
@@ -307,7 +379,14 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("dodge", new ParallelCommandGroup(
         new ToAngle(() -> Constants.ArmConstants.min.getRadians(), arm)));
-
+    
+    // NamedCommands.registerCommand("stash", new ParallelCommandGroup(
+    //   new FeedIn(feeder).deadlineWith(new IntakeIn(intake)),
+    //   new SequentialCommandGroup(
+    //     new ToRPM(() -> 2700, shooter),
+    //     new FeedOut(feeder))
+    // )
+    // );
   }
 
   public void configureAutoCommands() {
@@ -365,6 +444,7 @@ public class RobotContainer {
     SmartDashboard.putData("Feed OUT", new FeedOut(feeder));
     SmartDashboard.putNumber("joystick", operator.getLeftX());
     SmartDashboard.putNumber("Arm Angle", arm.getSetpoint().getDegrees());
+
 
     SmartDashboard.putData("burn to flash", new InstantCommand(() -> {
       s_Swerve.burnToFlash();

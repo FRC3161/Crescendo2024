@@ -5,7 +5,7 @@
       "x": 1.3816450834274292,
       "y": 7.015666484832764
     },
-    "rotation": -2.0618765733647087e-25
+    "rotation": 3.4418115755830874e-26
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "top5note.1"
+            "pathName": "top5nte.1"
           }
         },
         {
@@ -30,7 +30,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "top5note.2"
+                  "pathName": "top5nte.2"
                 }
               },
               {
@@ -57,7 +57,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "top5note.3"
+            "pathName": "top5nte.3"
           }
         },
         {
@@ -69,25 +69,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "top5note.4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "noteShoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "dodge"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "top5note.5"
+            "pathName": "top5nte.4"
           }
         },
         {

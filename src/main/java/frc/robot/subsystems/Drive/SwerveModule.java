@@ -30,6 +30,8 @@ public class SwerveModule {
   /* Motors */
   private CANSparkMax angleMotor;
   private CANSparkMax driveMotor;
+  private static int driveStall = 30;
+  private static int driveFree = 30;
 
   /* Encoders and their values */
   private RelativeEncoder driveEncoder;
@@ -118,7 +120,8 @@ public class SwerveModule {
   private void configDriveMotor() {
     driveMotor.restoreFactoryDefaults();
     CANSparkMaxUtil.setCANSparkMaxBusUsage(driveMotor, Usage.kAll);
-    driveMotor.setSmartCurrentLimit(30, 30);
+    
+    driveMotor.setSmartCurrentLimit(driveStall, driveFree);
     if (moduleNumber == 1 || moduleNumber == 3) {
       driveMotor.setInverted(true);
     } else {
@@ -145,6 +148,7 @@ public class SwerveModule {
     // 0,
     // feedforward.calculate(desiredState.speedMetersPerSecond));
   }
+
 
   private void setAngle(SwerveModuleState desiredState) {
     // Prevent rotating module if speed is less then 1%. Prevents jittering.
@@ -178,6 +182,13 @@ public class SwerveModule {
     return Rotation2d.fromDegrees(this.integratedAngleEncoder.getPosition());
   }
 
+  public void setLimit(boolean overdrive){
+    if(overdrive){
+      driveMotor.setSmartCurrentLimit(60, 60);
+    } else {
+      driveMotor.setSmartCurrentLimit(35, 35);
+    }
+  }
   public SwerveModuleState getState() {
     return new SwerveModuleState(this.getSpeed(), this.getAngle());
   }

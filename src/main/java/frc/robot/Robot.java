@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.RobotMode;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -30,6 +31,8 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
   private boolean runningAuton = false;
+  public static Timer timer;
+   
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -43,7 +46,8 @@ public class Robot extends TimedRobot {
     LiveWindow.disableAllTelemetry();
     m_robotContainer = new RobotContainer();
     CANSparkLowLevel.enableExternalUSBControl(true);
-
+   // timer = new Timer();
+   // timer.start();
   }
 
   @Override

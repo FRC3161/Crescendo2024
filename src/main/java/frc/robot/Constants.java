@@ -92,7 +92,7 @@ public final class Constants {
     /* Drivetrain Constants */
     public static final double trackWidth = Units.inchesToMeters(21.75);
     public static final double wheelBase = Units.inchesToMeters(21.75);
-    public static final double wheelDiameter = Units.inchesToMeters(4.0); // TODO: measure
+    public static final double wheelDiameter = Units.inchesToMeters(4); // TODO: measure
     public static final double wheelCircumference = wheelDiameter * Math.PI;
 
     public static final double driveGearRatio = (6.75 / 1.0); // 6.75:1
@@ -168,11 +168,11 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    // public static final double kMaxSpeedMetersPerSecond = 4;
-    public static final double kMaxSpeedMetersPerSecond = 2;
+    public static final double kMaxSpeedMetersPerSecond = 4;
+    // public static final double kMaxSpeedMetersPerSecond = 2;
 
-    // public static final double kMaxAccelerationMetersPerSecondSquared = 2;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 0.5;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 2;
+    // public static final double kMaxAccelerationMetersPerSecondSquared = 0.5;
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI * 5;
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI * 4;
 
@@ -188,7 +188,8 @@ public final class Constants {
     public static enum IntakeMode {
       IN,
       OUT,
-      OFF
+      OFF,
+      STASH
     }
   }
 
@@ -202,16 +203,17 @@ public final class Constants {
     public static final DigitalInput beam = new DigitalInput(9);
     public static final double[] shooterPID = { 0.0, 0.0000006, 0 };
     public static final double[] shooterFeedforward = { 0.26, 0.002 };
-    public static final int toleranceRPM = 100;
+    public static final int toleranceRPM = 250;
     public static final int shooterIDLE = 2000;
-    public static final double maxVelocityPerSecond = 4000; // RPM/s
-    public static final double maxAcceleration = 2000; // RPM/s^2 og val: 700
+    public static final double maxVelocityPerSecond = 5000; // RPM/s
+    public static final double maxAcceleration = 4500; // RPM/s^2 og val: 700
     // TODO: remember to change accel if shooter is too fast - just an
     // experiment¯\_(ツ)_/¯
 
     public static final double[] tailPID = new double[] { 0, 0.000001, 0 };
     public static final double tailFF = 0.002250;
     public static final double tailTolerance = 30;
+    public static final double tailSpeed = 3075;
 
     public static final double onTheFlyMultiplier = 18f;
 
@@ -221,7 +223,8 @@ public final class Constants {
       OFF,
       INFEED,
       SHOOTFEED,
-      HP
+      HP,
+      CONTINUE
     }
 
     // Interpolation
@@ -238,7 +241,7 @@ public final class Constants {
     public static final int followerID = 22;
     public static final int encoderID = 0;
 
-    public static final Rotation2d offset = Rotation2d.fromDegrees(88 - 90);
+    public static final Rotation2d offset = Rotation2d.fromDegrees(84.2 - 90); //(88-90)
     public static final Rotation2d max = Rotation2d.fromDegrees(85);
     public static final Rotation2d min = Rotation2d.fromDegrees(3);
     public static final Rotation2d tolernace = Rotation2d.fromDegrees(1);
@@ -251,10 +254,10 @@ public final class Constants {
 
     public static final PolynomialRegression armAngleInterpolationPolynominalRegression = new PolynomialRegression(
         Arrays.asList(
-            new Point(1.43, Units.degreesToRadians(47f)),
-            new Point(3, Units.degreesToRadians(34f)),
-            new Point(4, Units.degreesToRadians(29f)),
-            new Point(5, Units.degreesToRadians(24.5f))),
+            new Point(1.43, Units.degreesToRadians(45f)),
+            new Point(3, Units.degreesToRadians(30.7f)),
+            new Point(4, Units.degreesToRadians(26.2f)),
+            new Point(5, Units.degreesToRadians(21.7f))),
         2);
   }
 

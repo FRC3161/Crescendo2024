@@ -5,7 +5,7 @@
       "x": 1.40126633644104,
       "y": 5.551969528198242
     },
-    "rotation": 1.0256697653125563e-24
+    "rotation": -6.638350084200114e-27
   },
   "command": {
     "type": "sequential",
@@ -27,6 +27,12 @@
           "type": "parallel",
           "data": {
             "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "noteIn"
+                }
+              },
               {
                 "type": "path",
                 "data": {
@@ -57,7 +63,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "7note.4"
+            "pathName": "midC3.1"
           }
         },
         {
@@ -69,7 +75,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "7note.5"
+            "pathName": "mid.2"
           }
         },
         {

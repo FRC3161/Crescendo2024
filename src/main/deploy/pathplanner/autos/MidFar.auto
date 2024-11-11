@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.412998914718628,
-      "y": 5.563053131103516
+      "x": 1.40126633644104,
+      "y": 5.551969528198242
     },
-    "rotation": -4.588627300571694e-22
+    "rotation": -6.638350084200114e-27
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2056_counter.1"
+            "pathName": "7note.1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "7note.2"
           }
         },
         {
@@ -26,7 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2056_counter.2"
+            "pathName": "7note.3"
           }
         },
         {
@@ -38,7 +44,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2056_counter.3"
+            "pathName": "midC3.1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "noteShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "mid.2"
           }
         },
         {

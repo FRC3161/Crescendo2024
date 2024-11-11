@@ -36,7 +36,7 @@ public class Feeder extends SubsystemBase {
   private LoggedTunableNumber tailI = new LoggedTunableNumber("Tail I", Constants.ShooterConstants.tailPID[1]);
   private LoggedTunableNumber tailD = new LoggedTunableNumber("Tail D", Constants.ShooterConstants.tailPID[2]);
   private LoggedTunableNumber tailFF = new LoggedTunableNumber("Tail FF", Constants.ShooterConstants.tailFF);
-  private LoggedTunableNumber tailSPEED = new LoggedTunableNumber("Tail Speed", 3400);
+  private LoggedTunableNumber tailSPEED = new LoggedTunableNumber("Tail Speed", Constants.ShooterConstants.tailSpeed);
 
   private SimpleMotorFeedforward ffModel = new SimpleMotorFeedforward(0, Constants.ShooterConstants.tailFF);
 
@@ -127,6 +127,9 @@ public class Feeder extends SubsystemBase {
           feeder.set(feedPower);
         }
         break;
+      case CONTINUE:
+        feeder.set(feedPower);
+        tailSetpoint = 1710;
       case SHOOTFEED:
         if (beamy.get()) {
           feeder.set(0);

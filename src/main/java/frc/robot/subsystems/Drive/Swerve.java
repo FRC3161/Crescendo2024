@@ -181,6 +181,11 @@ public class Swerve extends SubsystemBase {
     return new Rotation2d(yawRad);
   }
 
+  public void setLimity(boolean overdrive){
+    for (SwerveModule mod : mSwerveMods) {
+      mod.setLimit(overdrive);
+    }
+  }
   public double calculateSnapOutput(Rotation2d setpoint, Rotation2d snapVelocity) {
     double ffOutput = -snapFFModel.calculate(snapVelocity.getRadians());
     double rotation = -snapPIDController.calculate(getYawForSnap().getRadians(), snapSetpoint.getRadians());
@@ -359,9 +364,6 @@ public class Swerve extends SubsystemBase {
   public void updateVisionMeasurements() {
     var visionEst = vision.getEstimatedGlobalPose();
     visionEst.ifPresent(est -> {
-      if (est.estimatedPose.toPose2d().getX() > 4) {
-        return;
-      }
       var estPose = est.estimatedPose.toPose2d();
       var estStdDevs = vision.getEstimationStdDevs(estPose);
       poseEstimator.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);

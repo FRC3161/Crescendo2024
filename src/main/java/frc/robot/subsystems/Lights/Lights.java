@@ -1,5 +1,7 @@
 package frc.robot.subsystems.Lights;
 
+import java.nio.Buffer;
+
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -7,10 +9,15 @@ import frc.robot.Constants;
 
 public class Lights extends SubsystemBase {
 
-  private final AddressableLED led;
-  private final AddressableLEDBuffer buffer;
+  public final AddressableLED led;
+  public final AddressableLEDBuffer buffer;
+  public int rainbowFirstPixelHue = 0;
   public int[] colors = new int[] { 0, 0, 0 };
+  
+  
 
+
+  
   public Lights() {
     led = new AddressableLED(Constants.LightsConstants.port);
     buffer = new AddressableLEDBuffer(Constants.LightsConstants.length);
@@ -24,14 +31,17 @@ public class Lights extends SubsystemBase {
     colors = Constants.LightsConstants.Colors.GOLD;
   }
 
-  @Override
+
+  
+@Override
+
   public void periodic() {
-    for (int i = 0; i < Constants.LightsConstants.length; i++) {
-      setRGB(i, colors[0], colors[1], colors[2]);
-    }
-    sendBuffer();
-    logValues();
-  }
+   for (int i = 0; i < Constants.LightsConstants.length; i++) {
+     setRGB(i, colors[0], colors[1], colors[2]);
+   }
+   sendBuffer();
+   logValues();
+ }
 
   private void logValues() {
   }

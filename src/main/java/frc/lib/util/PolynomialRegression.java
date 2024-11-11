@@ -434,8 +434,9 @@ public class PolynomialRegression {
    */
   public static void main(String[] args) throws FileNotFoundException, InterruptedException {
     File file = new File("src/testData2.txt");
-    Scanner sc = new Scanner(file);
-    sc.nextLine(); // ignores first line with comment
+    try (Scanner sc = new Scanner(file)) {
+      sc.nextLine(); // ignores first line with comment
+    }
     List<Point> points = new ArrayList<>();
     List<Point> testData = new ArrayList<>();
 
